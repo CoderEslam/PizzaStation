@@ -47,7 +47,11 @@ class CartAdapter(
     override fun onBindViewHolder(holder: CartViewHolder, position: Int) {
         actionsBindHelper.bind("", holder.swipeToActionLayout)
         holder.bind()
-        holder.rv_item_extra_cart.adapter = ItemExtraAdapter(carts[position].extra);
+        try {
+            holder.rv_item_extra_cart.adapter = ItemExtraAdapter(carts[position].extra);
+        } catch (e: NullPointerException) {
+            Log.e(TAG, "onBindViewHolder: ${e.message}")
+        }
         holder.add.setOnClickListener {
             carts[position].count = carts[position].count + 1
             holder.count.text = carts[position].count.toString()

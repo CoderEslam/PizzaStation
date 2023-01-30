@@ -1,5 +1,6 @@
 package com.doubleclick.pizzastation.android.Home.ui
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -59,6 +60,10 @@ class CartFragment : Fragment() {
                             response: Response<CartModelList>
                         ) {
                             carts.addAll(response.body()!!.data)
+                            Log.e(
+                                "CallBackResponseCarts",
+                                "CallBackResponseCarts: ${carts.toString()}"
+                            )
                             cartAdapter =
                                 CartAdapter(carts, ::Counter, ::OnActionClicked)
                             binding.rvCart.adapter = cartAdapter
@@ -71,7 +76,9 @@ class CartFragment : Fragment() {
                     })
                 }
         }
-
+        binding.orderComplete.setOnClickListener {
+            viewModel.getCart()
+        }
     }
 
     @OptIn(DelicateCoroutinesApi::class)
@@ -84,28 +91,48 @@ class CartFragment : Fragment() {
                             "Bearer " + SessionManger.getToken(requireActivity()).toString(),
                             cartModel.id.toString()
                         ).observe(viewLifecycleOwner) {
-                            it.enqueue(object : Callback<CardDeleteCallbackById> {
-                                override fun onResponse(
-                                    call: Call<CardDeleteCallbackById>,
-                                    response: Response<CardDeleteCallbackById>
-                                ) {
-                                    carts.removeAt(pos);
-                                    Toast.makeText(
-                                        requireActivity(),
-                                        "" + response.body()?.message.toString(),
-                                        Toast.LENGTH_LONG
-                                    ).show()
-                                    cartAdapter.notifyItemRemoved(pos)
-                                }
+                            try {
+                                it.enqueue(object : Callback<CardDeleteCallbackById> {
+                                    @SuppressLint("NotifyDataSetChanged")
+                                    override fun onResponse(
+                                        call: Call<CardDeleteCallbackById>,
+                                        response: Response<CardDeleteCallbackById>
+                                    ) {
+                                        try {
+                                            if (carts.size == 1) {
+                                                carts.removeAt(0);
+                                                cartAdapter.notifyItemRemoved(0)
+                                                cartAdapter.notifyItemRangeChanged(0, carts.size)
+                                                cartAdapter.notifyDataSetChanged()
+                                            }
+                                            cartAdapter.notifyItemRemoved(pos)
+                                            cartAdapter.notifyItemRangeChanged(0, carts.size)
+                                            cartAdapter.notifyDataSetChanged()
+                                            carts.removeAt(pos);
 
-                                override fun onFailure(
-                                    call: Call<CardDeleteCallbackById>,
-                                    t: Throwable
-                                ) {
+                                            Toast.makeText(
+                                                requireActivity(),
+                                                "" + response.body()?.message.toString(),
+                                                Toast.LENGTH_LONG
+                                            ).show()
+                                        } catch (e: IndexOutOfBoundsException) {
+                                            Log.e(TAG, "onResponse: ${e.message}")
 
-                                }
+                                        }
 
-                            })
+                                    }
+
+                                    override fun onFailure(
+                                        call: Call<CardDeleteCallbackById>,
+                                        t: Throwable
+                                    ) {
+
+                                    }
+
+                                })
+                            } catch (e: IllegalStateException) {
+                                Log.e(TAG, "OnActionClicked: ${e.message}")
+                            }
                         }
 
                     }

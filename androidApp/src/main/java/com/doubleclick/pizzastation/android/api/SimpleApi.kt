@@ -63,4 +63,11 @@ interface SimpleApi {
     fun getExtraFilters(): Call<MenuList>
 
 
+    @Headers("Accept: application/json", "Content-Type: application/json")
+    @POST("orders")
+    fun setOrder(
+        @Header("Authorization") token: String,
+        orderModelList: OrderModelData
+    ): Call<OrderModelList>
+
 }

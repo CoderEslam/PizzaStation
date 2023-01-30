@@ -247,6 +247,8 @@ class FoodItemActivity : AppCompatActivity(), ItemSizeListener, ItemExtraListene
                             ).show()
                             GlobalScope.launch(Dispatchers.Main) {
                                 binding.animationView.visibility = View.VISIBLE
+                                binding.addToCard.isEnabled = false
+                                binding.tvAddToCard.setTextColor(resources.getColor(R.color.grey_600))
                                 delay(2000)
                                 startActivity(
                                     Intent(

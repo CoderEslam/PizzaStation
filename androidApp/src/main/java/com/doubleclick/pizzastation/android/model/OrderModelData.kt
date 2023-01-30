@@ -1,14 +1,14 @@
 package com.doubleclick.pizzastation.android.model
 
-data class Data(
+data class OrderModelData(
     val amount: String,
     val area_id: Int,
     val branch_id: Int,
     val delivery: String,
-    val id: Int,
+    val id: Int = -1,
     val items: List<ItemOrder>,
     val notes: String,
-    val status: String,
+    val status: String = "mobile_app",
     val total: String,
-    val user_id: Int
+    val user_id: Int = -1
 )
