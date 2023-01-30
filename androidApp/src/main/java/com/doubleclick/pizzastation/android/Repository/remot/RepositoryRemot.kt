@@ -44,6 +44,10 @@ class RepositoryRemot {
         return RetrofitInstance.api.setCart(token, cardModel)
     }
 
+    fun deleteCartById(token: String, id: String): Call<CardDeleteCallbackById> {
+        return RetrofitInstance.api.deleteCartById(token, id)
+    }
+
     fun getExtraFilters(): Call<MenuList> {
         return RetrofitInstance.api.getExtraFilters()
     }

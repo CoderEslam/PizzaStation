@@ -23,6 +23,8 @@ class MainViewModel(private val repository: RepositoryRemot) : ViewModel() {
     private val extrasFilterMutableLiveData: MutableLiveData<Call<MenuList>> = MutableLiveData()
     private val cardGetMutableLiveData: MutableLiveData<Call<CartModelList>> = MutableLiveData()
     private val cardSetMutableLiveData: MutableLiveData<Call<CartCallback>> = MutableLiveData()
+    private val cardDeleteByIdMutableLiveData: MutableLiveData<Call<CardDeleteCallbackById>> =
+        MutableLiveData()
 
 
     fun getLoginResponse(login: Login): LiveData<Call<LoginResponse>> {
@@ -69,6 +71,14 @@ class MainViewModel(private val repository: RepositoryRemot) : ViewModel() {
     fun setCart(token: String, cardModel: JsonObject): LiveData<Call<CartCallback>> {
         cardSetMutableLiveData.value = repository.setCart(token, cardModel);
         return cardSetMutableLiveData;
+    }
+
+    fun deleteCartById(
+        token: String,
+        id: String
+    ): LiveData<Call<CardDeleteCallbackById>> {
+        cardDeleteByIdMutableLiveData.value = repository.deleteCartById(token, id);
+        return cardDeleteByIdMutableLiveData;
     }
 
     fun getExtraFilters(): LiveData<Call<MenuList>> {

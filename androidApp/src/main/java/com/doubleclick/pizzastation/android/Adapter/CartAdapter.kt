@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.doubleclick.pizzastation.android.R
 import com.doubleclick.pizzastation.android.model.Cart
+import com.doubleclick.pizzastation.android.model.CartModel
 import com.doubleclick.pizzastation.android.views.swipetoactionlayout.ActionBindHelper
 import com.doubleclick.pizzastation.android.views.swipetoactionlayout.SwipeAction
 import com.doubleclick.pizzastation.android.views.swipetoactionlayout.SwipeMenuListener
@@ -20,11 +21,11 @@ import com.doubleclick.pizzastation.android.views.swipetoactionlayout.SwipeToAct
 private const val TAG = "CartAdapter"
 
 //lambda function
-typealias OnActionClicked = (contact: Cart, action: SwipeAction, pos: Int) -> Unit
+typealias OnActionClicked = (contact: CartModel, action: SwipeAction, pos: Int) -> Unit
 typealias Block = (input: Int) -> Unit
 
 class CartAdapter(
-    private val carts: MutableList<Cart>,
+    private val carts: List<CartModel>,
     private val block: Block,
     private val actionClicked: OnActionClicked
 ) :
@@ -46,6 +47,7 @@ class CartAdapter(
     override fun onBindViewHolder(holder: CartViewHolder, position: Int) {
         actionsBindHelper.bind("", holder.swipeToActionLayout)
         holder.bind()
+        holder.rv_item_extra_cart.adapter = ItemExtraAdapter(carts[position].extra);
         holder.add.setOnClickListener {
             carts[position].count = carts[position].count + 1
             holder.count.text = carts[position].count.toString()
@@ -70,6 +72,7 @@ class CartAdapter(
         var add: ImageView = itemView.findViewById(R.id.add)
         var mins: ImageView = itemView.findViewById(R.id.mins)
         var count: TextView = itemView.findViewById(R.id.count)
+        var rv_item_extra_cart: RecyclerView = itemView.findViewById(R.id.rv_item_extra_cart)
         val swipeToActionLayout: SwipeToActionLayout =
             itemView.findViewById(R.id.swipe_to_action_layout)
 

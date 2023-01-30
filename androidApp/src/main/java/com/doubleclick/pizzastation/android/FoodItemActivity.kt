@@ -64,40 +64,106 @@ class FoodItemActivity : AppCompatActivity(), ItemSizeListener, ItemExtraListene
         viewModel = ViewModelProvider(this, viewModelFactory)[MainViewModel::class.java]
         val sizes: ArrayList<Sizes> = ArrayList();
         if (menuModel?.FB.toString() != "null") {
-            sizes.add(Sizes("FB", menuModel?.FB ?: "0", 0))
+            sizes.add(
+                Sizes(
+                    menuModel?.name.toString(),
+                    "FB",
+                    menuModel?.image ?: "",
+                    menuModel?.FB ?: "0",
+                    0
+                )
+            )
         }
         if (menuModel?.L.toString() != "null") {
-            sizes.add(Sizes("L", menuModel?.L ?: "0", 1))
+            sizes.add(
+                Sizes(
+                    menuModel?.name.toString(),
+                    "L",
+                    menuModel?.image ?: "",
+                    menuModel?.L ?: "0",
+                    1
+                )
+            )
         }
         if (menuModel?.M.toString() != "null") {
-            sizes.add(Sizes("M", menuModel?.M ?: "0", 2))
+            sizes.add(
+                Sizes(
+                    menuModel?.name.toString(), "M",
+                    menuModel?.image ?: "",
+                    menuModel?.M ?: "0", 2
+                )
+            )
         }
         if (menuModel?.Slice.toString() != "null") {
-            sizes.add(Sizes("Slice", menuModel?.Slice ?: "0", 3))
+            sizes.add(
+                Sizes(
+                    menuModel?.name.toString(), "Slice",
+                    menuModel?.image ?: "",
+                    menuModel?.Slice ?: "0", 3
+                )
+            )
         }
         if (menuModel?.XXL.toString() != "null") {
-            sizes.add(Sizes("XXL", menuModel?.XXL ?: "0", 4))
+            sizes.add(
+                Sizes(
+                    menuModel?.name.toString(), "XXL",
+                    menuModel?.image ?: "",
+                    menuModel?.XXL ?: "0", 4
+                )
+            )
         }
         if (menuModel?.half_L != "null") {
-            sizes.add(Sizes("Half L", menuModel?.half_L ?: "0", 5))
+            sizes.add(
+                Sizes(
+                    menuModel?.name.toString(), "Half L",
+                    menuModel?.image ?: "",
+                    menuModel?.half_L ?: "0", 5
+                )
+            )
         }
         if (menuModel?.half_stuffed_crust_L.toString() != "null") {
             sizes.add(
                 Sizes(
+                    menuModel?.name.toString(),
                     "Half stuffed crust L",
+                    menuModel?.image ?: "",
                     menuModel?.half_stuffed_crust_L ?: "0",
                     6
                 )
             )
         }
         if (menuModel?.quarter_XXL.toString() != "null") {
-            sizes.add(Sizes("Quarter XXL", menuModel?.quarter_XXL ?: "0", 7))
+            sizes.add(
+                Sizes(
+                    menuModel?.name.toString(),
+                    "Quarter XXL",
+                    menuModel?.image ?: "",
+                    menuModel?.quarter_XXL ?: "0",
+                    7
+                )
+            )
         }
         if (menuModel?.stuffed_crust_L.toString() != "null") {
-            sizes.add(Sizes("Stuffed crust L", menuModel?.stuffed_crust_L ?: "0", 8))
+            sizes.add(
+                Sizes(
+                    menuModel?.name.toString(),
+                    "Stuffed crust L",
+                    menuModel?.image ?: "",
+                    menuModel?.stuffed_crust_L ?: "0",
+                    8
+                )
+            )
         }
         if (menuModel?.stuffed_crust_M.toString() != "null") {
-            sizes.add(Sizes("Stuffed crust M", menuModel?.stuffed_crust_M ?: "0", 9))
+            sizes.add(
+                Sizes(
+                    menuModel?.name.toString(),
+                    "Stuffed crust M",
+                    menuModel?.image ?: "",
+                    menuModel?.stuffed_crust_M ?: "0",
+                    9
+                )
+            )
         }
         itemSizeAdapter = ItemSizeAdapter(this, sizes)
         binding.rvSizes.adapter = itemSizeAdapter
@@ -153,12 +219,14 @@ class FoodItemActivity : AppCompatActivity(), ItemSizeListener, ItemExtraListene
                 jsonObjectParent.addProperty("name", menuModel!!.name!!)
                 jsonObjectParent.addProperty("quantity", amount.toString())
                 jsonObjectParent.addProperty("size", nameSize)
+                jsonObjectParent.addProperty("image", menuModel?.image.toString())
                 val jsonArray = JsonArray();
                 for (extraItem in extraList) {
                     val jsonObjectChild = JsonObject();
                     jsonObjectChild.addProperty("name", extraItem.name)
                     jsonObjectChild.addProperty("price", extraItem.price)
                     jsonObjectChild.addProperty("size", extraItem.size)
+                    jsonObjectChild.addProperty("image", "")
                     jsonObjectChild.addProperty("quantity", "1")
                     jsonArray.add(jsonObjectChild)
                     jsonObjectParent.add("extra", jsonArray)
@@ -200,35 +268,6 @@ class FoodItemActivity : AppCompatActivity(), ItemSizeListener, ItemExtraListene
                         }
                     })
                 }
-
-                /*   withContext(Dispatchers.Main) {
-                        viewModel.getCart("Bearer " + "24|aMIY39ruNFCPti6NRDQhrRMaXPqLanywQqfr3QqT")
-                            .observe(this@FoodItemActivity) {
-                                it.enqueue(object : Callback<CartModelList> {
-                                    override fun onResponse(
-                                        call: Call<CartModelList>,
-                                        response: Response<CartModelList>
-                                    ) {
-                                        Toast.makeText(
-                                            this@FoodItemActivity,
-                                            response.body()!!.data.toString(),
-                                            Toast.LENGTH_LONG
-                                        ).show()
-                                    }
-
-                                    override fun onFailure(call: Call<CartModelList>, t: Throwable) {
-                                        Toast.makeText(
-                                            this@FoodItemActivity,
-                                            t.message,
-                                            Toast.LENGTH_LONG
-                                        )
-                                            .show()
-
-                                    }
-
-                                })
-                            }
-                    }*/
             }
 
 
@@ -253,40 +292,113 @@ class FoodItemActivity : AppCompatActivity(), ItemSizeListener, ItemExtraListene
     override fun onItemExtraListener(menuModel: MenuModel?) {
         val sizes: ArrayList<Sizes> = ArrayList();
         if (menuModel?.FB.toString() != "null") {
-            sizes.add(Sizes("FB", menuModel?.FB ?: "0", 0))
+            sizes.add(
+                Sizes(
+                    menuModel?.name.toString(),
+                    "FB",
+                    menuModel?.image ?: "",
+                    menuModel?.FB ?: "0",
+                    0
+                )
+            )
         }
         if (menuModel?.L.toString() != "null") {
-            sizes.add(Sizes("L", menuModel?.L ?: "0", 1))
+            sizes.add(
+                Sizes(
+                    menuModel?.name.toString(),
+                    "L",
+                    menuModel?.image ?: "",
+                    menuModel?.L ?: "0",
+                    1
+                )
+            )
         }
         if (menuModel?.M.toString() != "null") {
-            sizes.add(Sizes("M", menuModel?.M ?: "0", 2))
+            sizes.add(
+                Sizes(
+                    menuModel?.name.toString(),
+                    "M",
+                    menuModel?.image ?: "",
+                    menuModel?.M ?: "0",
+                    2
+                )
+            )
         }
         if (menuModel?.Slice.toString() != "null") {
-            sizes.add(Sizes("Slice", menuModel?.Slice ?: "0", 3))
+            sizes.add(
+                Sizes(
+                    menuModel?.name.toString(),
+                    "Slice",
+                    menuModel?.image ?: "",
+                    menuModel?.Slice ?: "0",
+                    3
+                )
+            )
         }
         if (menuModel?.XXL.toString() != "null") {
-            sizes.add(Sizes("XXL", menuModel?.XXL ?: "0", 4))
+            sizes.add(
+                Sizes(
+                    menuModel?.name.toString(),
+                    "XXL",
+                    menuModel?.image ?: "",
+                    menuModel?.XXL ?: "0",
+                    4
+                )
+            )
         }
         if (menuModel?.half_L.toString() != "null") {
-            sizes.add(Sizes("Half L", menuModel?.half_L ?: "0", 5))
+            sizes.add(
+                Sizes(
+                    menuModel?.name.toString(),
+                    "Half L",
+                    menuModel?.image ?: "",
+                    menuModel?.half_L ?: "0",
+                    5
+                )
+            )
         }
         if (menuModel?.half_stuffed_crust_L.toString() != "null") {
             sizes.add(
                 Sizes(
+                    menuModel?.name.toString(),
                     "Half stuffed crust L",
+                    menuModel?.image ?: "",
                     menuModel?.half_stuffed_crust_L ?: "0",
                     6
                 )
             )
         }
         if (menuModel?.quarter_XXL.toString() != "null") {
-            sizes.add(Sizes("Quarter XXL", menuModel?.quarter_XXL ?: "0", 7))
+            sizes.add(
+                Sizes(
+                    menuModel?.name.toString(),
+                    "Quarter XXL", menuModel?.image ?: "",
+                    menuModel?.quarter_XXL ?: "0",
+                    7
+                )
+            )
         }
         if (menuModel?.stuffed_crust_L.toString() != "null") {
-            sizes.add(Sizes("Stuffed crust L", menuModel?.stuffed_crust_L ?: "0", 8))
+            sizes.add(
+                Sizes(
+                    menuModel?.name.toString(),
+                    "Stuffed crust L",
+                    menuModel?.image ?: "",
+                    menuModel?.stuffed_crust_L ?: "0",
+                    8
+                )
+            )
         }
         if (menuModel?.stuffed_crust_M.toString() != "null") {
-            sizes.add(Sizes("Stuffed crust M", menuModel?.stuffed_crust_M ?: "0", 9))
+            sizes.add(
+                Sizes(
+                    menuModel?.name.toString(),
+                    "Stuffed crust M",
+                    menuModel?.image ?: "",
+                    menuModel?.stuffed_crust_M ?: "0",
+                    9
+                )
+            )
         }
         try {
             priceTotal = (this.sizePrice * amount).plus(sizePriceExtras.toDouble())
@@ -315,16 +427,22 @@ class FoodItemActivity : AppCompatActivity(), ItemSizeListener, ItemExtraListene
 
     }
 
-    override fun onItemSizeExtraListener(sizePriceExtra: String, sizeNameExtra: String) {
+    override fun onItemSizeExtraListener(
+        sizeSosTypeName: String,
+        sizePriceExtra: String,
+        sizeNameExtra: String,
+        image: String
+    ) {
         this.sizePriceExtras = sizePriceExtra;
         this.sizeNameExtra = sizeNameExtra;
         try {
             priceTotal = (this.sizePrice * amount).plus(sizePriceExtras.toDouble())
             binding.priceTotal.text = priceTotal.toString() + " ج.م "
-            extraList.add(Extra(sizeNameExtra, sizePriceExtra, "1", sizeNameExtra))
+            extraList.add(Extra(sizeSosTypeName, sizePriceExtra, image, "1", sizeNameExtra))
         } catch (e: NumberFormatException) {
             Log.e(TAG, "onItemSizeExtraListener btn: ${e.message}")
         }
     }
+
 
 }

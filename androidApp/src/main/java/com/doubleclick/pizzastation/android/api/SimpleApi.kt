@@ -47,6 +47,13 @@ interface SimpleApi {
     @GET("cart")
     fun getCart(@Header("Authorization") token: String): Call<CartModelList>
 
+    @Headers("Accept: application/json", "Content-Type: application/json")
+    @DELETE("cart/{id}")
+    fun deleteCartById(
+        @Header("Authorization") token: String,
+        @Path("id") id: String
+    ): Call<CardDeleteCallbackById>
+
     @Headers("Content-Type: application/json")
     @GET("offers")
     fun getOffers(): Call<OffersList>

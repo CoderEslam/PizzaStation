@@ -7,19 +7,35 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
+import androidx.lifecycle.ViewModelProvider
 import com.doubleclick.pizzastation.android.Adapter.CartAdapter
 import com.doubleclick.pizzastation.android.R
+import com.doubleclick.pizzastation.android.Repository.remot.RepositoryRemot
+import com.doubleclick.pizzastation.android.ViewModel.MainViewModel
+import com.doubleclick.pizzastation.android.ViewModel.MainViewModelFactory
 import com.doubleclick.pizzastation.android.databinding.FragmentCartBinding
-import com.doubleclick.pizzastation.android.model.Cart
+import com.doubleclick.pizzastation.android.model.CardDeleteCallbackById
+import com.doubleclick.pizzastation.android.model.CartModel
+import com.doubleclick.pizzastation.android.model.CartModelList
+import com.doubleclick.pizzastation.android.utils.SessionManger
 import com.doubleclick.pizzastation.android.views.swipetoactionlayout.SwipeAction
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class CartFragment : Fragment() {
 
     private lateinit var binding: FragmentCartBinding
-
-    private var count: Int = 0
-    lateinit var cart: MutableList<Cart>
+    private var carts: ArrayList<CartModel> = ArrayList();
     lateinit var cartAdapter: CartAdapter
+    private lateinit var viewModel: MainViewModel
+
+    private val TAG = "CartFragment"
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -29,43 +45,73 @@ class CartFragment : Fragment() {
         return binding.root
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        cart = mutableListOf(
-            Cart(1, "name"),
-            Cart(1, "name"),
-            Cart(1, "name"),
-            Cart(1, "name"),
-            Cart(1, "name"),
-            Cart(1, "name"),
-            Cart(1, "name"),
-            Cart(1, "name"),
-            Cart(1, "name"),
-            Cart(1, "name"),
-            Cart(1, "name"),
-            Cart(1, "name"),
-            Cart(1, "name"),
-            Cart(1, "name"),
-            Cart(1, "name"),
-            Cart(1, "name"),
-            Cart(1, "name"),
-            Cart(1, "name"),
-            Cart(1, "name"),
-            Cart(1, "name"),
-            Cart(1, "name"),
-            Cart(1, "name"),
-        )
-        cartAdapter = CartAdapter(cart, ::Counter, ::OnActionClicked)
-        binding.rvCart.adapter = cartAdapter
+        val viewModelFactory = MainViewModelFactory(RepositoryRemot())
+        viewModel = ViewModelProvider(this, viewModelFactory)[MainViewModel::class.java]
+        GlobalScope.launch(Dispatchers.Main) {
+            viewModel.getCart("Bearer " + SessionManger.getToken(requireActivity()))
+                .observe(requireActivity()) {
+                    it.enqueue(object : Callback<CartModelList> {
+                        override fun onResponse(
+                            call: Call<CartModelList>,
+                            response: Response<CartModelList>
+                        ) {
+                            carts.addAll(response.body()!!.data)
+                            cartAdapter =
+                                CartAdapter(carts, ::Counter, ::OnActionClicked)
+                            binding.rvCart.adapter = cartAdapter
+                        }
+
+                        override fun onFailure(call: Call<CartModelList>, t: Throwable) {
+                            Log.e(TAG, "onFailure: " + t.message)
+                        }
+
+                    })
+                }
+        }
+
     }
 
-    private fun OnActionClicked(contact: Cart, action: SwipeAction, pos: Int) {
+    @OptIn(DelicateCoroutinesApi::class)
+    private fun OnActionClicked(cartModel: CartModel, action: SwipeAction, pos: Int) {
         when (action.actionId) {
             R.id.delete -> {
-                Toast.makeText(requireActivity(), "deleted", Toast.LENGTH_LONG)
-                    .show()
-                cart.removeAt(pos);
-                cartAdapter.notifyItemRemoved(pos)
+                try {
+                    GlobalScope.launch(Dispatchers.Main) {
+                        viewModel.deleteCartById(
+                            "Bearer " + SessionManger.getToken(requireActivity()).toString(),
+                            cartModel.id.toString()
+                        ).observe(viewLifecycleOwner) {
+                            it.enqueue(object : Callback<CardDeleteCallbackById> {
+                                override fun onResponse(
+                                    call: Call<CardDeleteCallbackById>,
+                                    response: Response<CardDeleteCallbackById>
+                                ) {
+                                    carts.removeAt(pos);
+                                    Toast.makeText(
+                                        requireActivity(),
+                                        "" + response.body()?.message.toString(),
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                    cartAdapter.notifyItemRemoved(pos)
+                                }
+
+                                override fun onFailure(
+                                    call: Call<CardDeleteCallbackById>,
+                                    t: Throwable
+                                ) {
+
+                                }
+
+                            })
+                        }
+
+                    }
+                } catch (e: NullPointerException) {
+                    Log.d(TAG, "onResponseNullPointerException: ${e.message}")
+                }
             }
         }
     }

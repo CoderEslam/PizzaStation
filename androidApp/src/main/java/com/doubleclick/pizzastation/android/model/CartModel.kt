@@ -7,5 +7,6 @@ data class CartModel(
     val price: String,
     val quantity: String,
     val size: String,
-    val user_id: Int = -1
+    val user_id: Int = -1,
+    var count: Int = -1
 )

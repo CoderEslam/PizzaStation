@@ -79,8 +79,10 @@ class ItemExtraSizeAdapter(itemListener: ItemSizeExtraListener, sizes: ArrayList
         }
         holder.itemView.setOnClickListener {
             itemListener.onItemSizeExtraListener(
+                sizes[position].sizeSosTypeName,
                 sizes[position].sizePrice,
-                sizes[position].sizeName
+                sizes[position].sizeName,
+                sizes[position].image
             )
             lastCheckedPosition = sizes[position].id
             notifyItemRangeChanged(0, sizes.size)
