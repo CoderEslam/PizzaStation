@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="LiquidSwipeViewPager">
+        <attr name="scrollerDuration" format="integer" />
+    </declare-styleable>
+
+    <declare-styleable name="gradient">
+        <attr name="transition_drawable" format="enum" />
+        <attr name="transition_duration" format="integer" />
+    </declare-styleable>
+    <declare-styleable name="CurvedBottomNavigationView">
+        <attr name="cbn_selectedColor" format="color" />
+        <attr name="cbn_unSelectedColor" format="color" />
+        <attr name="cbn_animDuration" format="integer" />
+        <attr name="cbn_fabElevation" format="dimension" />
+        <attr name="cbn_elevation" format="dimension" />
+        <attr name="cbn_fabBg" format="color" />
+        <attr name="cbn_bg" format="color" />
+    </declare-styleable>
+
+    <declare-styleable name="SwipeToActionLayout">
+        <attr name="sal_gravity" format="enum">
+            <enum name="left" value="0" />
+            <enum name="right" value="1" />
+            <enum name="start" value="2" />
+            <enum name="end" value="3" />
+        </attr>
+        <attr name="sal_isFullActionSupported" format="boolean" />
+        <attr name="sal_shouldVibrateOnQuickAction" format="boolean" />
+
+        <attr name="sal_items" format="reference" />
+    </declare-styleable>
+
+    <declare-styleable name="SwipeActionItem">
+        <attr name="android:id" />
+        <attr name="android:title" />
+        <attr name="android:icon" />
+        <attr name="android:titleTextColor" format="color" />
+        <attr name="android:background" format="reference" />
+        <attr name="android:iconTint" format="color" />
+    </declare-styleable>
+
+    <!--    -->
+    <attr name="colorShadowLight" format="color" />
+    <attr name="colorShadowDark" format="color" />
+
+    <attr name="neumorph_backgroundColor" format="color" />
+    <attr name="neumorph_strokeColor" format="color" />
+    <attr name="neumorph_strokeWidth" format="dimension" />
+    <attr name="neumorph_lightSource" format="enum">
+        <enum name="leftTop" value="0" />
+        <enum name="leftBottom" value="1" />
+        <enum name="rightTop" value="2" />
+        <enum name="rightBottom" value="3" />
+    </attr>
+    <attr name="neumorph_shapeType" format="enum">
+        <enum name="flat" value="0" />
+        <enum name="pressed" value="1" />
+        <enum name="basin" value="2" />
+    </attr>
+    <attr name="neumorph_inset" format="dimension" />
+    <attr name="neumorph_insetStart" format="dimension" />
+    <attr name="neumorph_insetEnd" format="dimension" />
+    <attr name="neumorph_insetTop" format="dimension" />
+    <attr name="neumorph_insetBottom" format="dimension" />
+    <attr name="neumorph_shadowElevation" format="dimension" />
+    <attr name="neumorph_shadowColorLight" format="color" />
+    <attr name="neumorph_shadowColorDark" format="color" />
+    <attr name="neumorph_shapeAppearance" format="reference" />
+
+    <attr name="neumorphButtonStyle" format="reference" />
+    <declare-styleable name="NeumorphButton">
+        <attr name="neumorph_backgroundColor" />
+        <attr name="neumorph_strokeColor" />
+        <attr name="neumorph_strokeWidth" />
+        <attr name="neumorph_lightSource" />
+        <attr name="neumorph_shapeType" />
+        <attr name="neumorph_inset" />
+        <attr name="neumorph_insetStart" />
+        <attr name="neumorph_insetEnd" />
+        <attr name="neumorph_insetTop" />
+        <attr name="neumorph_insetBottom" />
+        <attr name="neumorph_shadowElevation" />
+        <attr name="neumorph_shadowColorLight" />
+        <attr name="neumorph_shadowColorDark" />
+        <attr name="neumorph_shapeAppearance" />
+    </declare-styleable>
+
+    <attr name="neumorphCardViewStyle" format="reference" />
+    <declare-styleable name="NeumorphCardView">
+        <attr name="neumorph_backgroundColor" />
+        <attr name="neumorph_strokeColor" />
+        <attr name="neumorph_strokeWidth" />
+        <attr name="neumorph_lightSource" />
+        <attr name="neumorph_shapeType" />
+        <attr name="neumorph_inset" />
+        <attr name="neumorph_insetStart" />
+        <attr name="neumorph_insetEnd" />
+        <attr name="neumorph_insetTop" />
+        <attr name="neumorph_insetBottom" />
+        <attr name="neumorph_shadowElevation" />
+        <attr name="neumorph_shadowColorLight" />
+        <attr name="neumorph_shadowColorDark" />
+        <attr name="neumorph_shapeAppearance" />
+    </declare-styleable>
+
+    <attr name="neumorphFloatingActionButtonStyle" format="reference" />
+    <declare-styleable name="NeumorphFloatingActionButton">
+        <attr name="neumorph_backgroundColor" />
+        <attr name="neumorph_strokeColor" />
+        <attr name="neumorph_strokeWidth" />
+        <attr name="neumorph_lightSource" />
+        <attr name="neumorph_shapeType" />
+        <attr name="neumorph_inset" />
+        <attr name="neumorph_insetStart" />
+        <attr name="neumorph_insetEnd" />
+        <attr name="neumorph_insetTop" />
+        <attr name="neumorph_insetBottom" />
+        <attr name="neumorph_shadowElevation" />
+        <attr name="neumorph_shadowColorLight" />
+        <attr name="neumorph_shadowColorDark" />
+        <attr name="neumorph_shapeAppearance" />
+    </declare-styleable>
+
+    <attr name="neumorphImageViewStyle" format="reference" />
+    <declare-styleable name="NeumorphImageView">
+        <attr name="neumorph_backgroundColor" />
+        <attr name="neumorph_strokeColor" />
+        <attr name="neumorph_strokeWidth" />
+        <attr name="neumorph_lightSource" />
+        <attr name="neumorph_shapeType" />
+        <attr name="neumorph_inset" />
+        <attr name="neumorph_insetStart" />
+        <attr name="neumorph_insetEnd" />
+        <attr name="neumorph_insetTop" />
+        <attr name="neumorph_insetBottom" />
+        <attr name="neumorph_shadowElevation" />
+        <attr name="neumorph_shadowColorLight" />
+        <attr name="neumorph_shadowColorDark" />
+        <attr name="neumorph_shapeAppearance" />
+    </declare-styleable>
+
+    <attr name="neumorphImageButtonStyle" format="reference" />
+    <declare-styleable name="NeumorphImageButton">
+        <attr name="neumorph_backgroundColor" />
+        <attr name="neumorph_strokeColor" />
+        <attr name="neumorph_strokeWidth" />
+        <attr name="neumorph_lightSource" />
+        <attr name="neumorph_shapeType" />
+        <attr name="neumorph_inset" />
+        <attr name="neumorph_insetStart" />
+        <attr name="neumorph_insetEnd" />
+        <attr name="neumorph_insetTop" />
+        <attr name="neumorph_insetBottom" />
+        <attr name="neumorph_shadowElevation" />
+        <attr name="neumorph_shadowColorLight" />
+        <attr name="neumorph_shadowColorDark" />
+        <attr name="neumorph_shapeAppearance" />
+    </declare-styleable>
+
+    <attr name="neumorphTextViewStyle" format="reference" />
+    <declare-styleable name="NeumorphTextView">
+        <attr name="neumorph_shadowElevation" />
+        <attr name="neumorph_shadowColorLight" />
+        <attr name="neumorph_shadowColorDark" />
+    </declare-styleable>
+
+    <declare-styleable name="NeumorphShape">
+        <attr name="neumorph_shapeAppearance" />
+    </declare-styleable>
+
+    <declare-styleable name="NeumorphShapeAppearance">
+        <attr name="neumorph_cornerSize" format="dimension" />
+        <attr name="neumorph_cornerSizeTopLeft" format="dimension" />
+        <attr name="neumorph_cornerSizeTopRight" format="dimension" />
+        <attr name="neumorph_cornerSizeBottomLeft" format="dimension" />
+        <attr name="neumorph_cornerSizeBottomRight" format="dimension" />
+        <attr name="neumorph_cornerFamily" format="enum">
+            <enum name="rounded" value="0" />
+            <enum name="oval" value="1" />
+        </attr>
+    </declare-styleable>
+
+    <!--    -->
+
+    <!--  Image Slider  -->
+    <declare-styleable name="ImageSlider">
+        <attr name="iss_auto_cycle" format="boolean" />
+        <attr name="iss_corner_radius" format="integer" />
+        <attr name="iss_period" format="integer" />
+        <attr name="iss_delay" format="integer" />
+        <attr name="iss_placeholder" format="reference" />
+        <attr name="iss_error_image" format="reference" />
+        <attr name="iss_selected_dot" format="reference" />
+        <attr name="iss_unselected_dot" format="reference" />
+        <attr name="iss_title_background" format="reference" />
+        <attr name="iss_text_align" format="string" />
+        <attr name="iss_indicator_align" format="string" />
+    </declare-styleable>
+
+
+    <!--    Shine button-->
+
+    <declare-styleable name="ShineButton">
+        <attr name="btn_color" format="color" />
+        <attr name="btn_fill_color" format="color" />
+        <attr name="shine_count" format="integer" />
+        <attr name="shine_turn_angle" format="float" />
+        <attr name="small_shine_offset_angle" format="float" />
+        <attr name="enable_flashing" format="boolean" />
+        <attr name="allow_random_color" format="boolean" />
+        <attr name="small_shine_color" format="color" />
+        <attr name="big_shine_color" format="color" />
+        <attr name="shine_animation_duration" format="integer" />
+        <attr name="click_animation_duration" format="integer" />
+        <attr name="shine_distance_multiple" format="float" />
+        <attr name="shine_size" format="dimension" />
+    </declare-styleable>
+    <declare-styleable name="PorterImageView">
+        <attr name="siShape" format="integer|reference" />
+    </declare-styleable>
+
+    <declare-styleable name="SimpleSearchView">
+        <attr name="backIconAlpha" format="float" />
+        <attr name="iconsAlpha" format="float" />
+
+        <attr name="backIconTint" format="color" />
+        <attr name="iconsTint" format="color" />
+
+        <attr name="cursorColor" format="color" />
+        <attr name="hintColor" format="color" />
+
+        <attr name="searchBackground" format="reference|color" />
+
+        <attr name="searchBackIcon" format="reference" />
+        <attr name="searchClearIcon" format="reference" />
+        <attr name="searchVoiceIcon" format="reference" />
+
+        <attr name="voiceSearch" format="boolean" />
+
+        <attr name="voiceSearchPrompt" format="string" />
+
+        <attr name="android:hint" format="string" />
+        <attr name="android:inputType" />
+        <attr name="android:textColor" format="color" />
+
+        <attr name="type" format="enum">
+            <enum name="bar" value="0" />
+            <enum name="card" value="1" />
+        </attr>
+    </declare-styleable>
+
+    <declare-styleable name="FlowLayout">
+        <attr name="tbgFlow" format="boolean" />
+        <attr name="tbgChildSpacing" format="enum|dimension">
+            <enum name="auto" value="-65536" />
+        </attr>
+        <attr name="tbgChildSpacingForLastRow" format="enum|dimension">
+            <enum name="auto" value="-65536" />
+            <enum name="align" value="-65537" />
+        </attr>
+        <attr name="tbgRowSpacing" format="enum|dimension">
+            <enum name="auto" value="-65536" />
+        </attr>
+        <attr name="tbgRtl" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="ToggleButtonGroup">
+        <attr name="android:checkedButton" />
+        <attr name="tbgCheckedButton" format="reference" />
+    </declare-styleable>
+
+    <declare-styleable name="MultiSelectToggleGroup">
+        <attr name="tbgMaxSelect" format="integer" />
+    </declare-styleable>
+
+    <declare-styleable name="MarkerButton">
+        <attr name="android:text" />
+        <attr name="android:textColor" />
+        <attr name="android:textSize" />
+        <attr name="tbgMarkerColor" format="color" />
+        <attr name="tbgRadioStyle" format="boolean" />
+    </declare-styleable>
+
+    <attr name="superBottomSheet_dim" format="float" />
+    <attr name="superBottomSheet_backgroundColor" format="color" />
+    <attr name="superBottomSheet_cornerRadius" format="dimension" />
+    <attr name="superBottomSheet_statusBarColor" format="color" />
+    <attr name="superBottomSheet_peekHeight" format="dimension" />
+
+    <!-- UX ATTRIBUTES -->
+    <attr name="superBottomSheet_animateCornerRadius" format="boolean" />
+    <attr name="superBottomSheet_animateStatusBar" format="boolean" />
+    <attr name="superBottomSheet_alwaysExpanded" format="boolean" />
+    <attr name="superBottomSheet_cancelableOnTouchOutside" format="boolean" />
+    <attr name="superBottomSheet_cancelable" format="boolean" />
+    <attr name="superBottomSheet_expandedHeight" format="enum">
+        <enum name="match_parent" value="-1" />
+        <enum name="wrap_content" value="-2" />
+    </attr>
+</resources>

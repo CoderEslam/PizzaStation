@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "151047870654",
+    "project_id": "foodresturent-83a1b",
+    "storage_bucket": "foodresturent-83a1b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:151047870654:android:c9a6d94e5f95625bbc66ef",
+        "android_client_info": {
+          "package_name": "com.doubleclick.pizzastation.android"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "151047870654-6g5vl4c4ckq347r0d7knmkhs1fl3adh0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDlqM1XylMwARt383coX4OX-ke6XTn29Nc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "151047870654-6g5vl4c4ckq347r0d7knmkhs1fl3adh0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

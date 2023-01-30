@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.doubleclick.pizzastation.android.views.neumorph.NeumorphImageView
+        android:id="@+id/iv_bg"
+        style="@style/ShapeAppearance.Neumorph.ImageView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="invisible"
+        tools:src="@drawable/bg_label_checked" />
+
+    <TextView
+        android:id="@+id/tv_text"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:background="@drawable/bg_label_unchecked"
+        android:gravity="center"
+        android:minHeight="36dp"
+        tools:text="MON" />
+
+</merge>
