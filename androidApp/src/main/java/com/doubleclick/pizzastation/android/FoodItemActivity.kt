@@ -1,5 +1,6 @@
 package com.doubleclick.pizzastation.android
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -162,9 +163,8 @@ class FoodItemActivity : AppCompatActivity(), ItemSizeListener, ItemExtraListene
                     jsonArray.add(jsonObjectChild)
                     jsonObjectParent.add("extra", jsonArray)
                 }
-                Log.e("jsonObjectParent", "onCreate: " + jsonObjectParent)
                 viewModel.setCart(
-                    "Bearer " + "24|aMIY39ruNFCPti6NRDQhrRMaXPqLanywQqfr3QqT",
+                    "Bearer " + SessionManger.getToken(this@FoodItemActivity),
                     jsonObjectParent
                 ).observe(this@FoodItemActivity) {
                     it.enqueue(object : Callback<CartCallback> {
@@ -174,9 +174,21 @@ class FoodItemActivity : AppCompatActivity(), ItemSizeListener, ItemExtraListene
                         ) {
                             Toast.makeText(
                                 this@FoodItemActivity,
-                                "Response = " + response.body().toString(),
+                                "Response = " + response.body()!!.message.toString(),
                                 Toast.LENGTH_LONG
                             ).show()
+                            GlobalScope.launch(Dispatchers.Main) {
+                                binding.animationView.visibility = View.VISIBLE
+                                delay(2000)
+                                startActivity(
+                                    Intent(
+                                        this@FoodItemActivity,
+                                        HomeActivity::class.java
+                                    )
+                                )
+                                finish()
+                            }
+
                         }
 
                         override fun onFailure(call: Call<CartCallback>, t: Throwable) {
