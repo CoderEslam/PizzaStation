@@ -40,7 +40,7 @@ interface SimpleApi {
     @POST("cart")
     fun setCart(
         @Header("Authorization") token: String,
-        @Body cardModel: JSONObject
+        @Body cardModel: JsonObject
     ): Call<CartCallback>
 
     @Headers("Accept: application/json", "Content-Type: application/json")

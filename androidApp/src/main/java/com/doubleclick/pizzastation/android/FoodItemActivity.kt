@@ -148,6 +148,10 @@ class FoodItemActivity : AppCompatActivity(), ItemSizeListener, ItemExtraListene
         binding.addToCard.setOnClickListener {
             GlobalScope.launch(Dispatchers.Main) {
                 val jsonObjectParent = JsonObject();
+                jsonObjectParent.addProperty("price", priceTotal.toString())
+                jsonObjectParent.addProperty("name", menuModel!!.name!!)
+                jsonObjectParent.addProperty("quantity", amount.toString())
+                jsonObjectParent.addProperty("size", nameSize)
                 val jsonArray = JsonArray();
                 for (extraItem in extraList) {
                     val jsonObjectChild = JsonObject();
@@ -158,43 +162,10 @@ class FoodItemActivity : AppCompatActivity(), ItemSizeListener, ItemExtraListene
                     jsonArray.add(jsonObjectChild)
                     jsonObjectParent.add("extra", jsonArray)
                 }
-                jsonObjectParent.addProperty("price", priceTotal.toString())
-                jsonObjectParent.addProperty("name", menuModel!!.name!!)
-                jsonObjectParent.addProperty("quantity", amount.toString())
-                jsonObjectParent.addProperty("size", nameSize)
-                val j = JSONObject(
-                    "{\n" +
-                            "    \"name\": \"100dsg3\",\n" +
-                            "    \"size\": \"120\",\n" +
-                            "    \"price\": \"904\",\n" +
-                            "    \"quantity\": \"testr\",\n" +
-                            "    \"extra\":\n" +
-                            "    [\n" +
-                            "        {\n" +
-                            "            \"name\":\"item_name2\",\n" +
-                            "            \"price\":\"price2\",\n" +
-                            "            \"size\":\"size2\",\n" +
-                            "            \"quantity\":\"quantity2\"\n" +
-                            "        },\n" +
-                            "        {\n" +
-                            "            \"name\":\"item_name3\",\n" +
-                            "            \"price\":\"price3\",\n" +
-                            "            \"size\":\"size3\",\n" +
-                            "            \"quantity\":\"quantity3\"\n" +
-                            "        },\n" +
-                            "        {\n" +
-                            "            \"name\":\"item_name1\",\n" +
-                            "            \"price\":\"price1\",\n" +
-                            "            \"size\":\"size1\",\n" +
-                            "            \"quantity\":\"quantity1\"\n" +
-                            "        }\n" +
-                            "    ]\n" +
-                            "}"
-                )
-                Log.e("jsonObjectParent", "onCreate: " + j)
+                Log.e("jsonObjectParent", "onCreate: " + jsonObjectParent)
                 viewModel.setCart(
                     "Bearer " + "24|aMIY39ruNFCPti6NRDQhrRMaXPqLanywQqfr3QqT",
-                    j
+                    jsonObjectParent
                 ).observe(this@FoodItemActivity) {
                     it.enqueue(object : Callback<CartCallback> {
                         override fun onResponse(
@@ -215,7 +186,6 @@ class FoodItemActivity : AppCompatActivity(), ItemSizeListener, ItemExtraListene
                                 Toast.LENGTH_LONG
                             ).show()
                         }
-
                     })
                 }
 

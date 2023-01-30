@@ -66,7 +66,7 @@ class MainViewModel(private val repository: RepositoryRemot) : ViewModel() {
         return cardGetMutableLiveData;
     }
 
-    fun setCart(token: String, cardModel: JSONObject): LiveData<Call<CartCallback>> {
+    fun setCart(token: String, cardModel: JsonObject): LiveData<Call<CartCallback>> {
         cardSetMutableLiveData.value = repository.setCart(token, cardModel);
         return cardSetMutableLiveData;
     }
