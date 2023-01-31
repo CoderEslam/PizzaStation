@@ -9,10 +9,15 @@ import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.doubleclick.pizzastation.android.R
+import com.doubleclick.pizzastation.android.`interface`.ExtraDeleteListener
 import com.doubleclick.pizzastation.android.model.Extra
 
 
-class ItemExtraAdapter(private val extra: List<Extra>) :
+class ItemExtraAdapter(
+    private val extra: List<Extra>,
+    private val extraDeleteListener: ExtraDeleteListener,
+    private val pos: Int
+) :
     RecyclerView.Adapter<ItemExtraAdapter.ItemExtraViewHolder>() {
 
 
@@ -26,7 +31,7 @@ class ItemExtraAdapter(private val extra: List<Extra>) :
         holder.name_extra.text = extra[position].name
         holder.size_extra.text = extra[position].size
         holder.delete_item_extra.setOnClickListener {
-            Toast.makeText(holder.itemView.context, "done", Toast.LENGTH_LONG).show()
+            extraDeleteListener.onExtraDeleteListener(position, extra[position], pos)
         }
     }
 

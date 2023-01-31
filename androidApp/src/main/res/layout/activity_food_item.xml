@@ -130,6 +130,36 @@
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
 
+
+                <ImageView
+                    android:id="@+id/imageView"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginEnd="24dp"
+                    android:background="@drawable/bg_alpha_white"
+                    android:elevation="10dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="1.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+
+                <com.doubleclick.pizzastation.android.views.shinebutton.ShineButton
+                    android:id="@+id/favorite"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_centerInParent="true"
+                    android:elevation="10dp"
+                    app:btn_color="@android:color/white"
+                    app:btn_fill_color="@color/quantum_yellow500"
+                    app:layout_constraintBottom_toBottomOf="@+id/imageView"
+                    app:layout_constraintEnd_toEndOf="@+id/imageView"
+                    app:layout_constraintStart_toStartOf="@+id/imageView"
+                    app:layout_constraintTop_toTopOf="@+id/imageView"
+                    app:siShape="@drawable/heart" />
+
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
 
@@ -173,24 +203,6 @@
                                 android:orientation="horizontal"
                                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                                 tools:listitem="@layout/item_size" />
-                            <!--                            <com.doubleclick.pizzastation.android.views.togglebuttongroup.SingleSelectToggleGroup-->
-                            <!--                                android:id="@+id/sizesSingleSelectToggleGroup"-->
-                            <!--                                android:layout_width="match_parent"-->
-                            <!--                                android:layout_height="80dp"-->
-                            <!--                                android:orientation="horizontal"-->
-                            <!--                                android:paddingLeft="20dp"-->
-                            <!--                                android:paddingRight="20dp"-->
-                            <!--                                app:layout_constraintEnd_toEndOf="parent"-->
-                            <!--                                app:layout_constraintStart_toStartOf="parent"-->
-                            <!--                                app:layout_constraintTop_toBottomOf="@+id/cardView3"-->
-                            <!--                                app:tbgChildSpacing="auto"-->
-                            <!--                                app:tbgChildSpacingForLastRow="align"-->
-                            <!--                                app:tbgFlow="true"-->
-                            <!--                                app:tbgRowSpacing="8dp">-->
-
-
-                            <!--                            </com.doubleclick.pizzastation.android.views.togglebuttongroup.SingleSelectToggleGroup>-->
-
                         </LinearLayout>
 
                     </androidx.core.widget.NestedScrollView>

@@ -52,7 +52,9 @@ class HomeFragment : Fragment(), itemListener, OpenSearchView {
                     call: Call<CategoryList>,
                     response: Response<CategoryList>
                 ) {
-                    loadMenu(response.body()!!.data);
+                    try {
+                        loadMenu(response.body()!!.data);
+                    }catch (e:NullPointerException){}
                 }
 
                 override fun onFailure(call: Call<CategoryList>, t: Throwable) {

@@ -45,7 +45,7 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun buttonNavigation(savedInstanceState: Bundle?) {
-        val activeIndex = savedInstanceState?.getInt("activeIndex") ?: 2
+        val activeIndex = savedInstanceState?.getInt("activeIndex") ?: 0
         val navController = findNavController(R.id.nav_home_fragment)
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
@@ -61,21 +61,20 @@ class HomeActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         val menuItems = arrayOf(
             CbnMenuItem(
-                R.drawable.favorite,
-                R.drawable.favorite,
-                R.id.navigation_favorite
-            ),
-            CbnMenuItem(
-                R.drawable.ic_map_fill,
-                R.drawable.ic_map_fill,
-                R.id.navigation_location
-            ),
-            CbnMenuItem(
                 R.drawable.home,
                 R.drawable.home,
                 R.id.navigation_home
             ),
-
+            CbnMenuItem(
+                R.drawable.favorite,
+                R.drawable.favorite,
+                R.id.navigation_favorite
+            ),
+            /*CbnMenuItem(
+                R.drawable.ic_map_fill,
+                R.drawable.ic_map_fill,
+                R.id.navigation_location
+            ),*/
             CbnMenuItem(
                 R.drawable.shopping_cart,
                 R.drawable.shopping_cart,

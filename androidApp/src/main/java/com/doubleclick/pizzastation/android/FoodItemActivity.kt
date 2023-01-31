@@ -226,50 +226,51 @@ class FoodItemActivity : AppCompatActivity(), ItemSizeListener, ItemExtraListene
                     jsonObjectChild.addProperty("name", extraItem.name)
                     jsonObjectChild.addProperty("price", extraItem.price)
                     jsonObjectChild.addProperty("size", extraItem.size)
-                    jsonObjectChild.addProperty("image", "")
+                    jsonObjectChild.addProperty("image", extraItem.image)
                     jsonObjectChild.addProperty("quantity", "1")
                     jsonArray.add(jsonObjectChild)
                     jsonObjectParent.add("extra", jsonArray)
                 }
-                viewModel.setCart(
-                    "Bearer " + SessionManger.getToken(this@FoodItemActivity),
-                    jsonObjectParent
-                ).observe(this@FoodItemActivity) {
-                    it.enqueue(object : Callback<CartCallback> {
-                        override fun onResponse(
-                            call: Call<CartCallback>,
-                            response: Response<CartCallback>
-                        ) {
-                            Toast.makeText(
-                                this@FoodItemActivity,
-                                "Response = " + response.body()!!.message.toString(),
-                                Toast.LENGTH_LONG
-                            ).show()
-                            GlobalScope.launch(Dispatchers.Main) {
-                                binding.animationView.visibility = View.VISIBLE
-                                binding.addToCard.isEnabled = false
-                                binding.tvAddToCard.setTextColor(resources.getColor(R.color.grey_600))
-                                delay(2000)
-                                startActivity(
-                                    Intent(
-                                        this@FoodItemActivity,
-                                        HomeActivity::class.java
-                                    )
-                                )
-                                finish()
-                            }
+                Log.e(TAG, "onCreate: ${jsonObjectParent.toString()}")
+                /* viewModel.setCart(
+                     "Bearer " + SessionManger.getToken(this@FoodItemActivity),
+                     jsonObjectParent
+                 ).observe(this@FoodItemActivity) {
+                     it.enqueue(object : Callback<CartCallback> {
+                         override fun onResponse(
+                             call: Call<CartCallback>,
+                             response: Response<CartCallback>
+                         ) {
+                             Toast.makeText(
+                                 this@FoodItemActivity,
+                                 "Response = " + response.body()!!.message.toString(),
+                                 Toast.LENGTH_LONG
+                             ).show()
+                             GlobalScope.launch(Dispatchers.Main) {
+                                 binding.animationView.visibility = View.VISIBLE
+                                 binding.addToCard.isEnabled = false
+                                 binding.tvAddToCard.setTextColor(resources.getColor(R.color.grey_600))
+                                 delay(1000)
+                                 startActivity(
+                                     Intent(
+                                         this@FoodItemActivity,
+                                         HomeActivity::class.java
+                                     )
+                                 )
+                                 finish()
+                             }
 
-                        }
+                         }
 
-                        override fun onFailure(call: Call<CartCallback>, t: Throwable) {
-                            Toast.makeText(
-                                this@FoodItemActivity,
-                                "Error " + t.message,
-                                Toast.LENGTH_LONG
-                            ).show()
-                        }
-                    })
-                }
+                         override fun onFailure(call: Call<CartCallback>, t: Throwable) {
+                             Toast.makeText(
+                                 this@FoodItemActivity,
+                                 "Error " + t.message,
+                                 Toast.LENGTH_LONG
+                             ).show()
+                         }
+                     })
+                 }*/
             }
 
 

@@ -12,15 +12,16 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.doubleclick.pizzastation.android.Adapter.CartAdapter
+import com.doubleclick.pizzastation.android.Home.BottomSheetFragment
+import com.doubleclick.pizzastation.android.Home.BottomSheetNotesFragment
 import com.doubleclick.pizzastation.android.R
 import com.doubleclick.pizzastation.android.Repository.remot.RepositoryRemot
 import com.doubleclick.pizzastation.android.ViewModel.MainViewModel
 import com.doubleclick.pizzastation.android.ViewModel.MainViewModelFactory
+import com.doubleclick.pizzastation.android.`interface`.ExtraDeleteListener
+import com.doubleclick.pizzastation.android.`interface`.SendNotes
 import com.doubleclick.pizzastation.android.databinding.FragmentCartBinding
-import com.doubleclick.pizzastation.android.model.CardDeleteCallbackById
-import com.doubleclick.pizzastation.android.model.CartModel
-import com.doubleclick.pizzastation.android.model.CartModelList
-import com.doubleclick.pizzastation.android.model.OrderModelList
+import com.doubleclick.pizzastation.android.model.*
 import com.doubleclick.pizzastation.android.utils.SessionManger
 import com.doubleclick.pizzastation.android.views.swipetoactionlayout.SwipeAction
 import com.google.gson.JsonArray
@@ -33,13 +34,15 @@ import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.ByteArrayOutputStream
 
-class CartFragment : Fragment() {
+class CartFragment : Fragment(), ExtraDeleteListener, SendNotes {
 
     private lateinit var binding: FragmentCartBinding
     private var carts: ArrayList<CartModel> = ArrayList();
     lateinit var cartAdapter: CartAdapter
     private lateinit var viewModel: MainViewModel
+    private var notes: String = ""
 
     private val TAG = "CartFragment"
     override fun onCreateView(
@@ -66,7 +69,7 @@ class CartFragment : Fragment() {
                         ) {
                             carts.addAll(response.body()!!.data)
                             cartAdapter =
-                                CartAdapter(carts, ::Counter, ::OnActionClicked)
+                                CartAdapter(carts, ::Counter, ::OnActionClicked, this@CartFragment)
                             binding.rvCart.adapter = cartAdapter
                         }
 
@@ -78,15 +81,21 @@ class CartFragment : Fragment() {
                 }
         }
         binding.orderComplete.setOnClickListener {
+            val sheet = BottomSheetNotesFragment(this@CartFragment)
+            sheet.show(
+                requireActivity().supportFragmentManager,
+                "BottomSheetNotesFragment"
+            )
             val parentJsonObject = JsonObject();
             parentJsonObject.addProperty("total", "100")
             parentJsonObject.addProperty("delivery", "120")
             parentJsonObject.addProperty("amount", "25")
             parentJsonObject.addProperty("status", "mobile_app")
-            parentJsonObject.addProperty("notes", "test")
+            parentJsonObject.addProperty("notes", notes)
             parentJsonObject.addProperty("area_id", "1")
             parentJsonObject.addProperty("branch_id", "1")
             val jsonArrayChildItems = JsonArray();
+            val os = ByteArrayOutputStream()
             for (cart in carts) {
                 val jsonObjectItemsChild = JsonObject();
                 jsonObjectItemsChild.addProperty("name", cart.name)
@@ -94,46 +103,54 @@ class CartFragment : Fragment() {
                 jsonObjectItemsChild.addProperty("size", cart.size)
                 jsonObjectItemsChild.addProperty("quantity", cart.quantity)
                 val jsonArrayChildExtras = JsonArray();
-                for (extra in cart.extra) {
-                    val jsonObjectChildExtra = JsonObject();
-                    jsonObjectChildExtra.addProperty("name", extra.name)
-                    jsonObjectChildExtra.addProperty("price", extra.price)
-                    jsonObjectChildExtra.addProperty("size", extra.size)
-                    jsonObjectChildExtra.addProperty("quantity", extra.quantity)
-                    jsonArrayChildExtras.add(jsonObjectChildExtra)
-                    jsonObjectItemsChild.add("extra", jsonArrayChildExtras)
+                try {
+                    if (cart.extra?.isNotEmpty() == true) {
+                        for (extra in cart.extra) {
+                            val jsonObjectChildExtra = JsonObject();
+                            jsonObjectChildExtra.addProperty("name", extra.name)
+                            jsonObjectChildExtra.addProperty("price", extra.price)
+                            jsonObjectChildExtra.addProperty("size", extra.size)
+                            jsonObjectChildExtra.addProperty("quantity", extra.quantity)
+                            jsonArrayChildExtras.add(jsonObjectChildExtra)
+                            jsonObjectItemsChild.add("extra", jsonArrayChildExtras)
+                        }
+                    } else {
+
+                    }
+                    jsonArrayChildItems.add(jsonObjectItemsChild);
+                } catch (e: NullPointerException) {
+                    Log.e(TAG, "onViewCreated: ${e.message}")
                 }
-                jsonArrayChildItems.add(jsonObjectItemsChild);
             }
             parentJsonObject.add("items", jsonArrayChildItems);
             Log.d(TAG, "onViewCreated: $parentJsonObject")
-            viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
-                viewModel.setOrderComplete(
-                    "Bearer " + SessionManger.getToken(requireActivity()).toString(),
-                    parentJsonObject
-                ).observe(viewLifecycleOwner) {
-                    it.enqueue(object : Callback<OrderModelList> {
-                        override fun onResponse(
-                            call: Call<OrderModelList>,
-                            response: Response<OrderModelList>
-                        ) {
-                            Toast.makeText(
-                                requireActivity(),
-                                response.body().toString(),
-                                Toast.LENGTH_LONG
-                            ).show()
-                        }
+            /* viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
+                 viewModel.setOrderComplete(
+                     "Bearer " + SessionManger.getToken(requireActivity()).toString(),
+                     parentJsonObject
+                 ).observe(viewLifecycleOwner) {
+                     it.enqueue(object : Callback<OrderModelList> {
+                         override fun onResponse(
+                             call: Call<OrderModelList>,
+                             response: Response<OrderModelList>
+                         ) {
+                             Toast.makeText(
+                                 requireActivity(),
+                                 response.body()!!.message.toString(),
+                                 Toast.LENGTH_LONG
+                             ).show()
+                         }
 
-                        override fun onFailure(call: Call<OrderModelList>, t: Throwable) {
-                            Toast.makeText(
-                                requireActivity(),
-                                t.message,
-                                Toast.LENGTH_LONG
-                            ).show()
-                        }
-                    })
-                }
-            }
+                         override fun onFailure(call: Call<OrderModelList>, t: Throwable) {
+                             Toast.makeText(
+                                 requireActivity(),
+                                 t.message,
+                                 Toast.LENGTH_LONG
+                             ).show()
+                         }
+                     })
+                 }
+             }*/
         }
     }
 
@@ -201,6 +218,17 @@ class CartFragment : Fragment() {
 
     private fun Counter(input: Int) {
         Log.e("TAG", "Counter: $input")
+    }
+
+    override fun onExtraDeleteListener(pos: Int, extra: Extra, posParent: Int) {
+        carts[posParent].extra?.removeAt(pos)
+        cartAdapter.notifyItemRangeChanged(0, carts.size);
+        Log.e(TAG, "onExtraDeleteListener: ${extra.name}   -  $posParent")
+    }
+
+    override fun onTextNote(text: String) {
+        notes = text;
+        Toast.makeText(requireActivity(), text, Toast.LENGTH_LONG).show()
     }
 
 

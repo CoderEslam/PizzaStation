@@ -7,13 +7,18 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.doubleclick.pizzastation.android.R
+import com.doubleclick.pizzastation.android.`interface`.ExtraDeleteListener
 import com.doubleclick.pizzastation.android.model.Cart
 import com.doubleclick.pizzastation.android.model.CartModel
+import com.doubleclick.pizzastation.android.utils.Constants
+import com.doubleclick.pizzastation.android.utils.Constants.IMAGE_URL
 import com.doubleclick.pizzastation.android.views.swipetoactionlayout.ActionBindHelper
 import com.doubleclick.pizzastation.android.views.swipetoactionlayout.SwipeAction
 import com.doubleclick.pizzastation.android.views.swipetoactionlayout.SwipeMenuListener
 import com.doubleclick.pizzastation.android.views.swipetoactionlayout.SwipeToActionLayout
+import de.hdodenhof.circleimageview.CircleImageView
 
 /**
  * Created By Eslam Ghazy on 1/3/2023
@@ -27,7 +32,8 @@ typealias Block = (input: Int) -> Unit
 class CartAdapter(
     private val carts: List<CartModel>,
     private val block: Block,
-    private val actionClicked: OnActionClicked
+    private val actionClicked: OnActionClicked,
+    private val extraDeleteListener: ExtraDeleteListener
 ) :
     RecyclerView.Adapter<CartAdapter.CartViewHolder>() {
 
@@ -48,7 +54,8 @@ class CartAdapter(
         actionsBindHelper.bind("", holder.swipeToActionLayout)
         holder.bind()
         try {
-            holder.rv_item_extra_cart.adapter = ItemExtraAdapter(carts[position].extra);
+            holder.rv_item_extra_cart.adapter =
+                carts[position].extra?.let { ItemExtraAdapter(it, extraDeleteListener, position) };
         } catch (e: NullPointerException) {
             Log.e(TAG, "onBindViewHolder: ${e.message}")
         }
@@ -63,6 +70,10 @@ class CartAdapter(
             holder.count.text = carts[position].count.toString()
             notifyItemChanged(position)
         }
+        Glide.with(holder.itemView.context).load(IMAGE_URL + carts[position].image)
+            .into(holder.image_item)
+        holder.name_item.text = carts[position].name
+        holder.price_total.text = carts[position].price
         block(carts[position].count)
     }
 
@@ -76,6 +87,9 @@ class CartAdapter(
         var add: ImageView = itemView.findViewById(R.id.add)
         var mins: ImageView = itemView.findViewById(R.id.mins)
         var count: TextView = itemView.findViewById(R.id.count)
+        var image_item: CircleImageView = itemView.findViewById(R.id.image_item)
+        var name_item: TextView = itemView.findViewById(R.id.name_item)
+        var price_total: TextView = itemView.findViewById(R.id.price_total)
         var rv_item_extra_cart: RecyclerView = itemView.findViewById(R.id.rv_item_extra_cart)
         val swipeToActionLayout: SwipeToActionLayout =
             itemView.findViewById(R.id.swipe_to_action_layout)
