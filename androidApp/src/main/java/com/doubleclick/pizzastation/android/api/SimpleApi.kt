@@ -2,7 +2,6 @@ package com.doubleclick.pizzastation.android.api
 
 import com.doubleclick.pizzastation.android.model.*
 import com.google.gson.JsonObject
-import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -59,7 +58,7 @@ interface SimpleApi {
     fun deleteCartById(
         @Header("Authorization") token: String,
         @Path("id") id: String
-    ): Call<CardDeleteCallbackById>
+    ): Call<MessageCallback>
 
     @Headers("Content-Type: application/json")
     @GET("offers")
@@ -69,5 +68,15 @@ interface SimpleApi {
     @GET("menu/Extra/filter")
     fun getExtraFilters(): Call<MenuList>
 
+    @Headers("Accept: application/json", "Content-Type: application/json")
+    @POST("favorite")
+    fun setFavorite(
+        @Header("Authorization") token: String,
+        @Body menu_id: String
+    ): Call<MessageCallback>
+
+    @Headers("Accept: application/json", "Content-Type: application/json")
+    @GET("favorite")
+    fun getFavorite(@Header("Authorization") token: String): Call<FavoriteModelList>
 
 }

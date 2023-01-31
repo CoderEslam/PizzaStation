@@ -54,7 +54,8 @@ class HomeFragment : Fragment(), itemListener, OpenSearchView {
                 ) {
                     try {
                         loadMenu(response.body()!!.data);
-                    }catch (e:NullPointerException){}
+                    } catch (e: NullPointerException) {
+                    }
                 }
 
                 override fun onFailure(call: Call<CategoryList>, t: Throwable) {
@@ -129,9 +130,8 @@ class HomeFragment : Fragment(), itemListener, OpenSearchView {
     }
 
 
-    override fun isOpenSearchView(isSearch: Boolean): Boolean {
+    override fun isOpenSearchView(isSearch: Boolean) {
         this.isSearch = isSearch
-        return isSearch;
     }
 
     override fun mListener(postion: String) {

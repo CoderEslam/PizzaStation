@@ -48,7 +48,9 @@ class FoodItemActivity : AppCompatActivity(), ItemSizeListener, ItemExtraListene
     private var sizeNameExtra: String = ""
     private val TAG = "FoodItemActivity"
     private val extraList: ArrayList<Extra> = ArrayList()
+    private val favoriteModelList: ArrayList<FavoriteModelList> = ArrayList()
     private lateinit var viewModel: MainViewModel
+    private var isFavorite: Boolean = false
 
     private lateinit var itemSizeAdapter: ItemSizeAdapter
 
@@ -210,6 +212,59 @@ class FoodItemActivity : AppCompatActivity(), ItemSizeListener, ItemExtraListene
                 Log.e(TAG, "mins btn: ${e.message}")
             }
 
+        }
+
+        GlobalScope.launch(Dispatchers.Main) {
+            viewModel.getFavorite("Bearer " + SessionManger.getToken(this@FoodItemActivity))
+                .observe(this@FoodItemActivity) {
+                    it.enqueue(object : Callback<FavoriteModelList> {
+                        override fun onResponse(
+                            call: Call<FavoriteModelList>,
+                            response: Response<FavoriteModelList>
+                        ) {
+                            favoriteModelList.addAll(listOf(response.body()!!))
+                            for (id in response.body()!!.data) {
+                                if (id.menu.id == menuModel?.id) {
+                                    binding.favorite.setChecked(true)
+                                    isFavorite = true;
+                                    return
+                                }
+                            }
+                            Log.i(TAG, "onResponse: ${response.body().toString()}")
+                        }
+
+                        override fun onFailure(call: Call<FavoriteModelList>, t: Throwable) {
+
+                        }
+
+                    });
+                }
+        }
+
+        binding.favorite.setOnClickListener {
+            if (!isFavorite) {
+                GlobalScope.launch(Dispatchers.Main) {
+                    Log.i(TAG, "onCreate: " + SessionManger.getToken(this@FoodItemActivity))
+                    viewModel.setFavorite(
+                        "Bearer " + SessionManger.getToken(this@FoodItemActivity),
+                        menuModel?.id.toString()
+                    ).observe(this@FoodItemActivity) {
+                        it.enqueue(object : Callback<MessageCallback> {
+                            override fun onResponse(
+                                call: Call<MessageCallback>,
+                                response: Response<MessageCallback>
+                            ) {
+                                Log.i(TAG, "onResponse: ${response.body()?.message.toString()}")
+                            }
+
+                            override fun onFailure(call: Call<MessageCallback>, t: Throwable) {
+
+                            }
+
+                        })
+                    }
+                }
+            }
         }
 
         binding.addToCard.setOnClickListener {

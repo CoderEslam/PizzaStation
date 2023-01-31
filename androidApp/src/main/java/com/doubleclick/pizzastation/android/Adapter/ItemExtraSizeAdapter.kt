@@ -55,7 +55,7 @@ class ItemExtraSizeAdapter(itemListener: ItemSizeExtraListener, sizes: ArrayList
         if (sizes[position].id == lastCheckedPosition) {
             holder.tv_size.setTextColor(
                 holder.itemView.context.resources.getColor(
-                    R.color.white
+                    R.color.yellow
                 )
             )
             holder.card
@@ -73,7 +73,7 @@ class ItemExtraSizeAdapter(itemListener: ItemSizeExtraListener, sizes: ArrayList
 
             holder.tv_size.setTextColor(
                 holder.itemView.context.resources.getColor(
-                    R.color.black
+                    R.color.white
                 )
             )
         }

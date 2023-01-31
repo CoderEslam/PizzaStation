@@ -1,6 +1,5 @@
 package com.doubleclick.pizzastation.android.ViewModel
 
-import android.view.Menu
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -8,7 +7,6 @@ import com.doubleclick.pizzastation.android.Repository.remot.RepositoryRemot
 import com.doubleclick.pizzastation.android.api.RetrofitInstance
 import com.doubleclick.pizzastation.android.model.*
 import com.google.gson.JsonObject
-import org.json.JSONObject
 import retrofit2.Call
 
 class MainViewModel(private val repository: RepositoryRemot) : ViewModel() {
@@ -25,7 +23,11 @@ class MainViewModel(private val repository: RepositoryRemot) : ViewModel() {
     private val cardGetMutableLiveData: MutableLiveData<Call<CartModelList>> = MutableLiveData()
     private val cardSetMutableLiveData: MutableLiveData<Call<CartCallback>> = MutableLiveData()
     private val orderSetMutableLiveData: MutableLiveData<Call<OrderModelList>> = MutableLiveData()
-    private val cardDeleteByIdMutableLiveData: MutableLiveData<Call<CardDeleteCallbackById>> =
+    private val cardDeleteByIdMutableLiveData: MutableLiveData<Call<MessageCallback>> =
+        MutableLiveData()
+    private val setFavoriteMutableLiveData: MutableLiveData<Call<MessageCallback>> =
+        MutableLiveData()
+    private val getFavoriteMutableLiveData: MutableLiveData<Call<FavoriteModelList>> =
         MutableLiveData()
 
 
@@ -71,7 +73,10 @@ class MainViewModel(private val repository: RepositoryRemot) : ViewModel() {
     }
 
 
-    fun setOrderComplete(token: String, orderModelList: JsonObject): LiveData<Call<OrderModelList>> {
+    fun setOrderComplete(
+        token: String,
+        orderModelList: JsonObject
+    ): LiveData<Call<OrderModelList>> {
         orderSetMutableLiveData.value = repository.setOrderComplete(token, orderModelList);
         return orderSetMutableLiveData;
     }
@@ -84,7 +89,7 @@ class MainViewModel(private val repository: RepositoryRemot) : ViewModel() {
     fun deleteCartById(
         token: String,
         id: String
-    ): LiveData<Call<CardDeleteCallbackById>> {
+    ): LiveData<Call<MessageCallback>> {
         cardDeleteByIdMutableLiveData.value = repository.deleteCartById(token, id);
         return cardDeleteByIdMutableLiveData;
     }
@@ -92,6 +97,17 @@ class MainViewModel(private val repository: RepositoryRemot) : ViewModel() {
     fun getExtraFilters(): LiveData<Call<MenuList>> {
         extrasFilterMutableLiveData.value = repository.getExtraFilters();
         return extrasFilterMutableLiveData;
+    }
+
+
+    fun setFavorite(token: String, menu_id: String): LiveData<Call<MessageCallback>> {
+        setFavoriteMutableLiveData.value = repository.setFavorite(token, menu_id);
+        return setFavoriteMutableLiveData;
+    }
+
+    fun getFavorite(token: String): LiveData<Call<FavoriteModelList>> {
+        getFavoriteMutableLiveData.value = repository.getFavorite(token);
+        return getFavoriteMutableLiveData;
     }
 
 

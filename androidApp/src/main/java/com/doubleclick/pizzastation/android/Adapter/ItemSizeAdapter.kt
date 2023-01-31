@@ -60,7 +60,7 @@ class ItemSizeAdapter(itemListener: ItemSizeListener, sizes: ArrayList<Sizes>) :
         if (model.id == lastCheckedPosition) {
             holder.tv_size.setTextColor(
                 holder.itemView.context.resources.getColor(
-                    R.color.white
+                    R.color.yellow
                 )
             )
             holder.card
@@ -78,7 +78,7 @@ class ItemSizeAdapter(itemListener: ItemSizeListener, sizes: ArrayList<Sizes>) :
 
             holder.tv_size.setTextColor(
                 holder.itemView.context.resources.getColor(
-                    R.color.black
+                    R.color.white
                 )
             )
         }

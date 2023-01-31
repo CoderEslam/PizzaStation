@@ -3,7 +3,6 @@ package com.doubleclick.pizzastation.android.Repository.remot
 import com.doubleclick.pizzastation.android.api.RetrofitInstance
 import com.doubleclick.pizzastation.android.model.*
 import com.google.gson.JsonObject
-import org.json.JSONObject
 import retrofit2.Call
 
 class RepositoryRemot {
@@ -51,12 +50,20 @@ class RepositoryRemot {
         return RetrofitInstance.api.setCart(token, cardModel)
     }
 
-    fun deleteCartById(token: String, id: String): Call<CardDeleteCallbackById> {
+    fun deleteCartById(token: String, id: String): Call<MessageCallback> {
         return RetrofitInstance.api.deleteCartById(token, id)
     }
 
     fun getExtraFilters(): Call<MenuList> {
         return RetrofitInstance.api.getExtraFilters()
+    }
+
+    fun setFavorite(token: String, menu_id: String): Call<MessageCallback> {
+        return RetrofitInstance.api.setFavorite(token, menu_id)
+    }
+
+    fun getFavorite(token: String): Call<FavoriteModelList> {
+        return RetrofitInstance.api.getFavorite(token)
     }
 
 }

@@ -4,15 +4,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.doubleclick.pizzastation.android.HomeActivity
 import com.doubleclick.pizzastation.android.R
 import com.doubleclick.pizzastation.android.ViewHolder.FavoriteViewHolder
+import com.doubleclick.pizzastation.android.model.FavoriteModel
+import com.doubleclick.pizzastation.android.utils.Constants.IMAGE_URL
 import com.doubleclick.pizzastation.android.views.shinebutton.ShineButton
 
 /**
  * Created By Eslam Ghazy on 1/14/2023
  */
-class FavoriteAdapter(activity: HomeActivity) :
+class FavoriteAdapter(val favoriteModel: List<FavoriteModel>, activity: HomeActivity) :
     RecyclerView.Adapter<FavoriteViewHolder>() {
 
     private val activity: HomeActivity
@@ -26,10 +29,14 @@ class FavoriteAdapter(activity: HomeActivity) :
 
     override fun onBindViewHolder(holder: FavoriteViewHolder, position: Int) {
         holder.shineButton.init(activity = activity)
+        holder.shineButton.setChecked(true)
+        Glide.with(holder.itemView.context).load(IMAGE_URL + favoriteModel[position].menu.image)
+            .into(holder.image_food)
+        holder.name_food.text = favoriteModel[position].menu.name
     }
 
     override fun getItemCount(): Int {
-        return 20
+        return favoriteModel.size
     }
 
 

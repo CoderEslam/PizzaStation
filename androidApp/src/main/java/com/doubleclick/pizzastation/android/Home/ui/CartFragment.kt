@@ -8,11 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import com.doubleclick.pizzastation.android.Adapter.CartAdapter
-import com.doubleclick.pizzastation.android.Home.BottomSheetFragment
 import com.doubleclick.pizzastation.android.Home.BottomSheetNotesFragment
 import com.doubleclick.pizzastation.android.R
 import com.doubleclick.pizzastation.android.Repository.remot.RepositoryRemot
@@ -30,7 +27,6 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -165,11 +161,11 @@ class CartFragment : Fragment(), ExtraDeleteListener, SendNotes {
                             cartModel.id.toString()
                         ).observe(viewLifecycleOwner) {
                             try {
-                                it.enqueue(object : Callback<CardDeleteCallbackById> {
+                                it.enqueue(object : Callback<MessageCallback> {
                                     @SuppressLint("NotifyDataSetChanged")
                                     override fun onResponse(
-                                        call: Call<CardDeleteCallbackById>,
-                                        response: Response<CardDeleteCallbackById>
+                                        call: Call<MessageCallback>,
+                                        response: Response<MessageCallback>
                                     ) {
                                         try {
                                             if (carts.size == 1) {
@@ -196,7 +192,7 @@ class CartFragment : Fragment(), ExtraDeleteListener, SendNotes {
                                     }
 
                                     override fun onFailure(
-                                        call: Call<CardDeleteCallbackById>,
+                                        call: Call<MessageCallback>,
                                         t: Throwable
                                     ) {
 
