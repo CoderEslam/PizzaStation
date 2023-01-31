@@ -37,6 +37,13 @@ interface SimpleApi {
     fun getSearchMenu(@Path("item") item: String): Call<MenuList>
 
     @Headers("Accept: application/json", "Content-Type: application/json")
+    @POST("orders")
+    fun setOrderComplete(
+        @Header("Authorization") token: String,
+        @Body orderModelList: JsonObject
+    ): Call<OrderModelList>
+
+    @Headers("Accept: application/json", "Content-Type: application/json")
     @POST("cart")
     fun setCart(
         @Header("Authorization") token: String,
@@ -62,12 +69,5 @@ interface SimpleApi {
     @GET("menu/Extra/filter")
     fun getExtraFilters(): Call<MenuList>
 
-
-    @Headers("Accept: application/json", "Content-Type: application/json")
-    @POST("orders")
-    fun setOrder(
-        @Header("Authorization") token: String,
-        orderModelList: OrderModelData
-    ): Call<OrderModelList>
 
 }

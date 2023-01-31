@@ -66,7 +66,8 @@ class HomeFragment : Fragment(), itemListener, OpenSearchView {
                 override fun onResponse(call: Call<OffersList>, response: Response<OffersList>) {
                     try {
                         binding.imageSlider.setImageList(
-                            response.body()!!.data
+                            response.body()!!.data,
+                            ScaleTypes.FIT
                         )
                     } catch (e: NullPointerException) {
                         Log.e(TAG, "onResponse: ${e.message}")

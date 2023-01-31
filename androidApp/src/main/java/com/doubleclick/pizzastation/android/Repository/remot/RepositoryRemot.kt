@@ -39,8 +39,12 @@ class RepositoryRemot {
     fun getCart(token: String): Call<CartModelList> {
         return RetrofitInstance.api.getCart(token)
     }
-    fun setOrder(token: String): Call<OrderModelList> {
-        return RetrofitInstance.api.getCart(token)
+
+    fun setOrderComplete(
+        token: String,
+        orderModelList: JsonObject
+    ): Call<OrderModelList> {
+        return RetrofitInstance.api.setOrderComplete(token, orderModelList)
     }
 
     fun setCart(token: String, cardModel: JsonObject): Call<CartCallback> {

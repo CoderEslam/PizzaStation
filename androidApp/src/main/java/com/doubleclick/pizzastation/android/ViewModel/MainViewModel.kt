@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.doubleclick.pizzastation.android.Repository.remot.RepositoryRemot
+import com.doubleclick.pizzastation.android.api.RetrofitInstance
 import com.doubleclick.pizzastation.android.model.*
 import com.google.gson.JsonObject
 import org.json.JSONObject
@@ -69,8 +70,9 @@ class MainViewModel(private val repository: RepositoryRemot) : ViewModel() {
         return cardGetMutableLiveData;
     }
 
-    fun setOrder(token: String): LiveData<Call<OrderModelList>> {
-        orderSetMutableLiveData.value = repository.getCart(token);
+
+    fun setOrderComplete(token: String, orderModelList: JsonObject): LiveData<Call<OrderModelList>> {
+        orderSetMutableLiveData.value = repository.setOrderComplete(token, orderModelList);
         return orderSetMutableLiveData;
     }
 

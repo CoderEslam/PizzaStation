@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.doubleclick.pizzastation.android.Adapter.CartAdapter
 import com.doubleclick.pizzastation.android.R
 import com.doubleclick.pizzastation.android.Repository.remot.RepositoryRemot
@@ -19,12 +20,16 @@ import com.doubleclick.pizzastation.android.databinding.FragmentCartBinding
 import com.doubleclick.pizzastation.android.model.CardDeleteCallbackById
 import com.doubleclick.pizzastation.android.model.CartModel
 import com.doubleclick.pizzastation.android.model.CartModelList
+import com.doubleclick.pizzastation.android.model.OrderModelList
 import com.doubleclick.pizzastation.android.utils.SessionManger
 import com.doubleclick.pizzastation.android.views.swipetoactionlayout.SwipeAction
+import com.google.gson.JsonArray
+import com.google.gson.JsonObject
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -60,10 +65,6 @@ class CartFragment : Fragment() {
                             response: Response<CartModelList>
                         ) {
                             carts.addAll(response.body()!!.data)
-                            Log.e(
-                                "CallBackResponseCarts",
-                                "CallBackResponseCarts: ${carts.toString()}"
-                            )
                             cartAdapter =
                                 CartAdapter(carts, ::Counter, ::OnActionClicked)
                             binding.rvCart.adapter = cartAdapter
@@ -77,7 +78,62 @@ class CartFragment : Fragment() {
                 }
         }
         binding.orderComplete.setOnClickListener {
-            viewModel.getCart()
+            val parentJsonObject = JsonObject();
+            parentJsonObject.addProperty("total", "100")
+            parentJsonObject.addProperty("delivery", "120")
+            parentJsonObject.addProperty("amount", "25")
+            parentJsonObject.addProperty("status", "mobile_app")
+            parentJsonObject.addProperty("notes", "test")
+            parentJsonObject.addProperty("area_id", "1")
+            parentJsonObject.addProperty("branch_id", "1")
+            val jsonArrayChildItems = JsonArray();
+            for (cart in carts) {
+                val jsonObjectItemsChild = JsonObject();
+                jsonObjectItemsChild.addProperty("name", cart.name)
+                jsonObjectItemsChild.addProperty("price", cart.price)
+                jsonObjectItemsChild.addProperty("size", cart.size)
+                jsonObjectItemsChild.addProperty("quantity", cart.quantity)
+                val jsonArrayChildExtras = JsonArray();
+                for (extra in cart.extra) {
+                    val jsonObjectChildExtra = JsonObject();
+                    jsonObjectChildExtra.addProperty("name", extra.name)
+                    jsonObjectChildExtra.addProperty("price", extra.price)
+                    jsonObjectChildExtra.addProperty("size", extra.size)
+                    jsonObjectChildExtra.addProperty("quantity", extra.quantity)
+                    jsonArrayChildExtras.add(jsonObjectChildExtra)
+                    jsonObjectItemsChild.add("extra", jsonArrayChildExtras)
+                }
+                jsonArrayChildItems.add(jsonObjectItemsChild);
+            }
+            parentJsonObject.add("items", jsonArrayChildItems);
+            Log.d(TAG, "onViewCreated: $parentJsonObject")
+            viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
+                viewModel.setOrderComplete(
+                    "Bearer " + SessionManger.getToken(requireActivity()).toString(),
+                    parentJsonObject
+                ).observe(viewLifecycleOwner) {
+                    it.enqueue(object : Callback<OrderModelList> {
+                        override fun onResponse(
+                            call: Call<OrderModelList>,
+                            response: Response<OrderModelList>
+                        ) {
+                            Toast.makeText(
+                                requireActivity(),
+                                response.body().toString(),
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+
+                        override fun onFailure(call: Call<OrderModelList>, t: Throwable) {
+                            Toast.makeText(
+                                requireActivity(),
+                                t.message,
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                    })
+                }
+            }
         }
     }
 
