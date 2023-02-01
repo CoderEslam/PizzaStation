@@ -179,7 +179,21 @@ class CartFragment : Fragment(), ExtraDeleteListener, SendNotes {
                                             cartAdapter.notifyItemRangeChanged(0, carts.size)
                                             cartAdapter.notifyDataSetChanged()
                                             carts.removeAt(pos);
-
+                                            
+                                            /* context?.let {
+                val fragmentManger = (context as? AppCompatActivity)?.supportFragmentManager
+                fragmentManger?.let {
+                    val currentFragment = fragmentManger.findFragmentById(R.id.main_nav);
+                    currentFragment?.let {
+                        val fragmentTransaction = fragmentManger.beginTransaction();
+                        fragmentTransaction.detach(it);
+                        fragmentTransaction.attach(it);
+                        fragmentTransaction.commit();
+                        Toast.makeText(requireActivity(), "Done", Toast.LENGTH_LONG).show()
+                    }
+                }
+            }*/
+                                            
                                             Toast.makeText(
                                                 requireActivity(),
                                                 "" + response.body()?.message.toString(),
