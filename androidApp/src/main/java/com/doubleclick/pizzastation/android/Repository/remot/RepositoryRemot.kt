@@ -58,12 +58,20 @@ class RepositoryRemot {
         return RetrofitInstance.api.getExtraFilters()
     }
 
-    fun setFavorite(token: String, menu_id: String): Call<MessageCallback> {
+    fun setFavorite(token: String, menu_id: MenuId): Call<MessageCallback> {
         return RetrofitInstance.api.setFavorite(token, menu_id)
+    }
+
+    fun deleteFavorite(token: String, id: String): Call<MessageCallback> {
+        return RetrofitInstance.api.deleteFavorite(token, id)
     }
 
     fun getFavorite(token: String): Call<FavoriteModelList> {
         return RetrofitInstance.api.getFavorite(token)
+    }
+
+    fun updateCart(token: String, id: String,jsonObject: JsonObject): Call<MessageCallback> {
+        return RetrofitInstance.api.updateCart(token, id,jsonObject)
     }
 
 }

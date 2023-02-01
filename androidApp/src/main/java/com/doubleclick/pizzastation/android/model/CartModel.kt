@@ -10,4 +10,4 @@ data class CartModel(
     val size: String,
     val user_id: Int = -1,
     var count: Int = -1
-)
+):java.io.Serializable

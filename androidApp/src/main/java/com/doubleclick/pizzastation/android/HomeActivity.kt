@@ -70,11 +70,11 @@ class HomeActivity : AppCompatActivity() {
                 R.drawable.favorite,
                 R.id.navigation_favorite
             ),
-            /*CbnMenuItem(
+            CbnMenuItem(
                 R.drawable.ic_map_fill,
                 R.drawable.ic_map_fill,
                 R.id.navigation_location
-            ),*/
+            ),
             CbnMenuItem(
                 R.drawable.shopping_cart,
                 R.drawable.shopping_cart,

@@ -1,5 +1,6 @@
 package com.doubleclick.pizzastation.android.Adapter
 
+import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +9,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.doubleclick.pizzastation.android.FoodItemActivity
 import com.doubleclick.pizzastation.android.R
 import com.doubleclick.pizzastation.android.`interface`.ExtraDeleteListener
 import com.doubleclick.pizzastation.android.model.Cart
@@ -59,22 +61,21 @@ class CartAdapter(
         } catch (e: NullPointerException) {
             Log.e(TAG, "onBindViewHolder: ${e.message}")
         }
-        holder.add.setOnClickListener {
-            carts[position].count = carts[position].count + 1
-            holder.count.text = carts[position].count.toString()
-            Log.e(TAG, "onBindViewHolder: " + carts[position].count)
-            notifyItemChanged(position)
-        }
-        holder.mins.setOnClickListener {
-            carts[position].count = carts[position].count - 1
-            holder.count.text = carts[position].count.toString()
-            notifyItemChanged(position)
-        }
+
         Glide.with(holder.itemView.context).load(IMAGE_URL + carts[position].image)
             .into(holder.image_item)
         holder.name_item.text = carts[position].name
         holder.price_total.text = carts[position].price
+        holder.count.text = carts[position].quantity
         block(carts[position].count)
+        holder.edit.setOnClickListener {
+            val intent = Intent(
+                holder.itemView.context,
+                FoodItemActivity::class.java
+            )
+            intent.putExtra("cartModel", carts[position])
+            holder.itemView.context.startActivity(intent)
+        }
     }
 
 
@@ -84,10 +85,9 @@ class CartAdapter(
 
     inner class CartViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
         SwipeMenuListener {
-        var add: ImageView = itemView.findViewById(R.id.add)
-        var mins: ImageView = itemView.findViewById(R.id.mins)
         var count: TextView = itemView.findViewById(R.id.count)
         var image_item: CircleImageView = itemView.findViewById(R.id.image_item)
+        var edit: ImageView = itemView.findViewById(R.id.edit)
         var name_item: TextView = itemView.findViewById(R.id.name_item)
         var price_total: TextView = itemView.findViewById(R.id.price_total)
         var rv_item_extra_cart: RecyclerView = itemView.findViewById(R.id.rv_item_extra_cart)

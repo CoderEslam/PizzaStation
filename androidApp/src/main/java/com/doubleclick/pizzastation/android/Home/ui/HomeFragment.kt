@@ -172,6 +172,7 @@ class HomeFragment : Fragment(), itemListener, OpenSearchView {
                 listParent.add(CategoricalMenu(categoryName, child))
             }
         }
+        binding.animationView.visibility = View.GONE
         binding.itemMenuRv.adapter = HomeAdapter(listParent)
         binding.searchView.setAutoComplete(listAutoComplete)
 

@@ -40,6 +40,7 @@ class FoodItemActivity : AppCompatActivity(), ItemSizeListener, ItemExtraListene
 
     private lateinit var binding: ActivityFoodItemBinding
     private var menuModel: MenuModel? = null
+    private var cartModel: CartModel? = null
     private var amount: Int = 1
     private var sizePrice: Double = 0.0
     private var nameSize: String = ""
@@ -48,9 +49,10 @@ class FoodItemActivity : AppCompatActivity(), ItemSizeListener, ItemExtraListene
     private var sizeNameExtra: String = ""
     private val TAG = "FoodItemActivity"
     private val extraList: ArrayList<Extra> = ArrayList()
-    private val favoriteModelList: ArrayList<FavoriteModelList> = ArrayList()
+    private var favoriteModelList: ArrayList<FavoriteModel> = ArrayList();
     private lateinit var viewModel: MainViewModel
     private var isFavorite: Boolean = false
+    private var isEdit: Boolean = false
 
     private lateinit var itemSizeAdapter: ItemSizeAdapter
 
@@ -60,6 +62,8 @@ class FoodItemActivity : AppCompatActivity(), ItemSizeListener, ItemExtraListene
         binding = ActivityFoodItemBinding.inflate(layoutInflater)
         setContentView(binding.root)
         menuModel = intent?.getParcelableExtra<MenuModel>("menu");
+        cartModel = intent?.getSerializableExtra("cartModel") as CartModel?;
+        onEdit(cartModel);
         binding.nameItem.text = menuModel?.name
         Glide.with(this).load(IMAGE_URL + menuModel?.image).into(binding.imageItem)
         val viewModelFactory = MainViewModelFactory(RepositoryRemot())
@@ -222,8 +226,8 @@ class FoodItemActivity : AppCompatActivity(), ItemSizeListener, ItemExtraListene
                             call: Call<FavoriteModelList>,
                             response: Response<FavoriteModelList>
                         ) {
-                            favoriteModelList.addAll(listOf(response.body()!!))
-                            for (id in response.body()!!.data) {
+                            favoriteModelList = response.body()!!.data as ArrayList<FavoriteModel>
+                            for (id in favoriteModelList) {
                                 if (id.menu.id == menuModel?.id) {
                                     binding.favorite.setChecked(true)
                                     isFavorite = true;
@@ -242,39 +246,153 @@ class FoodItemActivity : AppCompatActivity(), ItemSizeListener, ItemExtraListene
         }
 
         binding.favorite.setOnClickListener {
-            if (!isFavorite) {
+            GlobalScope.launch(Dispatchers.Main) {
+                try {
+                    if (!isFavorite) {
+                        Log.i(TAG, "onCreate: " + SessionManger.getToken(this@FoodItemActivity))
+                        viewModel.setFavorite(
+                            "Bearer " + SessionManger.getToken(this@FoodItemActivity),
+                            MenuId(menuModel?.id.toString())
+                        ).observe(this@FoodItemActivity) {
+                            it.enqueue(object : Callback<MessageCallback> {
+                                override fun onResponse(
+                                    call: Call<MessageCallback>,
+                                    response: Response<MessageCallback>
+                                ) {
+                                    for (id in favoriteModelList) {
+                                        if (id.menu.id == menuModel?.id) {
+                                            binding.favorite.setChecked(true)
+                                            isFavorite = true;
+                                        }
+                                    }
+                                }
+
+                                override fun onFailure(call: Call<MessageCallback>, t: Throwable) {
+
+                                }
+
+                            })
+                        }
+                    } else {
+                        for (id in favoriteModelList) {
+                            if (id.menu.id == menuModel?.id) {
+                                viewModel.deleteFavorite(
+                                    "Bearer " + SessionManger.getToken(this@FoodItemActivity),
+                                    id.id.toString()
+                                ).observe(this@FoodItemActivity) {
+                                    it.enqueue(object : Callback<MessageCallback> {
+                                        override fun onResponse(
+                                            call: Call<MessageCallback>,
+                                            response: Response<MessageCallback>
+                                        ) {
+                                            for (favoritemodel in favoriteModelList) {
+                                                if (favoritemodel.menu.id == menuModel?.id) {
+                                                    binding.favorite.setChecked(false)
+                                                    isFavorite = false;
+                                                }
+                                            }
+                                        }
+
+                                        override fun onFailure(
+                                            call: Call<MessageCallback>,
+                                            t: Throwable
+                                        ) {
+
+                                        }
+
+                                    })
+                                }
+                            }
+                        }
+                    }
+                } catch (e: IllegalStateException) {
+                    Log.e(TAG, "onCreate: ${e.message}")
+                }
+
+            }
+        }
+        if (!isEdit) {
+            binding.addToCard.setOnClickListener {
                 GlobalScope.launch(Dispatchers.Main) {
-                    Log.i(TAG, "onCreate: " + SessionManger.getToken(this@FoodItemActivity))
-                    viewModel.setFavorite(
+                    val jsonObjectParent = JsonObject();
+                    jsonObjectParent.addProperty("price", priceTotal.toString())
+                    jsonObjectParent.addProperty("name", menuModel!!.name!!)
+                    jsonObjectParent.addProperty("quantity", amount.toString())
+                    jsonObjectParent.addProperty("size", nameSize)
+                    jsonObjectParent.addProperty("image", menuModel?.image.toString())
+                    val jsonArray = JsonArray();
+                    for (extraItem in extraList) {
+                        val jsonObjectChild = JsonObject();
+                        jsonObjectChild.addProperty("name", extraItem.name)
+                        jsonObjectChild.addProperty("price", extraItem.price)
+                        jsonObjectChild.addProperty("size", extraItem.size)
+                        jsonObjectChild.addProperty("image", extraItem.image)
+                        jsonObjectChild.addProperty("quantity", "1")
+                        jsonArray.add(jsonObjectChild)
+                        jsonObjectParent.add("extra", jsonArray)
+                    }
+                    Log.e(TAG, "onCreate: ${jsonObjectParent.toString()}")
+                    viewModel.setCart(
                         "Bearer " + SessionManger.getToken(this@FoodItemActivity),
-                        menuModel?.id.toString()
+                        jsonObjectParent
                     ).observe(this@FoodItemActivity) {
-                        it.enqueue(object : Callback<MessageCallback> {
+                        it.enqueue(object : Callback<CartCallback> {
                             override fun onResponse(
-                                call: Call<MessageCallback>,
-                                response: Response<MessageCallback>
+                                call: Call<CartCallback>,
+                                response: Response<CartCallback>
                             ) {
-                                Log.i(TAG, "onResponse: ${response.body()?.message.toString()}")
+                                Toast.makeText(
+                                    this@FoodItemActivity,
+                                    "Response = " + response.body()!!.message.toString(),
+                                    Toast.LENGTH_LONG
+                                ).show()
+                                GlobalScope.launch(Dispatchers.Main) {
+                                    binding.animationView.visibility = View.VISIBLE
+                                    binding.addToCard.isEnabled = false
+                                    binding.tvAddToCard.setTextColor(resources.getColor(R.color.grey_600))
+                                    delay(1000)
+                                    startActivity(
+                                        Intent(
+                                            this@FoodItemActivity,
+                                            HomeActivity::class.java
+                                        )
+                                    )
+                                    finish()
+                                }
+
                             }
 
-                            override fun onFailure(call: Call<MessageCallback>, t: Throwable) {
-
+                            override fun onFailure(call: Call<CartCallback>, t: Throwable) {
+                                Toast.makeText(
+                                    this@FoodItemActivity,
+                                    "Error " + t.message,
+                                    Toast.LENGTH_LONG
+                                ).show()
                             }
-
                         })
                     }
                 }
             }
         }
+    }
 
-        binding.addToCard.setOnClickListener {
-            GlobalScope.launch(Dispatchers.Main) {
+    @OptIn(DelicateCoroutinesApi::class)
+    private fun onEdit(cartModel: CartModel?) {
+        if (cartModel != null) {
+            isEdit = true
+            Log.e(TAG, "onEdit: $IMAGE_URL${cartModel.image}")
+            Glide.with(this).load(IMAGE_URL + cartModel.image).into(binding.imageItem)
+            amount = cartModel.quantity.toInt()
+            binding.count.text = amount.toString()
+            binding.priceTotal.text = cartModel.price
+            binding.nameItem.text = cartModel.name
+            binding.addToCard.setOnClickListener {
                 val jsonObjectParent = JsonObject();
                 jsonObjectParent.addProperty("price", priceTotal.toString())
-                jsonObjectParent.addProperty("name", menuModel!!.name!!)
+                jsonObjectParent.addProperty("name", cartModel!!.name!!)
                 jsonObjectParent.addProperty("quantity", amount.toString())
                 jsonObjectParent.addProperty("size", nameSize)
-                jsonObjectParent.addProperty("image", menuModel?.image.toString())
+                jsonObjectParent.addProperty("image", cartModel?.image.toString())
                 val jsonArray = JsonArray();
                 for (extraItem in extraList) {
                     val jsonObjectChild = JsonObject();
@@ -286,52 +404,33 @@ class FoodItemActivity : AppCompatActivity(), ItemSizeListener, ItemExtraListene
                     jsonArray.add(jsonObjectChild)
                     jsonObjectParent.add("extra", jsonArray)
                 }
-                Log.e(TAG, "onCreate: ${jsonObjectParent.toString()}")
-                /* viewModel.setCart(
-                     "Bearer " + SessionManger.getToken(this@FoodItemActivity),
-                     jsonObjectParent
-                 ).observe(this@FoodItemActivity) {
-                     it.enqueue(object : Callback<CartCallback> {
-                         override fun onResponse(
-                             call: Call<CartCallback>,
-                             response: Response<CartCallback>
-                         ) {
-                             Toast.makeText(
-                                 this@FoodItemActivity,
-                                 "Response = " + response.body()!!.message.toString(),
-                                 Toast.LENGTH_LONG
-                             ).show()
-                             GlobalScope.launch(Dispatchers.Main) {
-                                 binding.animationView.visibility = View.VISIBLE
-                                 binding.addToCard.isEnabled = false
-                                 binding.tvAddToCard.setTextColor(resources.getColor(R.color.grey_600))
-                                 delay(1000)
-                                 startActivity(
-                                     Intent(
-                                         this@FoodItemActivity,
-                                         HomeActivity::class.java
-                                     )
-                                 )
-                                 finish()
-                             }
+                GlobalScope.launch(Dispatchers.Main) {
+                    viewModel.updateCart(
+                        "Bearer " + SessionManger.getToken(this@FoodItemActivity),
+                        cartModel.id.toString(),
+                        jsonObjectParent
+                    ).observe(this@FoodItemActivity) {
+                        it.enqueue(object : Callback<MessageCallback> {
+                            override fun onResponse(
+                                call: Call<MessageCallback>,
+                                response: Response<MessageCallback>
+                            ) {
+                                Toast.makeText(
+                                    this@FoodItemActivity,
+                                    response.body()?.message.toString(),
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            }
 
-                         }
+                            override fun onFailure(call: Call<MessageCallback>, t: Throwable) {
 
-                         override fun onFailure(call: Call<CartCallback>, t: Throwable) {
-                             Toast.makeText(
-                                 this@FoodItemActivity,
-                                 "Error " + t.message,
-                                 Toast.LENGTH_LONG
-                             ).show()
-                         }
-                     })
-                 }*/
+                            }
+
+                        })
+                    }
+                }
             }
-
-
         }
-
-
     }
 
 

@@ -72,11 +72,26 @@ interface SimpleApi {
     @POST("favorite")
     fun setFavorite(
         @Header("Authorization") token: String,
-        @Body menu_id: String
+        @Body menu_id: MenuId
+    ): Call<MessageCallback>
+
+    @Headers("Accept: application/json", "Content-Type: application/json")
+    @DELETE("favorite/{id}")
+    fun deleteFavorite(
+        @Header("Authorization") token: String,
+        @Path("id") id: String
     ): Call<MessageCallback>
 
     @Headers("Accept: application/json", "Content-Type: application/json")
     @GET("favorite")
     fun getFavorite(@Header("Authorization") token: String): Call<FavoriteModelList>
+
+    @Headers("Accept: application/json", "Content-Type: application/json")
+    @PUT("cart/{id}")
+    fun updateCart(
+        @Header("Authorization") token: String,
+        @Path("id") id: String,
+        @Body jsonObject: JsonObject
+    ): Call<MessageCallback>
 
 }

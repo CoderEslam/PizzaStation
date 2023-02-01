@@ -70,20 +70,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
-                    android:layout_marginBottom="8dp"
                     android:orientation="horizontal"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="1.0"
-                    app:layout_constraintStart_toEndOf="@+id/price_total">
+                    app:layout_constraintStart_toEndOf="@+id/price_total"
+                    app:layout_constraintTop_toTopOf="parent">
 
-                    <ImageView
-                        android:id="@+id/add"
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
-                        android:layout_gravity="center"
-                        android:src="@drawable/add_circle"
-                        app:tint="@color/yellow" />
 
                     <TextView
                         android:id="@+id/count"
@@ -92,18 +85,18 @@
                         android:layout_gravity="center"
                         android:layout_marginLeft="20dp"
                         android:layout_marginRight="20dp"
-                        android:text="1"
                         android:textAllCaps="false"
                         android:textColor="@color/black"
-                        android:textSize="24sp" />
+                        android:textSize="24sp"
+                        tools:text="1" />
 
                     <ImageView
-                        android:id="@+id/mins"
+                        android:id="@+id/edit"
                         android:layout_width="25dp"
                         android:layout_height="25dp"
                         android:layout_gravity="center"
-                        android:src="@drawable/remove_circle"
-                        app:tint="@color/red" />
+                        android:src="@drawable/edit"
+                        app:tint="@color/grey_600" />
 
                 </LinearLayout>
 

@@ -27,6 +27,11 @@ class MainViewModel(private val repository: RepositoryRemot) : ViewModel() {
         MutableLiveData()
     private val setFavoriteMutableLiveData: MutableLiveData<Call<MessageCallback>> =
         MutableLiveData()
+    private val deleteFavoriteMutableLiveData: MutableLiveData<Call<MessageCallback>> =
+        MutableLiveData()
+
+    private val updateCardMutableLiveData: MutableLiveData<Call<MessageCallback>> =
+        MutableLiveData()
     private val getFavoriteMutableLiveData: MutableLiveData<Call<FavoriteModelList>> =
         MutableLiveData()
 
@@ -100,14 +105,24 @@ class MainViewModel(private val repository: RepositoryRemot) : ViewModel() {
     }
 
 
-    fun setFavorite(token: String, menu_id: String): LiveData<Call<MessageCallback>> {
+    fun setFavorite(token: String, menu_id: MenuId): LiveData<Call<MessageCallback>> {
         setFavoriteMutableLiveData.value = repository.setFavorite(token, menu_id);
         return setFavoriteMutableLiveData;
+    }
+
+    fun deleteFavorite(token: String, id: String): LiveData<Call<MessageCallback>> {
+        deleteFavoriteMutableLiveData.value = repository.deleteFavorite(token, id);
+        return deleteFavoriteMutableLiveData;
     }
 
     fun getFavorite(token: String): LiveData<Call<FavoriteModelList>> {
         getFavoriteMutableLiveData.value = repository.getFavorite(token);
         return getFavoriteMutableLiveData;
+    }
+
+    fun updateCart(token: String, id: String,jsonObject: JsonObject): LiveData<Call<MessageCallback>> {
+        updateCardMutableLiveData.value = repository.updateCart(token, id,jsonObject);
+        return updateCardMutableLiveData;
     }
 
 

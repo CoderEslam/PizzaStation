@@ -8,6 +8,7 @@ import com.bumptech.glide.Glide
 import com.doubleclick.pizzastation.android.HomeActivity
 import com.doubleclick.pizzastation.android.R
 import com.doubleclick.pizzastation.android.ViewHolder.FavoriteViewHolder
+import com.doubleclick.pizzastation.android.`interface`.OnFavoriteCheckedItem
 import com.doubleclick.pizzastation.android.model.FavoriteModel
 import com.doubleclick.pizzastation.android.utils.Constants.IMAGE_URL
 import com.doubleclick.pizzastation.android.views.shinebutton.ShineButton
@@ -15,10 +16,13 @@ import com.doubleclick.pizzastation.android.views.shinebutton.ShineButton
 /**
  * Created By Eslam Ghazy on 1/14/2023
  */
-class FavoriteAdapter(val favoriteModel: List<FavoriteModel>, activity: HomeActivity) :
+class FavoriteAdapter(
+    val favoriteModel: List<FavoriteModel>,
+    val activity: HomeActivity,
+    val onFavoriteCheckedItem: OnFavoriteCheckedItem
+) :
     RecyclerView.Adapter<FavoriteViewHolder>() {
 
-    private val activity: HomeActivity
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FavoriteViewHolder {
 
         return FavoriteViewHolder(
@@ -33,15 +37,14 @@ class FavoriteAdapter(val favoriteModel: List<FavoriteModel>, activity: HomeActi
         Glide.with(holder.itemView.context).load(IMAGE_URL + favoriteModel[position].menu.image)
             .into(holder.image_food)
         holder.name_food.text = favoriteModel[position].menu.name
+        holder.shineButton.setOnClickListener {
+            onFavoriteCheckedItem.onFavoriteChecked(position, favoriteModel[position])
+        }
     }
 
     override fun getItemCount(): Int {
         return favoriteModel.size
     }
 
-
-    init {
-        this.activity = activity
-    }
 
 }

@@ -64,6 +64,7 @@ class CartFragment : Fragment(), ExtraDeleteListener, SendNotes {
                             response: Response<CartModelList>
                         ) {
                             carts.addAll(response.body()!!.data)
+                            Log.e(TAG, "onResponse: $carts")
                             cartAdapter =
                                 CartAdapter(carts, ::Counter, ::OnActionClicked, this@CartFragment)
                             binding.rvCart.adapter = cartAdapter

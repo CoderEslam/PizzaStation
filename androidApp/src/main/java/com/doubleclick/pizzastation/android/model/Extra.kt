@@ -6,4 +6,4 @@ data class Extra(
     val image: String,
     val quantity: String,
     val size: String
-)
+):java.io.Serializable
