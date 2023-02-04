@@ -15,6 +15,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".CustomizePizzaActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".Home.PaymentActivity"
             android:exported="false">
             <meta-data
@@ -22,7 +29,7 @@
                 android:value="" />
         </activity>
         <activity
-            android:name="com.doubleclick.pizzastation.android.GradientBackgroundActivity"
+            android:name=".GradientBackgroundActivity"
             android:exported="false" />
         <!--
              TODO: Before you run your application, you need a Google Maps API key.
@@ -40,31 +47,31 @@
             android:value="@string/google_api_key" />
 
         <activity
-            android:name="com.doubleclick.pizzastation.android.FoodItemActivity"
+            android:name=".FoodItemActivity"
             android:exported="false" />
         <activity
-            android:name="com.doubleclick.pizzastation.android.OrdersActivity"
+            android:name=".OrdersActivity"
             android:exported="false" />
         <activity
-            android:name="com.doubleclick.pizzastation.android.OffersActivity"
+            android:name=".OffersActivity"
             android:exported="false" />
         <activity
-            android:name="com.doubleclick.pizzastation.android.HistoryActivity"
+            android:name=".HistoryActivity"
             android:exported="false" />
         <activity
-            android:name="com.doubleclick.pizzastation.android.HomeActivity"
+            android:name=".HomeActivity"
             android:exported="false"
             android:theme="@style/HomeTheme" />
         <activity
-            android:name="com.doubleclick.pizzastation.android.map.MapsActivity"
+            android:name=".map.MapsActivity"
             android:exported="false"
             android:label="@string/title_activity_maps" />
         <activity
-            android:name="com.doubleclick.pizzastation.android.Auth.AuthActivity"
+            android:name=".Auth.AuthActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.doubleclick.pizzastation.android.MainActivity"
+            android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

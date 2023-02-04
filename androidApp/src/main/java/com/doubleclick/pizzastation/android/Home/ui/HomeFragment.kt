@@ -1,5 +1,6 @@
 package com.doubleclick.pizzastation.android.Home.ui
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -7,6 +8,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.doubleclick.pizzastation.android.Adapter.HomeAdapter
+import com.doubleclick.pizzastation.android.CustomizePizzaActivity
 import com.doubleclick.pizzastation.android.Home.BottomSheetFragment
 import com.doubleclick.pizzastation.android.R
 import com.doubleclick.pizzastation.android.Repository.remot.RepositoryRemot
@@ -85,6 +87,7 @@ class HomeFragment : Fragment(), itemListener, OpenSearchView {
         }
 
         binding.fab.setOnClickListener {
+            startActivity(Intent(requireActivity(), CustomizePizzaActivity::class.java))
             if (isSearch) {
                 setupSearchView();
                 isSearch = false
