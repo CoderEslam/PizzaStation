@@ -21,16 +21,16 @@ class CustomizePizzaActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.quarter1.setOnClickListener {
-            openGellry()
+            binding.quarter1.setImageDrawable(resources.getDrawable(R.drawable.pizza))
         }
         binding.quarter2.setOnClickListener {
-            openGellry()
+            binding.quarter2.setImageDrawable(resources.getDrawable(R.drawable.bg))
         }
         binding.quarter3.setOnClickListener {
-            openGellry()
+            binding.quarter3.setImageDrawable(resources.getDrawable(R.drawable.heart))
         }
         binding.quarter4.setOnClickListener {
-            openGellry()
+            binding.quarter4.setImageDrawable(resources.getDrawable(R.drawable.bg))
         }
 
     }
