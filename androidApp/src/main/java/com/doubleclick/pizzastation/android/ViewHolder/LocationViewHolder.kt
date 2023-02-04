@@ -19,6 +19,7 @@ class LocationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), On
     val numbers: TextView = itemView.findViewById(R.id.numbers)
     var googleMap: GoogleMap? = null
     var mMapLocation: LatLng? = null
+    lateinit var branchesModel: BranchesModel
 
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -36,6 +37,7 @@ class LocationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), On
     }
 
     fun initLocation(branchesModel: BranchesModel) {
+        this.branchesModel = branchesModel;
         val list: List<String> = branchesModel.latlng.replace("[", "")
             .replace("]", "")
             .replace(" ", "")
@@ -47,7 +49,7 @@ class LocationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), On
 
     private fun updateMapContents() {
         googleMap?.clear()
-        mMapLocation?.let { MarkerOptions().position(it).title("location of you friend") }
+        mMapLocation?.let { MarkerOptions().position(it).title(branchesModel.branch_name) }
             ?.let { googleMap?.addMarker(it) }
         mMapLocation?.let { CameraUpdateFactory.newLatLngZoom(it, 17f) }
             ?.let { googleMap?.moveCamera(it) }
