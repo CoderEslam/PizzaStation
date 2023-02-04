@@ -84,6 +84,7 @@ dependencies {
     implementation("io.reactivex.rxjava2:rxandroid:2.0.1")
 
     implementation("com.myfatoorah:myfatoorah:2.2.15")
+    implementation("com.github.chivorns:smartmaterialspinner:1.5.0")
 
 //    implementation("com.android.support:multidex:2.0.1")
 

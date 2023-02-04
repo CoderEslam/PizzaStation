@@ -34,6 +34,10 @@ class MainViewModel(private val repository: RepositoryRemot) : ViewModel() {
         MutableLiveData()
     private val getFavoriteMutableLiveData: MutableLiveData<Call<FavoriteModelList>> =
         MutableLiveData()
+    private val getGovernorateMutableLiveData: MutableLiveData<Call<GovernorateList>> =
+        MutableLiveData()
+    private val getBranchesMutableLiveData: MutableLiveData<Call<BranchesList>> =
+        MutableLiveData()
 
 
     fun getLoginResponse(login: Login): LiveData<Call<LoginResponse>> {
@@ -120,9 +124,23 @@ class MainViewModel(private val repository: RepositoryRemot) : ViewModel() {
         return getFavoriteMutableLiveData;
     }
 
-    fun updateCart(token: String, id: String,jsonObject: JsonObject): LiveData<Call<MessageCallback>> {
-        updateCardMutableLiveData.value = repository.updateCart(token, id,jsonObject);
+    fun updateCart(
+        token: String,
+        id: String,
+        jsonObject: JsonObject
+    ): LiveData<Call<MessageCallback>> {
+        updateCardMutableLiveData.value = repository.updateCart(token, id, jsonObject);
         return updateCardMutableLiveData;
+    }
+
+    fun getGovernorate(): LiveData<Call<GovernorateList>> {
+        getGovernorateMutableLiveData.value = repository.getGovernorate();
+        return getGovernorateMutableLiveData;
+    }
+
+    fun getBranches(): LiveData<Call<BranchesList>> {
+        getBranchesMutableLiveData.value = repository.getBranches();
+        return getBranchesMutableLiveData;
     }
 
 

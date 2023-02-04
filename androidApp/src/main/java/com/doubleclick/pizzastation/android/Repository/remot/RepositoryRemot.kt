@@ -70,8 +70,16 @@ class RepositoryRemot {
         return RetrofitInstance.api.getFavorite(token)
     }
 
-    fun updateCart(token: String, id: String,jsonObject: JsonObject): Call<MessageCallback> {
-        return RetrofitInstance.api.updateCart(token, id,jsonObject)
+    fun updateCart(token: String, id: String, jsonObject: JsonObject): Call<MessageCallback> {
+        return RetrofitInstance.api.updateCart(token, id, jsonObject)
+    }
+
+    fun getGovernorate(): Call<GovernorateList> {
+        return RetrofitInstance.api.getGovernorate()
+    }
+
+    fun getBranches(): Call<BranchesList> {
+        return RetrofitInstance.api.getBranches()
     }
 
 }

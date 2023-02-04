@@ -6,10 +6,13 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.doubleclick.pizzastation.android.Adapter.FavoriteAdapter
 import com.doubleclick.pizzastation.android.HomeActivity
+import com.doubleclick.pizzastation.android.R
 import com.doubleclick.pizzastation.android.Repository.remot.RepositoryRemot
 import com.doubleclick.pizzastation.android.ViewModel.MainViewModel
 import com.doubleclick.pizzastation.android.ViewModel.MainViewModelFactory
@@ -19,10 +22,7 @@ import com.doubleclick.pizzastation.android.model.FavoriteModel
 import com.doubleclick.pizzastation.android.model.FavoriteModelList
 import com.doubleclick.pizzastation.android.model.MessageCallback
 import com.doubleclick.pizzastation.android.utils.SessionManger
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -85,7 +85,9 @@ class FavoriteFragment : Fragment(), OnFavoriteCheckedItem {
             )
                 .observe(viewLifecycleOwner) {
                     try {
-                        it.enqueue(object : Callback<MessageCallback> {
+                        //https://square.github.io/retrofit/2.x/retrofit/retrofit2/Call.html
+                        //https://stackoverflow.com/questions/52101253/how-to-make-multiple-calls-with-retrofit
+                        it.clone().enqueue(object : Callback<MessageCallback> {
                             @SuppressLint("NotifyDataSetChanged")
                             override fun onResponse(
                                 call: Call<MessageCallback>,
@@ -108,8 +110,30 @@ class FavoriteFragment : Fragment(), OnFavoriteCheckedItem {
                                         favoriteModelList.size
                                     )
                                     favoriteAdapter.notifyDataSetChanged()
+                                    /////////////refresh fragment//////////////////
+                                    context?.let {
+                                        val fragmentManger =
+                                            (context as? AppCompatActivity)?.supportFragmentManager
+                                        fragmentManger?.let {
+                                            val currentFragment =
+                                                fragmentManger.findFragmentById(R.id.main_nav);
+                                            currentFragment?.let {
+                                                val fragmentTransaction =
+                                                    fragmentManger.beginTransaction();
+                                                fragmentTransaction.detach(it);
+                                                fragmentTransaction.attach(it);
+                                                fragmentTransaction.commit();
+                                                Toast.makeText(
+                                                    requireActivity(),
+                                                    "Done",
+                                                    Toast.LENGTH_LONG
+                                                ).show()
+                                            }
+                                        }
+                                    }
+                                    /////////////refresh fragment//////////////////
                                 } catch (e: IndexOutOfBoundsException) {
-                                    Log.e(TAG, "onResponse: ${e.message}")
+                                    Log.e(TAG, "IndexOutOfBoundsException: ${e.message}")
                                 }
 
                             }
@@ -120,7 +144,7 @@ class FavoriteFragment : Fragment(), OnFavoriteCheckedItem {
 
                         })
                     } catch (e: IllegalStateException) {
-                        Log.e(TAG, "onFavoriteChecked: ${e.message}")
+                        Log.e(TAG, "IllegalStateException: ${e.message}")
                     }
                 }
         }

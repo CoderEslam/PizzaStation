@@ -53,7 +53,7 @@ class HomeActivity : AppCompatActivity() {
             setOf(
                 R.id.navigation_home,
                 R.id.navigation_cart,
-                R.id.navigation_layout,
+                R.id.ourBranchsFragment,
                 R.id.navigation_profile,
                 R.id.navigation_favorite
             )
@@ -71,11 +71,6 @@ class HomeActivity : AppCompatActivity() {
                 R.id.navigation_favorite
             ),
             CbnMenuItem(
-                R.drawable.ic_map_fill,
-                R.drawable.ic_map_fill,
-                R.id.navigation_location
-            ),
-            CbnMenuItem(
                 R.drawable.shopping_cart,
                 R.drawable.shopping_cart,
                 R.id.navigation_cart
@@ -84,6 +79,11 @@ class HomeActivity : AppCompatActivity() {
                 R.drawable.person,
                 R.drawable.person,
                 R.id.navigation_profile
+            ),
+            CbnMenuItem(
+                R.drawable.ic_map_fill,
+                R.drawable.ic_map_fill,
+                R.id.ourBranchsFragment
             ),
         )
 

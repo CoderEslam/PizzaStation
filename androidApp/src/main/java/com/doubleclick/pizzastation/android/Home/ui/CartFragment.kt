@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.doubleclick.pizzastation.android.Adapter.CartAdapter
@@ -77,7 +78,7 @@ class CartFragment : Fragment(), ExtraDeleteListener, SendNotes {
                     })
                 }
         }
-        binding.orderComplete.setOnClickListener {
+        binding.selectLocation.setOnClickListener {
             val sheet = BottomSheetNotesFragment(this@CartFragment)
             sheet.show(
                 requireActivity().supportFragmentManager,
@@ -160,7 +161,7 @@ class CartFragment : Fragment(), ExtraDeleteListener, SendNotes {
                         viewModel.deleteCartById(
                             "Bearer " + SessionManger.getToken(requireActivity()).toString(),
                             cartModel.id.toString()
-                        ).observe(viewLifecycleOwner) {
+                        ).observe(viewLifecycleOwner) { it ->
                             try {
                                 it.enqueue(object : Callback<MessageCallback> {
                                     @SuppressLint("NotifyDataSetChanged")
@@ -179,21 +180,6 @@ class CartFragment : Fragment(), ExtraDeleteListener, SendNotes {
                                             cartAdapter.notifyItemRangeChanged(0, carts.size)
                                             cartAdapter.notifyDataSetChanged()
                                             carts.removeAt(pos);
-                                            
-                                            /* context?.let {
-                val fragmentManger = (context as? AppCompatActivity)?.supportFragmentManager
-                fragmentManger?.let {
-                    val currentFragment = fragmentManger.findFragmentById(R.id.main_nav);
-                    currentFragment?.let {
-                        val fragmentTransaction = fragmentManger.beginTransaction();
-                        fragmentTransaction.detach(it);
-                        fragmentTransaction.attach(it);
-                        fragmentTransaction.commit();
-                        Toast.makeText(requireActivity(), "Done", Toast.LENGTH_LONG).show()
-                    }
-                }
-            }*/
-                                            
                                             Toast.makeText(
                                                 requireActivity(),
                                                 "" + response.body()?.message.toString(),

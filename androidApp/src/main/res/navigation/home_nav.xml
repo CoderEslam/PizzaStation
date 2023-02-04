@@ -29,5 +29,10 @@
         android:name="com.doubleclick.pizzastation.android.Home.ui.ProfileFragment"
         tools:layout="@layout/fragment_profile"
         />
+    <fragment
+        android:id="@+id/ourBranchsFragment"
+        android:name="com.doubleclick.pizzastation.android.Home.ui.OurBranchsFragment"
+        android:label="fragment_our_branchs"
+        tools:layout="@layout/fragment_our_branchs" />
 
 </navigation>

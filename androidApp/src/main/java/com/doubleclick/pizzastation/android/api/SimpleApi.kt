@@ -86,6 +86,7 @@ interface SimpleApi {
     @GET("favorite")
     fun getFavorite(@Header("Authorization") token: String): Call<FavoriteModelList>
 
+
     @Headers("Accept: application/json", "Content-Type: application/json")
     @PUT("cart/{id}")
     fun updateCart(
@@ -93,5 +94,14 @@ interface SimpleApi {
         @Path("id") id: String,
         @Body jsonObject: JsonObject
     ): Call<MessageCallback>
+
+
+    @Headers("Accept: application/json", "Content-Type: application/json")
+    @GET("governments")
+    fun getGovernorate(): Call<GovernorateList>
+
+    @Headers("Accept: application/json", "Content-Type: application/json")
+    @GET("branches")
+    fun getBranches(): Call<BranchesList>
 
 }
