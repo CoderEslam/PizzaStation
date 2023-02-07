@@ -10,6 +10,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="400dp"
         android:layout_height="400dp"
+        android:background="@drawable/red_circle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -24,13 +25,11 @@
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/quarter1"
-                app:civ_border_width="1dp"
-                app:civ_border_color="@color/red"
                 android:layout_width="400dp"
                 android:layout_height="400dp"
                 android:layout_marginStart="-200dp"
                 android:layout_marginBottom="-200dp"
-                tools:src="@drawable/pizza"
+                app:civ_border_width="1dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/view" />
 
@@ -47,13 +46,11 @@
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/quarter2"
-                app:civ_border_width="1dp"
-                app:civ_border_color="@color/red"
                 android:layout_width="400dp"
                 android:layout_height="400dp"
                 android:layout_marginStart="-200dp"
                 android:layout_marginBottom="-200dp"
-                tools:src="@drawable/signin"
+                app:civ_border_width="1dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/view" />
 
@@ -71,13 +68,11 @@
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/quarter3"
-                app:civ_border_width="1dp"
-                app:civ_border_color="@color/red"
                 android:layout_width="400dp"
                 android:layout_height="400dp"
                 android:layout_marginStart="-200dp"
                 android:layout_marginBottom="-200dp"
-                tools:src="@drawable/facebook"
+                app:civ_border_width="1dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/view" />
 
@@ -92,13 +87,11 @@
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/quarter4"
-                app:civ_border_width="1dp"
-                app:civ_border_color="@color/red"
                 android:layout_width="400dp"
                 android:layout_height="400dp"
                 android:layout_marginStart="-200dp"
                 android:layout_marginBottom="-200dp"
-                tools:src="@drawable/previous"
+                app:civ_border_width="1dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/view" />
 
@@ -126,5 +119,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

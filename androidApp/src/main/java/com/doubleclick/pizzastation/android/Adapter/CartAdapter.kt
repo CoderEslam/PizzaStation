@@ -10,6 +10,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.doubleclick.pizzastation.android.FoodItemActivity
+import com.doubleclick.pizzastation.android.FoodItemEditActivity
 import com.doubleclick.pizzastation.android.R
 import com.doubleclick.pizzastation.android.`interface`.ExtraDeleteListener
 import com.doubleclick.pizzastation.android.model.Cart
@@ -71,7 +72,7 @@ class CartAdapter(
         holder.edit.setOnClickListener {
             val intent = Intent(
                 holder.itemView.context,
-                FoodItemActivity::class.java
+                FoodItemEditActivity::class.java
             )
             intent.putExtra("cartModel", carts[position])
             holder.itemView.context.startActivity(intent)

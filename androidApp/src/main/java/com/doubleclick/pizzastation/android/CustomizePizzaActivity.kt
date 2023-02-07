@@ -1,6 +1,7 @@
 package com.doubleclick.pizzastation.android
 
 import android.app.AlertDialog
+import android.content.DialogInterface
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -80,6 +81,12 @@ class CustomizePizzaActivity : AppCompatActivity() {
             override fun onPizza(menu: MenuModel) {
                 Glide.with(this@CustomizePizzaActivity).load(IMAGE_URL + menu.image).into(image)
             }
+        });
+        builder.setPositiveButton("Close", object : DialogInterface.OnClickListener {
+            override fun onClick(dialog: DialogInterface?, p1: Int) {
+                dialog?.dismiss();
+            }
+
         })
         builder.setCancelable(true);
         builder.setView(view);

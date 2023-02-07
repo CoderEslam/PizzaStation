@@ -70,4 +70,5 @@
             tools:text="price" />
 
     </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -5,6 +5,7 @@ data class BranchesModel(
     val branch_number: String,
     val google_map_location: String,
     val government_id: Int,
+    val delivery: String,
     val id: Int,
     val location: String,
     val latlng: String,

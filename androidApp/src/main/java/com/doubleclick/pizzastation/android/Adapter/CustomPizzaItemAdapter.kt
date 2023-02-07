@@ -28,7 +28,7 @@ class CustomPizzaItemAdapter(val menus: ArrayList<MenuModel>) :
 
     override fun onBindViewHolder(holder: CustomPizzaItemViewHolder, position: Int) {
         holder.name.text = menus[position].name
-        Glide.with(holder.itemView.context).load(IMAGE_URL + menus[position]).into(holder.image)
+        Glide.with(holder.itemView.context).load(IMAGE_URL + menus[position].image).into(holder.image)
         holder.itemView.setOnClickListener {
             onPizzaClicked.onPizza(menus[position])
         }

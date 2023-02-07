@@ -20,14 +20,19 @@ import com.doubleclick.pizzastation.android.model.Sizes
  * Created By Eslam Ghazy on 1/21/2023
  */
 
-class ItemSizeAdapter(itemListener: ItemSizeListener, sizes: ArrayList<Sizes>) :
+class ItemSizeAdapter(
+    itemListener: ItemSizeListener,
+    sizes: ArrayList<Sizes>,
+    lastCheckedPosition: String = ""
+) :
     RecyclerView.Adapter<ItemCategoryViewHolder>() {
 
-    private var lastCheckedPosition = -1
+    private var lastCheckedPosition: String
     var itemListener: ItemSizeListener
     var sizes: ArrayList<Sizes>
 
     init {
+        this.lastCheckedPosition = lastCheckedPosition
         this.itemListener = itemListener
         this.sizes = sizes
     }
@@ -57,7 +62,7 @@ class ItemSizeAdapter(itemListener: ItemSizeListener, sizes: ArrayList<Sizes>) :
         holder.tv_size.text = model.sizeName
         holder.tv_price.text = model.sizePrice
         holder.tv_size.isSelected = true
-        if (model.id == lastCheckedPosition) {
+        if (model.sizeName == lastCheckedPosition) {
             holder.tv_size.setTextColor(
                 holder.itemView.context.resources.getColor(
                     R.color.yellow
@@ -84,7 +89,7 @@ class ItemSizeAdapter(itemListener: ItemSizeListener, sizes: ArrayList<Sizes>) :
         }
         holder.itemView.setOnClickListener {
             itemListener.onItemSizeListener(model.sizeName, model.sizePrice)
-            lastCheckedPosition = model.id
+            lastCheckedPosition = model.sizeName
             notifyItemRangeChanged(0, sizes.size)
         }
     }

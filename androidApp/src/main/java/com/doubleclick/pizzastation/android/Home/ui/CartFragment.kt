@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.doubleclick.pizzastation.android.Adapter.CartAdapter
@@ -17,13 +16,10 @@ import com.doubleclick.pizzastation.android.Repository.remot.RepositoryRemot
 import com.doubleclick.pizzastation.android.ViewModel.MainViewModel
 import com.doubleclick.pizzastation.android.ViewModel.MainViewModelFactory
 import com.doubleclick.pizzastation.android.`interface`.ExtraDeleteListener
-import com.doubleclick.pizzastation.android.`interface`.SendNotes
 import com.doubleclick.pizzastation.android.databinding.FragmentCartBinding
 import com.doubleclick.pizzastation.android.model.*
 import com.doubleclick.pizzastation.android.utils.SessionManger
 import com.doubleclick.pizzastation.android.views.swipetoactionlayout.SwipeAction
-import com.google.gson.JsonArray
-import com.google.gson.JsonObject
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -31,9 +27,8 @@ import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.io.ByteArrayOutputStream
 
-class CartFragment : Fragment(), ExtraDeleteListener, SendNotes {
+class CartFragment : Fragment(), ExtraDeleteListener {
 
     private lateinit var binding: FragmentCartBinding
     private var carts: ArrayList<CartModel> = ArrayList();
@@ -69,6 +64,8 @@ class CartFragment : Fragment(), ExtraDeleteListener, SendNotes {
                             cartAdapter =
                                 CartAdapter(carts, ::Counter, ::OnActionClicked, this@CartFragment)
                             binding.rvCart.adapter = cartAdapter
+                            cartAdapter.notifyItemRangeChanged(0, carts.size)
+                            cartAdapter.notifyDataSetChanged()
                         }
 
                         override fun onFailure(call: Call<CartModelList>, t: Throwable) {
@@ -79,76 +76,22 @@ class CartFragment : Fragment(), ExtraDeleteListener, SendNotes {
                 }
         }
         binding.selectLocation.setOnClickListener {
-            val sheet = BottomSheetNotesFragment(this@CartFragment)
+            var total = 0.0
+            var amount = 0
+            for (cart in carts) {
+                total = cart.quantity.toDouble() * cart.price.toDouble()
+                amount++
+                if (cart.extra != null) {
+                    for (extra in cart.extra) {
+                        total += extra.price.toDouble()
+                    }
+                }
+            }
+            val sheet = BottomSheetNotesFragment(carts, total, amount)
             sheet.show(
                 requireActivity().supportFragmentManager,
                 "BottomSheetNotesFragment"
             )
-            val parentJsonObject = JsonObject();
-            parentJsonObject.addProperty("total", "100")
-            parentJsonObject.addProperty("delivery", "120")
-            parentJsonObject.addProperty("amount", "25")
-            parentJsonObject.addProperty("status", "mobile_app")
-            parentJsonObject.addProperty("notes", notes)
-            parentJsonObject.addProperty("area_id", "1")
-            parentJsonObject.addProperty("branch_id", "1")
-            val jsonArrayChildItems = JsonArray();
-            val os = ByteArrayOutputStream()
-            for (cart in carts) {
-                val jsonObjectItemsChild = JsonObject();
-                jsonObjectItemsChild.addProperty("name", cart.name)
-                jsonObjectItemsChild.addProperty("price", cart.price)
-                jsonObjectItemsChild.addProperty("size", cart.size)
-                jsonObjectItemsChild.addProperty("quantity", cart.quantity)
-                val jsonArrayChildExtras = JsonArray();
-                try {
-                    if (cart.extra?.isNotEmpty() == true) {
-                        for (extra in cart.extra) {
-                            val jsonObjectChildExtra = JsonObject();
-                            jsonObjectChildExtra.addProperty("name", extra.name)
-                            jsonObjectChildExtra.addProperty("price", extra.price)
-                            jsonObjectChildExtra.addProperty("size", extra.size)
-                            jsonObjectChildExtra.addProperty("quantity", extra.quantity)
-                            jsonArrayChildExtras.add(jsonObjectChildExtra)
-                            jsonObjectItemsChild.add("extra", jsonArrayChildExtras)
-                        }
-                    } else {
-
-                    }
-                    jsonArrayChildItems.add(jsonObjectItemsChild);
-                } catch (e: NullPointerException) {
-                    Log.e(TAG, "onViewCreated: ${e.message}")
-                }
-            }
-            parentJsonObject.add("items", jsonArrayChildItems);
-            Log.d(TAG, "onViewCreated: $parentJsonObject")
-            /* viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
-                 viewModel.setOrderComplete(
-                     "Bearer " + SessionManger.getToken(requireActivity()).toString(),
-                     parentJsonObject
-                 ).observe(viewLifecycleOwner) {
-                     it.enqueue(object : Callback<OrderModelList> {
-                         override fun onResponse(
-                             call: Call<OrderModelList>,
-                             response: Response<OrderModelList>
-                         ) {
-                             Toast.makeText(
-                                 requireActivity(),
-                                 response.body()!!.message.toString(),
-                                 Toast.LENGTH_LONG
-                             ).show()
-                         }
-
-                         override fun onFailure(call: Call<OrderModelList>, t: Throwable) {
-                             Toast.makeText(
-                                 requireActivity(),
-                                 t.message,
-                                 Toast.LENGTH_LONG
-                             ).show()
-                         }
-                     })
-                 }
-             }*/
         }
     }
 
@@ -163,19 +106,13 @@ class CartFragment : Fragment(), ExtraDeleteListener, SendNotes {
                             cartModel.id.toString()
                         ).observe(viewLifecycleOwner) { it ->
                             try {
-                                it.enqueue(object : Callback<MessageCallback> {
+                                it.clone().enqueue(object : Callback<MessageCallback> {
                                     @SuppressLint("NotifyDataSetChanged")
                                     override fun onResponse(
                                         call: Call<MessageCallback>,
                                         response: Response<MessageCallback>
                                     ) {
                                         try {
-                                            if (carts.size == 1) {
-                                                carts.removeAt(0);
-                                                cartAdapter.notifyItemRemoved(0)
-                                                cartAdapter.notifyItemRangeChanged(0, carts.size)
-                                                cartAdapter.notifyDataSetChanged()
-                                            }
                                             cartAdapter.notifyItemRemoved(pos)
                                             cartAdapter.notifyItemRangeChanged(0, carts.size)
                                             cartAdapter.notifyDataSetChanged()
@@ -221,11 +158,6 @@ class CartFragment : Fragment(), ExtraDeleteListener, SendNotes {
         carts[posParent].extra?.removeAt(pos)
         cartAdapter.notifyItemRangeChanged(0, carts.size);
         Log.e(TAG, "onExtraDeleteListener: ${extra.name}   -  $posParent")
-    }
-
-    override fun onTextNote(text: String) {
-        notes = text;
-        Toast.makeText(requireActivity(), text, Toast.LENGTH_LONG).show()
     }
 
 

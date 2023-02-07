@@ -1,10 +1,12 @@
 package com.doubleclick.pizzastation.android.Adapter
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.doubleclick.pizzastation.android.FoodItemActivity
 import com.doubleclick.pizzastation.android.HomeActivity
 import com.doubleclick.pizzastation.android.R
 import com.doubleclick.pizzastation.android.ViewHolder.FavoriteViewHolder
@@ -39,6 +41,11 @@ class FavoriteAdapter(
         holder.name_food.text = favoriteModel[position].menu.name
         holder.shineButton.setOnClickListener {
             onFavoriteCheckedItem.onFavoriteChecked(position, favoriteModel[position])
+        }
+        holder.itemView.setOnClickListener {
+            val intent = Intent(holder.itemView.context, FoodItemActivity::class.java)
+            intent.putExtra("menu", favoriteModel[position].menu)
+            holder.itemView.context.startActivity(intent)
         }
     }
 

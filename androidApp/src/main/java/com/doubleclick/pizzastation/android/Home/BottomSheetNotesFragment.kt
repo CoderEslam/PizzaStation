@@ -5,13 +5,16 @@ import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.Spinner
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.doubleclick.pizzastation.android.*
 import com.doubleclick.pizzastation.android.Adapter.SpinnerAdapterBranches
 import com.doubleclick.pizzastation.android.Adapter.SpinnerAdapterGoverorate
@@ -19,13 +22,14 @@ import com.doubleclick.pizzastation.android.Repository.remot.RepositoryRemot
 import com.doubleclick.pizzastation.android.ViewModel.MainViewModel
 import com.doubleclick.pizzastation.android.ViewModel.MainViewModelFactory
 import com.doubleclick.pizzastation.android.`interface`.OnSpinnerEventsListener
-import com.doubleclick.pizzastation.android.`interface`.SendNotes
 import com.doubleclick.pizzastation.android.databinding.FragmentNotesBottomSheetBinding
-import com.doubleclick.pizzastation.android.model.BranchesList
-import com.doubleclick.pizzastation.android.model.BranchesModel
-import com.doubleclick.pizzastation.android.model.GovernorateList
-import com.doubleclick.pizzastation.android.model.GovernorateModel
+import com.doubleclick.pizzastation.android.model.*
+import com.doubleclick.pizzastation.android.utils.SessionManger
 import com.doubleclick.pizzastation.android.views.superbottomsheet.SuperBottomSheetFragment
+import com.google.gson.JsonArray
+import com.google.gson.JsonObject
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -36,7 +40,11 @@ import java.util.stream.Collectors
 /**
  * Created By Eslam Ghazy on 1/25/2023
  */
-class BottomSheetNotesFragment(private val sendNotes: SendNotes) : SuperBottomSheetFragment() {
+class BottomSheetNotesFragment(
+    private val carts: ArrayList<CartModel>,
+    private val total: Double,
+    private val amount: Int
+) : SuperBottomSheetFragment() {
 
     private lateinit var binding: FragmentNotesBottomSheetBinding
     private val TAG = "BottomSheetFragment"
@@ -61,20 +69,6 @@ class BottomSheetNotesFragment(private val sendNotes: SendNotes) : SuperBottomSh
         super.onViewCreated(view, savedInstanceState)
         val viewModelFactory = MainViewModelFactory(RepositoryRemot())
         viewModel = ViewModelProvider(this, viewModelFactory)[MainViewModel::class.java]
-        binding.notes.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-
-            }
-
-            override fun onTextChanged(char: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                sendNotes.onTextNote(char.toString())
-            }
-
-            override fun afterTextChanged(p0: Editable?) {
-
-            }
-
-        })
 
         viewModel.getBranches().observe(viewLifecycleOwner) {
             it.enqueue(object : Callback<BranchesList> {
@@ -148,7 +142,76 @@ class BottomSheetNotesFragment(private val sendNotes: SendNotes) : SuperBottomSh
 
 
         binding.completeOrder.setOnClickListener {
-            sendNotes.onTextNote(binding.notes.text.toString())
+            val parentJsonObject = JsonObject();
+            parentJsonObject.addProperty("total", total)
+            parentJsonObject.addProperty("delivery", menuOptionItemSelectedBranchesModel.delivery)
+            parentJsonObject.addProperty("amount", amount)
+            parentJsonObject.addProperty("status", "mobile_app")
+            parentJsonObject.addProperty("notes", binding.notes.text.toString())
+            parentJsonObject.addProperty(
+                "area_id",
+                menuOptionItemSelectedGovernorateModel.id.toString()
+            )
+            parentJsonObject.addProperty(
+                "branch_id",
+                menuOptionItemSelectedBranchesModel.id.toString()
+            )
+            val jsonArrayChildItems = JsonArray();
+            for (cart in carts) {
+                val jsonObjectItemsChild = JsonObject();
+                jsonObjectItemsChild.addProperty("name", cart.name)
+                jsonObjectItemsChild.addProperty("price", cart.price)
+                jsonObjectItemsChild.addProperty("size", cart.size)
+                jsonObjectItemsChild.addProperty("quantity", cart.quantity)
+                val jsonArrayChildExtras = JsonArray();
+                try {
+                    if (cart.extra?.isNotEmpty() == true) {
+                        for (extra in cart.extra) {
+                            val jsonObjectChildExtra = JsonObject();
+                            jsonObjectChildExtra.addProperty("name", extra.name)
+                            jsonObjectChildExtra.addProperty("price", extra.price)
+                            jsonObjectChildExtra.addProperty("size", extra.size)
+                            jsonObjectChildExtra.addProperty("quantity", extra.quantity)
+                            jsonArrayChildExtras.add(jsonObjectChildExtra)
+                            jsonObjectItemsChild.add("extra", jsonArrayChildExtras)
+                        }
+                    } else {
+
+                    }
+                    jsonArrayChildItems.add(jsonObjectItemsChild);
+                } catch (e: NullPointerException) {
+                    Log.e(TAG, "onViewCreated: ${e.message}")
+                }
+            }
+            parentJsonObject.add("items", jsonArrayChildItems);
+            Log.d(TAG, "onViewCreated: $parentJsonObject")
+            viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
+                viewModel.setOrderComplete(
+                    "Bearer " + SessionManger.getToken(requireActivity()).toString(),
+                    parentJsonObject
+                ).observe(viewLifecycleOwner) {
+                    it.enqueue(object : Callback<OrderModelList> {
+                        override fun onResponse(
+                            call: Call<OrderModelList>,
+                            response: Response<OrderModelList>
+                        ) {
+                            Toast.makeText(
+                                requireActivity(),
+                                response.body()!!.message.toString(),
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+
+                        override fun onFailure(call: Call<OrderModelList>, t: Throwable) {
+                            Toast.makeText(
+                                requireActivity(),
+                                t.message,
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                    })
+                }
+            }
         }
 
     }

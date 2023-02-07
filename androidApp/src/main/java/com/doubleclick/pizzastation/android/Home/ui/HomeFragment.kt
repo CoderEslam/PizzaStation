@@ -17,6 +17,10 @@ import com.doubleclick.pizzastation.android.ViewModel.MainViewModelFactory
 import com.doubleclick.pizzastation.android.databinding.FragmentHomeBinding
 import com.doubleclick.pizzastation.android.`interface`.OpenSearchView
 import com.doubleclick.pizzastation.android.`interface`.itemListener
+import com.doubleclick.pizzastation.android.api.RetrofitInstanceFCM
+import com.doubleclick.pizzastation.android.fcm.model.Data
+import com.doubleclick.pizzastation.android.fcm.model.MyResponse
+import com.doubleclick.pizzastation.android.fcm.model.Sender
 import com.doubleclick.pizzastation.android.model.*
 import com.doubleclick.pizzastation.android.views.SimpleSearchView.SimpleSearchView
 import com.doubleclick.pizzastation.android.views.SimpleSearchView.utils.DimensUtils.convertDpToPx
@@ -88,6 +92,23 @@ class HomeFragment : Fragment(), itemListener, OpenSearchView {
 
         binding.fab.setOnClickListener {
             startActivity(Intent(requireActivity(), CustomizePizzaActivity::class.java))
+//            val sender = Sender(Data(""), "")
+//            RetrofitInstanceFCM.api.sendNotification(sender).enqueue(object : Callback<MyResponse> {
+//                override fun onResponse(call: Call<MyResponse>, response: Response<MyResponse>) {
+//                    if (response.code() == 200) {
+//                        if (response.body()!!.success != 1) {
+//                            Toast.makeText(context, "Failed!", Toast.LENGTH_SHORT)
+//                                .show()
+//                        }
+//                    }
+//                }
+//
+//                override fun onFailure(call: Call<MyResponse>, t: Throwable) {
+//
+//                }
+//
+//
+//            })
             if (isSearch) {
                 setupSearchView();
                 isSearch = false

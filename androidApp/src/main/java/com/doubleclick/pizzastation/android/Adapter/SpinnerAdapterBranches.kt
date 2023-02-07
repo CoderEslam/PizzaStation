@@ -30,7 +30,7 @@ class SpinnerAdapterBranches(val context: Context, val branchesModelList: List<B
         val rootView: View =
             LayoutInflater.from(context).inflate(R.layout.text_spinner_layout, viewGroup, false)
         val text: TextView = rootView.findViewById(R.id.text_spinner);
-        text.text = branchesModelList[i].branch_name
+        text.text = branchesModelList[i].branch_name.trim()
         return rootView;
     }
 

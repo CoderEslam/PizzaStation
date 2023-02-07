@@ -2,6 +2,7 @@ package com.doubleclick.pizzastation.android.model
 
 data class CartModel(
     val extra: MutableList<Extra>? = null,
+    val menuModel: MenuModel,
     val id: Int = -1,
     val name: String,
     val price: String,
@@ -10,4 +11,4 @@ data class CartModel(
     val size: String,
     val user_id: Int = -1,
     var count: Int = -1
-):java.io.Serializable
+) : java.io.Serializable
