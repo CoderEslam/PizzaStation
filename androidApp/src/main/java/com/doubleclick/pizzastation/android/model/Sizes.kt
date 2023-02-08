@@ -5,5 +5,4 @@ data class Sizes(
     val sizeName: String,
     val image: String,
     val sizePrice: String,
-    val id: Int
 )

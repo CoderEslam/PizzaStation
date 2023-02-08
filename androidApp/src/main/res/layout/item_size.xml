@@ -38,7 +38,6 @@
                 android:background="@drawable/circle_shadow"
                 android:scaleType="fitCenter" />
 
-
             <TextView
                 android:id="@+id/tv_size"
                 android:layout_width="wrap_content"

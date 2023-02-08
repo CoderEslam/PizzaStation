@@ -87,6 +87,10 @@ dependencies {
     implementation("com.myfatoorah:myfatoorah:2.2.15")
     implementation("com.github.chivorns:smartmaterialspinner:1.5.0")
 
+    implementation("com.iceteck.silicompressorr:silicompressor:2.2.4")
+
+
+
 //    implementation("com.android.support:multidex:2.0.1")
 
 }

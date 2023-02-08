@@ -1,6 +1,5 @@
 package com.doubleclick.pizzastation.android
 
-import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -25,12 +24,10 @@ import com.doubleclick.pizzastation.android.`interface`.ItemSizeExtraListener
 import com.doubleclick.pizzastation.android.`interface`.ItemSizeListener
 import com.doubleclick.pizzastation.android.databinding.ActivityFoodItemBinding
 import com.doubleclick.pizzastation.android.model.*
-import org.json.JSONObject
 import com.doubleclick.pizzastation.android.utils.Constants.IMAGE_URL
 import com.doubleclick.pizzastation.android.utils.SessionManger
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
-import com.squareup.picasso.Picasso
 import kotlinx.coroutines.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -74,8 +71,7 @@ class FoodItemActivity : AppCompatActivity(), ItemSizeListener, ItemExtraListene
                     menuModel?.name.toString(),
                     "FB",
                     menuModel?.image ?: "",
-                    menuModel?.FB ?: "0",
-                    0
+                    menuModel?.FB ?: "0"
                 )
             )
         }
@@ -85,8 +81,7 @@ class FoodItemActivity : AppCompatActivity(), ItemSizeListener, ItemExtraListene
                     menuModel?.name.toString(),
                     "L",
                     menuModel?.image ?: "",
-                    menuModel?.L ?: "0",
-                    1
+                    menuModel?.L ?: "0"
                 )
             )
         }
@@ -95,7 +90,7 @@ class FoodItemActivity : AppCompatActivity(), ItemSizeListener, ItemExtraListene
                 Sizes(
                     menuModel?.name.toString(), "M",
                     menuModel?.image ?: "",
-                    menuModel?.M ?: "0", 2
+                    menuModel?.M ?: "0"
                 )
             )
         }
@@ -104,7 +99,7 @@ class FoodItemActivity : AppCompatActivity(), ItemSizeListener, ItemExtraListene
                 Sizes(
                     menuModel?.name.toString(), "Slice",
                     menuModel?.image ?: "",
-                    menuModel?.Slice ?: "0", 3
+                    menuModel?.Slice ?: "0"
                 )
             )
         }
@@ -113,7 +108,7 @@ class FoodItemActivity : AppCompatActivity(), ItemSizeListener, ItemExtraListene
                 Sizes(
                     menuModel?.name.toString(), "XXL",
                     menuModel?.image ?: "",
-                    menuModel?.XXL ?: "0", 4
+                    menuModel?.XXL ?: "0"
                 )
             )
         }
@@ -122,7 +117,7 @@ class FoodItemActivity : AppCompatActivity(), ItemSizeListener, ItemExtraListene
                 Sizes(
                     menuModel?.name.toString(), "Half L",
                     menuModel?.image ?: "",
-                    menuModel?.half_L ?: "0", 5
+                    menuModel?.half_L ?: "0"
                 )
             )
         }
@@ -132,8 +127,7 @@ class FoodItemActivity : AppCompatActivity(), ItemSizeListener, ItemExtraListene
                     menuModel?.name.toString(),
                     "Half stuffed crust L",
                     menuModel?.image ?: "",
-                    menuModel?.half_stuffed_crust_L ?: "0",
-                    6
+                    menuModel?.half_stuffed_crust_L ?: "0"
                 )
             )
         }
@@ -143,8 +137,7 @@ class FoodItemActivity : AppCompatActivity(), ItemSizeListener, ItemExtraListene
                     menuModel?.name.toString(),
                     "Quarter XXL",
                     menuModel?.image ?: "",
-                    menuModel?.quarter_XXL ?: "0",
-                    7
+                    menuModel?.quarter_XXL ?: "0"
                 )
             )
         }
@@ -154,8 +147,7 @@ class FoodItemActivity : AppCompatActivity(), ItemSizeListener, ItemExtraListene
                     menuModel?.name.toString(),
                     "Stuffed crust L",
                     menuModel?.image ?: "",
-                    menuModel?.stuffed_crust_L ?: "0",
-                    8
+                    menuModel?.stuffed_crust_L ?: "0"
                 )
             )
         }
@@ -165,12 +157,11 @@ class FoodItemActivity : AppCompatActivity(), ItemSizeListener, ItemExtraListene
                     menuModel?.name.toString(),
                     "Stuffed crust M",
                     menuModel?.image ?: "",
-                    menuModel?.stuffed_crust_M ?: "0",
-                    9
+                    menuModel?.stuffed_crust_M ?: "0"
                 )
             )
         }
-        itemSizeAdapter = ItemSizeAdapter(this, sizes,"")
+        itemSizeAdapter = ItemSizeAdapter(this, sizes, "")
         binding.rvSizes.adapter = itemSizeAdapter
 
 
@@ -178,7 +169,8 @@ class FoodItemActivity : AppCompatActivity(), ItemSizeListener, ItemExtraListene
             it.enqueue(object : Callback<MenuList> {
                 override fun onResponse(call: Call<MenuList>, response: Response<MenuList>) {
                     binding.extrasRv.apply {
-                        adapter = ExtrasAdapter(this@FoodItemActivity, response.body()!!.data)
+                        adapter =
+                            ExtrasAdapter(this@FoodItemActivity, response.body()!!.data, null)
                     }
                 }
 
@@ -346,6 +338,7 @@ class FoodItemActivity : AppCompatActivity(), ItemSizeListener, ItemExtraListene
                 );
                 jsonObjectParent.add("menuModel", jsonObjectMenuModel)
                 val jsonArray = JsonArray();
+
                 for (extraItem in extraList) {
                     val jsonObjectChild = JsonObject();
                     jsonObjectChild.addProperty("name", extraItem.name)
@@ -421,8 +414,7 @@ class FoodItemActivity : AppCompatActivity(), ItemSizeListener, ItemExtraListene
                     menuModel?.name.toString(),
                     "FB",
                     menuModel?.image ?: "",
-                    menuModel?.FB ?: "0",
-                    0
+                    menuModel?.FB ?: "0"
                 )
             )
         }
@@ -432,8 +424,7 @@ class FoodItemActivity : AppCompatActivity(), ItemSizeListener, ItemExtraListene
                     menuModel?.name.toString(),
                     "L",
                     menuModel?.image ?: "",
-                    menuModel?.L ?: "0",
-                    1
+                    menuModel?.L ?: "0"
                 )
             )
         }
@@ -443,8 +434,7 @@ class FoodItemActivity : AppCompatActivity(), ItemSizeListener, ItemExtraListene
                     menuModel?.name.toString(),
                     "M",
                     menuModel?.image ?: "",
-                    menuModel?.M ?: "0",
-                    2
+                    menuModel?.M ?: "0"
                 )
             )
         }
@@ -454,8 +444,7 @@ class FoodItemActivity : AppCompatActivity(), ItemSizeListener, ItemExtraListene
                     menuModel?.name.toString(),
                     "Slice",
                     menuModel?.image ?: "",
-                    menuModel?.Slice ?: "0",
-                    3
+                    menuModel?.Slice ?: "0"
                 )
             )
         }
@@ -465,8 +454,7 @@ class FoodItemActivity : AppCompatActivity(), ItemSizeListener, ItemExtraListene
                     menuModel?.name.toString(),
                     "XXL",
                     menuModel?.image ?: "",
-                    menuModel?.XXL ?: "0",
-                    4
+                    menuModel?.XXL ?: "0"
                 )
             )
         }
@@ -476,8 +464,7 @@ class FoodItemActivity : AppCompatActivity(), ItemSizeListener, ItemExtraListene
                     menuModel?.name.toString(),
                     "Half L",
                     menuModel?.image ?: "",
-                    menuModel?.half_L ?: "0",
-                    5
+                    menuModel?.half_L ?: "0"
                 )
             )
         }
@@ -487,8 +474,7 @@ class FoodItemActivity : AppCompatActivity(), ItemSizeListener, ItemExtraListene
                     menuModel?.name.toString(),
                     "Half stuffed crust L",
                     menuModel?.image ?: "",
-                    menuModel?.half_stuffed_crust_L ?: "0",
-                    6
+                    menuModel?.half_stuffed_crust_L ?: "0"
                 )
             )
         }
@@ -497,8 +483,7 @@ class FoodItemActivity : AppCompatActivity(), ItemSizeListener, ItemExtraListene
                 Sizes(
                     menuModel?.name.toString(),
                     "Quarter XXL", menuModel?.image ?: "",
-                    menuModel?.quarter_XXL ?: "0",
-                    7
+                    menuModel?.quarter_XXL ?: "0"
                 )
             )
         }
@@ -508,8 +493,7 @@ class FoodItemActivity : AppCompatActivity(), ItemSizeListener, ItemExtraListene
                     menuModel?.name.toString(),
                     "Stuffed crust L",
                     menuModel?.image ?: "",
-                    menuModel?.stuffed_crust_L ?: "0",
-                    8
+                    menuModel?.stuffed_crust_L ?: "0"
                 )
             )
         }
@@ -519,8 +503,7 @@ class FoodItemActivity : AppCompatActivity(), ItemSizeListener, ItemExtraListene
                     menuModel?.name.toString(),
                     "Stuffed crust M",
                     menuModel?.image ?: "",
-                    menuModel?.stuffed_crust_M ?: "0",
-                    9
+                    menuModel?.stuffed_crust_M ?: "0"
                 )
             )
         }
@@ -555,6 +538,10 @@ class FoodItemActivity : AppCompatActivity(), ItemSizeListener, ItemExtraListene
         builder.setView(view);
         builder.show()
 
+
+    }
+
+    override fun onItemExtraListenerDeleted(menuModel: MenuModel?) {
 
     }
 

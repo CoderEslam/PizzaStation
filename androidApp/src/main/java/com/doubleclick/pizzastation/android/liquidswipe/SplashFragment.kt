@@ -55,6 +55,7 @@ class SplashFragment : Fragment() {
                     SessionManger.getToken(activity as MainActivity)?.isNotEmpty() == true
                 ) {
                     startActivity(Intent(requireActivity(), HomeActivity::class.java))
+                    requireActivity().finish()
                 }
             }
             background = resources.getDrawable(R.drawable.bg)

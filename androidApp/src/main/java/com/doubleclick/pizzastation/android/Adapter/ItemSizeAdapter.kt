@@ -52,7 +52,6 @@ class ItemSizeAdapter(
     }
 
     override fun onBindViewHolder(holder: ItemCategoryViewHolder, position: Int) {
-
         initializeViews(sizes[position], holder);
     }
 
@@ -74,6 +73,7 @@ class ItemSizeAdapter(
                         R.color.red
                     )
                 )
+            itemListener.onItemSizeListener(model.sizeName, model.sizePrice)
         } else {
             holder.card.setCardBackgroundColor(
                 holder.itemView.context.resources.getColor(

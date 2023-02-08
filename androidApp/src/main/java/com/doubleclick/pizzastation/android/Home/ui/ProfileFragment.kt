@@ -1,7 +1,10 @@
 package com.doubleclick.pizzastation.android.Home.ui
 
+import android.app.Activity.RESULT_OK
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,11 +16,15 @@ import com.doubleclick.pizzastation.android.OffersActivity
 import com.doubleclick.pizzastation.android.OrdersActivity
 import com.doubleclick.pizzastation.android.databinding.FragmentProfileBinding
 import com.doubleclick.pizzastation.android.utils.SessionManger
+import com.iceteck.silicompressorr.SiliCompressor
 import kotlinx.coroutines.launch
+import java.io.File
+
 
 class ProfileFragment : Fragment() {
 
     private lateinit var binding: FragmentProfileBinding
+    private lateinit var uri: Uri
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -57,5 +64,29 @@ class ProfileFragment : Fragment() {
                 )
             }
         }
+
     }
+
+    fun openImage() {
+        val intent = Intent();
+        intent.type = "image/*";
+        intent.action = Intent.ACTION_GET_CONTENT;
+        startActivityForResult(intent, 1000);
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == 1000 && resultCode == RESULT_OK && data != null) {
+            uri = data.data!!
+            val filePath = SiliCompressor.with(requireActivity()).compress(
+                uri.toString(),
+                File(
+                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+                        .toString() + "/Pizza/Images/"
+                )
+            )
+        }
+    }
+
+
 }

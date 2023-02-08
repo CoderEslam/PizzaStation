@@ -15,20 +15,27 @@ import com.doubleclick.pizzastation.android.`interface`.ItemSizeListener
 import com.doubleclick.pizzastation.android.`interface`.itemListener
 import com.doubleclick.pizzastation.android.model.CategoryList
 import com.doubleclick.pizzastation.android.model.CategoryModel
+import com.doubleclick.pizzastation.android.model.Extra
 import com.doubleclick.pizzastation.android.model.Sizes
 
 /**
  * Created By Eslam Ghazy on 1/21/2023
  */
 
-class ItemExtraSizeAdapter(itemListener: ItemSizeExtraListener, sizes: ArrayList<Sizes>) :
+class ItemExtraSizeAdapter(
+    itemListener: ItemSizeExtraListener,
+    sizes: ArrayList<Sizes>,
+    lastCheckedPosition: String = ""
+) :
     RecyclerView.Adapter<ItemCategoryViewHolder>() {
 
-    private var lastCheckedPosition = -1
+    private var lastCheckedPosition: String
     var itemListener: ItemSizeExtraListener
     var sizes: ArrayList<Sizes>
 
+
     init {
+        this.lastCheckedPosition = lastCheckedPosition
         this.itemListener = itemListener
         this.sizes = sizes
     }
@@ -52,7 +59,7 @@ class ItemExtraSizeAdapter(itemListener: ItemSizeExtraListener, sizes: ArrayList
         holder.tv_size.text = sizes[position].sizeName
         holder.tv_price.text = sizes[position].sizePrice
         holder.tv_size.isSelected = true
-        if (sizes[position].id == lastCheckedPosition) {
+        if (sizes[position].sizeName == lastCheckedPosition) {
             holder.tv_size.setTextColor(
                 holder.itemView.context.resources.getColor(
                     R.color.yellow
@@ -84,7 +91,7 @@ class ItemExtraSizeAdapter(itemListener: ItemSizeExtraListener, sizes: ArrayList
                 sizes[position].sizeName,
                 sizes[position].image
             )
-            lastCheckedPosition = sizes[position].id
+            lastCheckedPosition = sizes[position].sizeName
             notifyItemRangeChanged(0, sizes.size)
         }
     }

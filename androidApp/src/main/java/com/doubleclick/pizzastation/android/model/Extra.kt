@@ -12,7 +12,7 @@ data class Extra(
         if (this === other) return true
         if (other !is Extra) return false
 
-        if (name != other.name) return false
+        if (name.trim() != other.name.trim()) return false
 
         return true
     }

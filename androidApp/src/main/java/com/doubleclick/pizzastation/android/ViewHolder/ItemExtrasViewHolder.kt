@@ -15,5 +15,6 @@ class ItemExtrasViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     val name: TextView = itemView.findViewById(R.id.name);
     val price: TextView = itemView.findViewById(R.id.price);
     val imageItem: ImageView = itemView.findViewById(R.id.image_item);
+    val selected: ImageView = itemView.findViewById(R.id.selected);
     val card_item_menu: CardView = itemView.findViewById(R.id.card_item_menu);
 }
