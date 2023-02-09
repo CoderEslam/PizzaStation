@@ -84,6 +84,7 @@ class SignUpFragment : Fragment() {
                                     response.body()!!.user.id.toString(),
                                     binding.userPassword.text.toString(),
                                     response.body()!!.user.email,
+                                    response.body()!!.user.name
                                 )
                             }
                             startActivity(Intent(requireActivity(), MapsActivity::class.java))

@@ -20,6 +20,10 @@ import com.doubleclick.pizzastation.android.databinding.FragmentCartBinding
 import com.doubleclick.pizzastation.android.model.*
 import com.doubleclick.pizzastation.android.utils.SessionManger
 import com.doubleclick.pizzastation.android.views.swipetoactionlayout.SwipeAction
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -27,6 +31,7 @@ import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.util.concurrent.TimeUnit
 
 class CartFragment : Fragment(), ExtraDeleteListener {
 
@@ -54,18 +59,25 @@ class CartFragment : Fragment(), ExtraDeleteListener {
         GlobalScope.launch(Dispatchers.Main) {
             viewModel.getCart("Bearer " + SessionManger.getToken(requireActivity()))
                 .observe(requireActivity()) {
-                    it.enqueue(object : Callback<CartModelList> {
+                    it.clone().enqueue(object : Callback<CartModelList> {
+                        @SuppressLint("NotifyDataSetChanged")
                         override fun onResponse(
                             call: Call<CartModelList>,
                             response: Response<CartModelList>
                         ) {
-                            carts.addAll(response.body()!!.data)
-                            Log.e(TAG, "onResponse: $carts")
-                            cartAdapter =
-                                CartAdapter(carts, ::Counter, ::OnActionClicked, this@CartFragment)
-                            binding.rvCart.adapter = cartAdapter
-                            cartAdapter.notifyItemRangeChanged(0, carts.size)
-                            cartAdapter.notifyDataSetChanged()
+                            try {
+                                carts = response.body()!!.data as ArrayList<CartModel>
+                                cartAdapter = CartAdapter(
+                                        carts,
+                                        ::Counter,
+                                        ::OnActionClicked,
+                                        this@CartFragment
+                                    )
+                                binding.rvCart.adapter = cartAdapter
+                                cartAdapter.notifyItemRangeChanged(0, carts.size)
+                                cartAdapter.notifyDataSetChanged()
+                            } catch (e: NullPointerException) { }
+
                         }
 
                         override fun onFailure(call: Call<CartModelList>, t: Throwable) {
@@ -75,6 +87,9 @@ class CartFragment : Fragment(), ExtraDeleteListener {
                     })
                 }
         }
+
+
+
         binding.selectLocation.setOnClickListener {
             var total = 0.0
             var amount = 0
@@ -159,6 +174,5 @@ class CartFragment : Fragment(), ExtraDeleteListener {
         cartAdapter.notifyItemRangeChanged(0, carts.size);
         Log.e(TAG, "onExtraDeleteListener: ${extra.name}   -  $posParent")
     }
-
 
 }

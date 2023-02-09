@@ -6,6 +6,8 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.doubleclick.pizzastation.android.utils.Constants.EMAIL_KEY
 import com.doubleclick.pizzastation.android.utils.Constants.ID_KEY
+import com.doubleclick.pizzastation.android.utils.Constants.IMAGE_KEY
+import com.doubleclick.pizzastation.android.utils.Constants.NAME_KEY
 import com.doubleclick.pizzastation.android.utils.Constants.PASSWORD_KEY
 import com.doubleclick.pizzastation.android.utils.Constants.TOKEN_KEY
 import com.doubleclick.pizzastation.android.utils.DataStore.dataStore
@@ -22,11 +24,13 @@ object SessionManger {
         token: String,
         id: String,
         password: String,
-        email: String
+        email: String,
+        name: String,
     ) {
         val TokenKey = stringPreferencesKey(TOKEN_KEY)
         val passwordKey = stringPreferencesKey(PASSWORD_KEY)
         val emailKey = stringPreferencesKey(EMAIL_KEY)
+        val nameKey = stringPreferencesKey(NAME_KEY)
         val idKey = stringPreferencesKey(ID_KEY)
         /*
         * to save name , email , token in local phone by preferences
@@ -39,9 +43,10 @@ object SessionManger {
         );
         context.dataStore.edit { preferences ->
             preferences[TokenKey] = token
-            preferences[passwordKey] = id
-            preferences[idKey] = password
+            preferences[passwordKey] = password
+            preferences[idKey] = id
             preferences[emailKey] = email
+            preferences[nameKey] = name
         }
 
 
@@ -55,6 +60,25 @@ object SessionManger {
         val TokenKey = stringPreferencesKey(TOKEN_KEY)
         val preferences = context.dataStore.data.first()
         return preferences[TokenKey]
+    }
+
+    suspend fun getName(context: Context): String? {
+        val nameKey = stringPreferencesKey(NAME_KEY)
+        val preferences = context.dataStore.data.first()
+        return preferences[nameKey]
+    }
+
+    suspend fun getImage(context: Context): String? {
+        val imageKey = stringPreferencesKey(IMAGE_KEY)
+        val preferences = context.dataStore.data.first()
+        return preferences[imageKey]
+    }
+
+    suspend fun setImage(context: Context, image: String) {
+        val imageKey = stringPreferencesKey(IMAGE_KEY)
+        context.dataStore.edit { preferences ->
+            preferences[imageKey] = image
+        }
     }
 
 

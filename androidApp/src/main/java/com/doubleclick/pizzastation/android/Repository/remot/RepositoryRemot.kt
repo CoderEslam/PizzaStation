@@ -3,7 +3,10 @@ package com.doubleclick.pizzastation.android.Repository.remot
 import com.doubleclick.pizzastation.android.api.RetrofitInstance
 import com.doubleclick.pizzastation.android.model.*
 import com.google.gson.JsonObject
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Call
+import retrofit2.http.Part
 
 class RepositoryRemot {
 
@@ -80,6 +83,14 @@ class RepositoryRemot {
 
     fun getBranches(): Call<BranchesList> {
         return RetrofitInstance.api.getBranches()
+    }
+
+    fun uploadImage(token: String, id: String, image: MultipartBody.Part): Call<MessageCallback> {
+        return RetrofitInstance.api.uploadImage(token, id, image)
+    }
+
+    fun getImageResponseModel(token: String): Call<ImageResponseCallback> {
+        return RetrofitInstance.api.getImageResponseModel(token)
     }
 
 }

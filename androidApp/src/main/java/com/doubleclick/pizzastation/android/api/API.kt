@@ -2,11 +2,27 @@ package com.doubleclick.pizzastation.android.api
 
 import com.doubleclick.pizzastation.android.model.*
 import com.google.gson.JsonObject
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.http.*
 
 
 interface API {
+
+    @Multipart
+    @POST("user_profile/{id}/uploadImage")
+    fun uploadImage(
+        @Header("Authorization") token: String,
+        @Path("id") id: String,
+        @Part image: MultipartBody.Part,
+    ): Call<MessageCallback>
+
+    @GET("user_profile")
+    fun getImageResponseModel(
+        @Header("Authorization") token: String
+    ): Call<ImageResponseCallback>
+
 
     @Headers("Content-Type: application/json")
     @POST("login")

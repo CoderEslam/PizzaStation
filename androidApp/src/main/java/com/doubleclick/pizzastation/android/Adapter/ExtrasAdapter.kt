@@ -62,7 +62,7 @@ class ExtrasAdapter(
         val e = Extra(menuModel[position].name, "", "", "", "")
         holder.selected.visibility = if (extraList.contains(e)) View.VISIBLE else View.GONE
         holder.selected.setOnClickListener {
-            itemListener.onItemExtraListenerDeleted(menuModel[position])
+            itemListener.onItemExtraListenerDeleted(menuModel[position],position)
         }
         holder.itemView.setOnClickListener {
             itemListener.onItemExtraListener(menuModel[position])

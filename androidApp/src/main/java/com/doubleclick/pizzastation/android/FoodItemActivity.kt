@@ -541,7 +541,7 @@ class FoodItemActivity : AppCompatActivity(), ItemSizeListener, ItemExtraListene
 
     }
 
-    override fun onItemExtraListenerDeleted(menuModel: MenuModel?) {
+    override fun onItemExtraListenerDeleted(menuModel: MenuModel?, pos: Int) {
 
     }
 

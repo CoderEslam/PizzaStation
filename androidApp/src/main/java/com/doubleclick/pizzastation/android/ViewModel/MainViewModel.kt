@@ -7,6 +7,8 @@ import com.doubleclick.pizzastation.android.Repository.remot.RepositoryRemot
 import com.doubleclick.pizzastation.android.api.RetrofitInstance
 import com.doubleclick.pizzastation.android.model.*
 import com.google.gson.JsonObject
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Call
 
 class MainViewModel(private val repository: RepositoryRemot) : ViewModel() {
@@ -32,11 +34,15 @@ class MainViewModel(private val repository: RepositoryRemot) : ViewModel() {
 
     private val updateCardMutableLiveData: MutableLiveData<Call<MessageCallback>> =
         MutableLiveData()
+    private val uploadImageMutableLiveData: MutableLiveData<Call<MessageCallback>> =
+        MutableLiveData()
     private val getFavoriteMutableLiveData: MutableLiveData<Call<FavoriteModelList>> =
         MutableLiveData()
     private val getGovernorateMutableLiveData: MutableLiveData<Call<GovernorateList>> =
         MutableLiveData()
     private val getBranchesMutableLiveData: MutableLiveData<Call<BranchesList>> =
+        MutableLiveData()
+    private val getImageResponseCallbackMutableLiveData: MutableLiveData<Call<ImageResponseCallback>> =
         MutableLiveData()
 
 
@@ -141,6 +147,20 @@ class MainViewModel(private val repository: RepositoryRemot) : ViewModel() {
     fun getBranches(): LiveData<Call<BranchesList>> {
         getBranchesMutableLiveData.value = repository.getBranches();
         return getBranchesMutableLiveData;
+    }
+
+    fun uploadImage(
+        token: String,
+        id: String,
+        image: MultipartBody.Part
+    ): LiveData<Call<MessageCallback>> {
+        uploadImageMutableLiveData.value = repository.uploadImage(token, id, image);
+        return uploadImageMutableLiveData;
+    }
+
+    fun getImageResponseModel(token: String): LiveData<Call<ImageResponseCallback>> {
+        getImageResponseCallbackMutableLiveData.value = repository.getImageResponseModel(token);
+        return getImageResponseCallbackMutableLiveData;
     }
 
 

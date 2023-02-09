@@ -56,13 +56,18 @@ class FavoriteFragment : Fragment(), OnFavoriteCheckedItem {
                             call: Call<FavoriteModelList>,
                             response: Response<FavoriteModelList>
                         ) {
-                            favoriteModelList = response.body()?.data as ArrayList<FavoriteModel>
-                            favoriteAdapter = FavoriteAdapter(
-                                favoriteModelList,
-                                requireActivity() as HomeActivity,
-                                this@FavoriteFragment
-                            )
-                            binding.rvFavorite.adapter = favoriteAdapter
+                            try {
+                                favoriteModelList =
+                                    response.body()?.data as ArrayList<FavoriteModel>
+                                favoriteAdapter = FavoriteAdapter(
+                                    favoriteModelList,
+                                    requireActivity() as HomeActivity,
+                                    this@FavoriteFragment
+                                )
+                                binding.rvFavorite.adapter = favoriteAdapter
+                            } catch (e: IllegalStateException) {
+                            }
+
 
                         }
 

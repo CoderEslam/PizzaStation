@@ -87,6 +87,7 @@ class SignInFragment : Fragment() {
                                         response.body()!!.user.id.toString(),
                                         binding.password.text.toString(),
                                         response.body()!!.user.email,
+                                        response.body()!!.user.name,
                                     )
                                 }
                             } catch (e: NullPointerException) {

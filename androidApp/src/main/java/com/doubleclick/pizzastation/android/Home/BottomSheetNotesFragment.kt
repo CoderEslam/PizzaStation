@@ -98,6 +98,18 @@ class BottomSheetNotesFragment(
             }
 
         })
+        binding.spinnerGovernorate.setSpinnerEventsListener(object :
+            OnSpinnerEventsListener {
+            override fun onPopupWindowOpened(spinner: Spinner?) {
+                binding.spinnerGovernorate.background =
+                    resources.getDrawable(R.drawable.bg_spinner_down)
+            }
+
+            override fun onPopupWindowClosed(spinner: Spinner?) {
+                binding.spinnerGovernorate.background = resources.getDrawable(R.drawable.bg_spinner_up)
+            }
+
+        })
 
 
         viewModel.getGovernorate().observe(viewLifecycleOwner) {

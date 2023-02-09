@@ -7,5 +7,5 @@ import com.doubleclick.pizzastation.android.model.MenuModel
  */
 interface ItemExtraListener {
     fun onItemExtraListener(menuModel: MenuModel?)
-    fun onItemExtraListenerDeleted(menuModel: MenuModel?)
+    fun onItemExtraListenerDeleted(menuModel: MenuModel?, pos: Int)
 }

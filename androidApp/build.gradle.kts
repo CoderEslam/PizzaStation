@@ -89,6 +89,7 @@ dependencies {
 
     implementation("com.iceteck.silicompressorr:silicompressor:2.2.4")
 
+    implementation("io.reactivex.rxjava2:rxandroid:2.0.1")
 
 
 //    implementation("com.android.support:multidex:2.0.1")

@@ -45,6 +45,7 @@ class FoodItemEditActivity : AppCompatActivity(), ItemSizeListener, ItemExtraLis
     private var nameSize: String = ""
     private var priceTotal: Double = 0.0
     private var sizePriceExtras: String = "0"
+    private var sumExtraList: ArrayList<SumExtra> = ArrayList()
     private var sizeNameExtra: String = ""
     private val TAG = "FoodItemActivity"
     private val extraList: ArrayList<Extra> = ArrayList()
@@ -476,12 +477,12 @@ class FoodItemEditActivity : AppCompatActivity(), ItemSizeListener, ItemExtraLis
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    override fun onItemExtraListenerDeleted(menuModel: MenuModel?) {
+    override fun onItemExtraListenerDeleted(menuModel: MenuModel?, pos: Int) {
         val e = Extra(menuModel!!.name, "", "", "", "")
         if (extraList.contains(e)) {
             extraList.remove(e)
-            Log.e(TAG, "onItemExtraListenerDeleted: ${extraList}")
             extrasAdapter.notifyItemRangeChanged(0, extraMenuModelList.size)
+            extrasAdapter.notifyItemChanged(pos)
             extrasAdapter.notifyDataSetChanged()
         }
 
@@ -499,16 +500,28 @@ class FoodItemEditActivity : AppCompatActivity(), ItemSizeListener, ItemExtraLis
             priceTotal = (this.sizePrice * amount).plus(sizePriceExtras.toDouble())
             binding.priceTotal.text = priceTotal.toString() + " ج.م "
             val extra = Extra(sizeSosTypeName, sizePriceExtra, imageExtra, "1", sizeNameExtra)
+            val sum = SumExtra(sizeSosTypeName, sizePriceExtra.toDouble())
             if (extraList.contains(extra)) {
                 extraList[extraList.indexOf(extra)] = extra
                 Toast.makeText(this, "Exist", Toast.LENGTH_LONG).show()
+
             } else {
                 extraList.add(extra)
+//                totalSizePriceExtras += sizePriceExtras.toDouble()
+//                Log.e(TAG, "onItemSizeExtraListener: $totalSizePriceExtras")
                 Toast.makeText(this, "Added", Toast.LENGTH_LONG).show()
             }
         } catch (e: NumberFormatException) {
             Log.e(TAG, "onItemSizeExtraListener btn: ${e.message}")
         }
 
+    }
+
+    private fun sumExtras(): Double {
+        var sum = 0.0
+        for (price in sumExtraList) {
+            sum += price.price
+        }
+        return sum
     }
 }
