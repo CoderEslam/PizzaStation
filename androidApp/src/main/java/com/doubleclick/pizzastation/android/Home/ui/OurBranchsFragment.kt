@@ -83,8 +83,13 @@ class OurBranchsFragment : Fragment() {
 
                     Log.d("governorateModelList", "onResponse: " + response.body()?.data.toString())
                     governorateModelList.addAll(response.body()!!.data)
-                    binding.spinnerGovernorate.adapter =
-                        SpinnerAdapterGoverorate(requireActivity(), governorateModelList)
+                    try {
+                        binding.spinnerGovernorate.adapter =
+                            SpinnerAdapterGoverorate(requireActivity(), governorateModelList)
+                    } catch (e: IllegalStateException) {
+                        Log.e("TAG", "onResponse: ${e.message}")
+                    }
+
                 }
 
                 override fun onFailure(call: Call<GovernorateList>, t: Throwable) {
