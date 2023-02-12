@@ -7,7 +7,9 @@ import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import com.doubleclick.pizzastation.android.MainActivity
 import com.doubleclick.pizzastation.android.R
-import com.paymob.acceptsdk.*
+import com.doubleclick.pizzastation.android.views.acceptsdk.*
+
+//import com.paymob.acceptsdk.*
 
 
 class PaymentActivity : AppCompatActivity() {
@@ -67,19 +69,19 @@ class PaymentActivity : AppCompatActivity() {
                 )
             } else if (resultCode == IntentConstants.TRANSACTION_REJECTED) {
                 // Use the static keys declared in PayResponseKeys to extract the fields you want
-                ToastMaker.displayShortToast(this, extras!!.getString(PayResponseKeys.DATA_MESSAGE))
+                ToastMaker.displayShortToast(this, extras!!.getString(PayResponseKeys.DATA_MESSAGE)!!)
             } else if (resultCode == IntentConstants.TRANSACTION_REJECTED_PARSING_ISSUE) {
                 // User attempted to pay but their transaction was rejected. An error occured while reading the returned JSON
                 ToastMaker.displayShortToast(
                     this,
-                    extras!!.getString(IntentConstants.RAW_PAY_RESPONSE)
+                    extras!!.getString(IntentConstants.RAW_PAY_RESPONSE)!!
                 )
             } else if (resultCode == IntentConstants.TRANSACTION_SUCCESSFUL) {
 
                 // User finished their payment successfully
 
                 // Use the static keys declared in PayResponseKeys to extract the fields you want
-                ToastMaker.displayShortToast(this, extras!!.getString(PayResponseKeys.DATA_MESSAGE))
+                ToastMaker.displayShortToast(this, extras!!.getString(PayResponseKeys.DATA_MESSAGE)!!)
             } else if (resultCode == IntentConstants.TRANSACTION_SUCCESSFUL_PARSING_ISSUE) {
                 // User finished their payment successfully. An error occured while reading the returned JSON.
                 ToastMaker.displayShortToast(
@@ -110,7 +112,7 @@ class PaymentActivity : AppCompatActivity() {
 
                 // Note that a payment process was attempted. You can extract the original returned values
                 // Use the static keys declared in PayResponseKeys to extract the fields you want
-                ToastMaker.displayShortToast(this, extras!!.getString(PayResponseKeys.PENDING))
+                ToastMaker.displayShortToast(this, extras!!.getString(PayResponseKeys.PENDING)!!)
             } else if (resultCode == IntentConstants.USER_CANCELED_3D_SECURE_VERIFICATION_PARSING_ISSUE) {
                 ToastMaker.displayShortToast(
                     this,
@@ -121,7 +123,7 @@ class PaymentActivity : AppCompatActivity() {
                 // User finished their payment successfully. An error occured while reading the returned JSON.
                 ToastMaker.displayShortToast(
                     this,
-                    extras!!.getString(IntentConstants.RAW_PAY_RESPONSE)
+                    extras!!.getString(IntentConstants.RAW_PAY_RESPONSE)!!
                 )
             }
         }

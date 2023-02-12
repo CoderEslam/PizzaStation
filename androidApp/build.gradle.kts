@@ -28,8 +28,19 @@ android {
         kotlinCompilerExtensionVersion = "1.3.0"
     }
     packagingOptions {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+//        resources {
+//            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+//        }
+        packagingOptions {
+            exclude("META-INF/DEPENDENCIES")
+            exclude("META-INF/LICENSE")
+            exclude("META-INF/LICENSE.txt")
+            exclude("META-INF/license.txt")
+            exclude("META-INF/NOTICE")
+            exclude("META-INF/NOTICE.txt")
+            exclude("META-INF/notice.txt")
+            exclude("META-INF/ASL2.0")
+            exclude("META-INF/*.kotlin_module")
         }
     }
     buildTypes {
@@ -91,9 +102,11 @@ dependencies {
 
     implementation("io.reactivex.rxjava2:rxandroid:2.0.1")
 
-    implementation(files("D:\\pizzastation\\androidApp\\libs\\acceptsdk-release"))
-    implementation(files("libs\\acceptsdk-release.aar"))
-
+//    implementation(files("D:\\pizzastation\\androidApp\\libs\\acceptsdk-release"))
+//    implementation(files("libs\\acceptsdk-release.aar"))
+//    implementation("morxander.editcard:EditCard:1.0.1")
+    implementation("com.android.volley:volley:1.2.0")
+    implementation("org.apache.httpcomponents:httpclient:4.5")
 //    implementation("com.android.support:multidex:2.0.1")
 
 }
