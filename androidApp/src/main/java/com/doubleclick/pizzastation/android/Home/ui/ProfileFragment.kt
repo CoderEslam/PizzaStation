@@ -1,38 +1,30 @@
 package com.doubleclick.pizzastation.android.Home.ui
 
 import android.content.ActivityNotFoundException
-import android.content.ContentResolver
-import android.content.ContentValues
-import android.content.Context
 import android.content.Intent
-import android.database.Cursor
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.os.Environment
-import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.Spinner
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresApi
-import androidx.core.content.ContextCompat.startActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.bumptech.glide.Glide
-import com.doubleclick.pizzastation.android.*
-import com.doubleclick.pizzastation.android.Adapter.SpinnerAdapterGoverorate
+import com.doubleclick.pizzastation.android.HistoryActivity
+import com.doubleclick.pizzastation.android.HomeActivity
+import com.doubleclick.pizzastation.android.MainActivity
+import com.doubleclick.pizzastation.android.OrdersActivity
 import com.doubleclick.pizzastation.android.Repository.remot.RepositoryRemot
 import com.doubleclick.pizzastation.android.ViewModel.MainViewModel
 import com.doubleclick.pizzastation.android.ViewModel.MainViewModelFactory
-import com.doubleclick.pizzastation.android.`interface`.OnSpinnerEventsListener
 import com.doubleclick.pizzastation.android.databinding.FragmentProfileBinding
-import com.doubleclick.pizzastation.android.model.*
+import com.doubleclick.pizzastation.android.model.ImageResponseCallback
+import com.doubleclick.pizzastation.android.model.ImageResponseModel
+import com.doubleclick.pizzastation.android.model.MessageCallback
 import com.doubleclick.pizzastation.android.utils.SessionManger
 import com.doubleclick.pizzastation.android.utils.SessionManger.getCurrentEmail
 import com.doubleclick.pizzastation.android.utils.SessionManger.getCurrentUserId
@@ -44,19 +36,18 @@ import com.doubleclick.pizzastation.android.utils.SessionManger.setPhone
 import com.doubleclick.pizzastation.android.utils.UploadRequestBody
 import com.doubleclick.pizzastation.android.utils.getFileName
 import com.iceteck.silicompressorr.SiliCompressor
-import kotlinx.android.synthetic.main.fragment_profile.*
+import com.squareup.picasso.Picasso
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import okhttp3.MediaType
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.io.File
 import java.io.FileInputStream
+import java.io.FileNotFoundException
 import java.io.FileOutputStream
 
 
@@ -69,34 +60,40 @@ class ProfileFragment : Fragment(), UploadRequestBody.UploadCallback {
 
     private val getContent =
         registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
-            this.uri = uri!!
-            val filePath = SiliCompressor.with(requireActivity()).compress(
-                uri.toString(),
-                File(
-                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-                        .toString() + "/Pizza/Images/"
+            try {
+                this.uri = uri!!
+                val filePath = SiliCompressor.with(requireActivity()).compress(
+                    uri.toString(),
+                    File(
+                        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+                            .toString() + "/Pizza/Images/"
+                    )
                 )
-            )
-            binding.imageProfile.setImageURI(Uri.parse(filePath))
-            val parcelFileDescriptor =
-                requireActivity().contentResolver.openFileDescriptor(
-                    Uri.parse(filePath)!!,
-                    "r",
-                    null
-                )
-                    ?: return@registerForActivityResult
-            val inputStream = FileInputStream(parcelFileDescriptor.fileDescriptor)
-            val file =
-                File(
-                    requireActivity().cacheDir,
-                    requireActivity().contentResolver.getFileName(Uri.parse(filePath)!!)
-                )
-            binding.progressBar.visibility = View.VISIBLE
-            val outputStream = FileOutputStream(file)
-            inputStream.copyTo(outputStream)
-            val body = UploadRequestBody(file, "image", this@ProfileFragment)
-            sendBody(body)
+                binding.imageProfile.setImageURI(Uri.parse(filePath))
+                val parcelFileDescriptor =
+                    requireActivity().contentResolver.openFileDescriptor(
+                        Uri.parse(filePath)!!,
+                        "r",
+                        null
+                    )
+                        ?: return@registerForActivityResult
+                val inputStream = FileInputStream(parcelFileDescriptor.fileDescriptor)
+                val file =
+                    File(
+                        requireActivity().cacheDir,
+                        requireActivity().contentResolver.getFileName(Uri.parse(filePath)!!)
+                    )
+                binding.progressBar.visibility = View.VISIBLE
+                val outputStream = FileOutputStream(file)
+                inputStream.copyTo(outputStream)
+                val body = UploadRequestBody(file, "image", this@ProfileFragment)
+                sendBody(body)
 
+            } catch (e: NullPointerException) {
+                Log.e("registerForActivity", "registerForActivityResult: ${e.message}")
+            } catch (e: FileNotFoundException) {
+                Log.e("registerForActivity", "registerForActivityResult: ${e.message}")
+            }
         }
 
     @OptIn(DelicateCoroutinesApi::class)
@@ -131,7 +128,7 @@ class ProfileFragment : Fragment(), UploadRequestBody.UploadCallback {
                 imageResponseModel?.id.toString(),
                 MultipartBody.Part.createFormData("image", "$id$name.jpg"/*file.name*/, body)
             ).observe(viewLifecycleOwner) {
-                it.enqueue(object : Callback<MessageCallback> {
+                it.clone().enqueue(object : Callback<MessageCallback> {
                     override fun onResponse(
                         call: Call<MessageCallback>,
                         response: Response<MessageCallback>
@@ -140,17 +137,20 @@ class ProfileFragment : Fragment(), UploadRequestBody.UploadCallback {
                         viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
                             binding.userName.text = getName(requireActivity())
                             binding.email.text = getCurrentEmail(requireActivity())
-                            Glide.with(requireActivity()).load(
-                                "http://172.16.0.98/users_images/${getImage(requireActivity())}.jpg"
+                            setImage(requireActivity(), "$id$name.jpg")
+                            /* Glide.with(requireActivity()).load(
+                                 "http://172.16.0.98/users_images/${getImage(requireActivity())}"
+                             ).into(binding.imageProfile)*/
+                            Picasso.get().load(
+                                "http://172.16.0.98/users_images/${
+                                    getImage(requireActivity())
+                                }"
                             ).into(binding.imageProfile)
-                            setImage(requireActivity(), "$id$name")
                         }
                     }
 
                     override fun onFailure(call: Call<MessageCallback>, t: Throwable) {
                         Log.d("MultipartBody", "onFailure: ${t.message}")
-                        Toast.makeText(requireActivity(), "" + t.message, Toast.LENGTH_LONG)
-                            .show()
                     }
 
                 })
@@ -176,11 +176,16 @@ class ProfileFragment : Fragment(), UploadRequestBody.UploadCallback {
             binding.userName.text = getName(requireActivity())
             binding.email.text = getCurrentEmail(requireActivity())
             binding.phone.text = getPhone(requireActivity())
-            Glide.with(requireActivity()).load(
+            Picasso.get().load(
                 "http://172.16.0.98/users_images/${
                     getImage(requireActivity())
-                }.jpg"
+                }"
             ).into(binding.imageProfile)
+            /*Glide.with(requireActivity()).load(
+                "http://172.16.0.98/users_images/${
+                    getImage(requireActivity())
+                }"
+            ).into(binding.imageProfile)*/
             viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
                 viewModel.getImageResponseModel(
                     "Bearer " + SessionManger.getToken(
@@ -201,6 +206,9 @@ class ProfileFragment : Fragment(), UploadRequestBody.UploadCallback {
                                                 phone
                                             )
                                         }
+                                        response.body()?.data?.get(0)?.user_image?.let { image ->
+                                            setImage(requireActivity(), image)
+                                        }
                                     }
                                 }
 
@@ -216,7 +224,6 @@ class ProfileFragment : Fragment(), UploadRequestBody.UploadCallback {
 
             }
         }
-
 
         /* viewModel.getGovernorate().observe(viewLifecycleOwner) {
              it.clone().enqueue(object : Callback<GovernorateList> {
@@ -320,6 +327,7 @@ class ProfileFragment : Fragment(), UploadRequestBody.UploadCallback {
 
              })
          }*/
+
     }
 
     private fun onClick() {
@@ -363,7 +371,7 @@ class ProfileFragment : Fragment(), UploadRequestBody.UploadCallback {
 
     }
 
-    fun openImage() {
+    private fun openImage() {
         getContent.launch("image/*")
     }
 
