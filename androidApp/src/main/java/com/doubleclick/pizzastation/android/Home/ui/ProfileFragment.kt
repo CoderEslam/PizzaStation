@@ -14,6 +14,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.doubleclick.pizzastation.android.HistoryActivity
 import com.doubleclick.pizzastation.android.HomeActivity
 import com.doubleclick.pizzastation.android.MainActivity
@@ -138,14 +140,11 @@ class ProfileFragment : Fragment(), UploadRequestBody.UploadCallback {
                             binding.userName.text = getName(requireActivity())
                             binding.email.text = getCurrentEmail(requireActivity())
                             setImage(requireActivity(), "$id$name.jpg")
-                            /* Glide.with(requireActivity()).load(
-                                 "http://172.16.0.98/users_images/${getImage(requireActivity())}"
-                             ).into(binding.imageProfile)*/
-                            Picasso.get().load(
-                                "http://172.16.0.98/users_images/${
-                                    getImage(requireActivity())
-                                }"
-                            ).into(binding.imageProfile)
+                            Glide.with(requireActivity()).load(
+                                "http://172.16.0.98/users_images/${getImage(requireActivity())}"
+                            ).diskCacheStrategy(DiskCacheStrategy.NONE)
+                                .skipMemoryCache(true)
+                                .into(binding.imageProfile)
                         }
                     }
 
@@ -176,16 +175,11 @@ class ProfileFragment : Fragment(), UploadRequestBody.UploadCallback {
             binding.userName.text = getName(requireActivity())
             binding.email.text = getCurrentEmail(requireActivity())
             binding.phone.text = getPhone(requireActivity())
-            Picasso.get().load(
-                "http://172.16.0.98/users_images/${
-                    getImage(requireActivity())
-                }"
-            ).into(binding.imageProfile)
-            /*Glide.with(requireActivity()).load(
-                "http://172.16.0.98/users_images/${
-                    getImage(requireActivity())
-                }"
-            ).into(binding.imageProfile)*/
+            Glide.with(requireActivity()).load(
+                "http://172.16.0.98/users_images/${getImage(requireActivity())}"
+            ).diskCacheStrategy(DiskCacheStrategy.NONE)
+                .skipMemoryCache(true)
+                .into(binding.imageProfile)
             viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
                 viewModel.getImageResponseModel(
                     "Bearer " + SessionManger.getToken(
