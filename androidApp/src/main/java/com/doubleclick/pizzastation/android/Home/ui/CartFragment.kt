@@ -39,7 +39,6 @@ class CartFragment : Fragment(), ExtraDeleteListener {
     private var carts: ArrayList<CartModel> = ArrayList();
     lateinit var cartAdapter: CartAdapter
     private lateinit var viewModel: MainViewModel
-    private var notes: String = ""
 
     private val TAG = "CartFragment"
     override fun onCreateView(
@@ -68,15 +67,17 @@ class CartFragment : Fragment(), ExtraDeleteListener {
                             try {
                                 carts = response.body()!!.data as ArrayList<CartModel>
                                 cartAdapter = CartAdapter(
-                                        carts,
-                                        ::Counter,
-                                        ::OnActionClicked,
-                                        this@CartFragment
-                                    )
+                                    carts,
+                                    ::Counter,
+                                    ::OnActionClicked,
+                                    this@CartFragment
+                                )
                                 binding.rvCart.adapter = cartAdapter
                                 cartAdapter.notifyItemRangeChanged(0, carts.size)
                                 cartAdapter.notifyDataSetChanged()
-                            } catch (e: NullPointerException) { }
+                            } catch (e: NullPointerException) {
+                                Log.e(TAG, "onResponse getCart: ${e.message}")
+                            }
 
                         }
 
@@ -89,25 +90,33 @@ class CartFragment : Fragment(), ExtraDeleteListener {
         }
 
 
-
-        binding.selectLocation.setOnClickListener {
-            var total = 0.0
-            var amount = 0
-            for (cart in carts) {
-                total = cart.quantity.toDouble() * cart.price.toDouble()
-                amount++
-                if (cart.extra != null) {
-                    for (extra in cart.extra) {
-                        total += extra.price.toDouble()
+        if (carts.size == 0) {
+            binding.selectLocation.setTextColor(resources.getColor(R.color.grey_600))
+            binding.selectLocation.setOnClickListener {
+                Toast.makeText(requireActivity(), "Choose item first", Toast.LENGTH_LONG).show()
+            }
+        } else {
+            binding.selectLocation.setTextColor(resources.getColor(R.color.black))
+            binding.selectLocation.setOnClickListener {
+                var total = 0.0
+                var amount = 0
+                for (cart in carts) {
+                    total = cart.quantity.toDouble() * cart.price.toDouble()
+                    amount++
+                    if (cart.extra != null) {
+                        for (extra in cart.extra) {
+                            total += extra.price.toDouble()
+                        }
                     }
                 }
+                val sheet = BottomSheetNotesFragment(carts, total, amount)
+                sheet.show(
+                    requireActivity().supportFragmentManager,
+                    "BottomSheetNotesFragment"
+                )
             }
-            val sheet = BottomSheetNotesFragment(carts, total, amount)
-            sheet.show(
-                requireActivity().supportFragmentManager,
-                "BottomSheetNotesFragment"
-            )
         }
+
     }
 
     @OptIn(DelicateCoroutinesApi::class)
@@ -134,11 +143,11 @@ class CartFragment : Fragment(), ExtraDeleteListener {
                                             carts.removeAt(pos);
                                             Toast.makeText(
                                                 requireActivity(),
-                                                "" + response.body()?.message.toString(),
+                                                "Deleted",
                                                 Toast.LENGTH_LONG
                                             ).show()
                                         } catch (e: IndexOutOfBoundsException) {
-                                            Log.e(TAG, "onResponse: ${e.message}")
+                                            Log.e(TAG, "onResponse deleted: ${e.message}")
 
                                         }
 

@@ -46,14 +46,15 @@
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="100dp"
-                        android:layout_height="100dp">
+                        android:layout_height="100dp"
+                        android:layout_gravity="center">
 
                         <de.hdodenhof.circleimageview.CircleImageView
                             android:id="@+id/image_profile"
                             android:layout_width="100dp"
                             android:layout_height="100dp"
                             android:layout_gravity="center"
-                            android:src="@drawable/bg"
+                            tools:src="@drawable/bg"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
@@ -134,12 +135,25 @@
                             android:id="@+id/phone"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="+201221930858"
                             android:textAllCaps="false"
                             android:textColor="@color/grey"
-                            android:textSize="15sp" />
+                            android:textSize="15sp"
+                            tools:text="+201221930858" />
 
+                        <!-- <View
+                             android:layout_width="match_parent"
+                             android:layout_height="1dp"
+                             android:layout_marginTop="5dp"
+                             android:layout_marginBottom="5dp"
+                             android:background="@color/grey" />
 
+                         <com.doubleclick.pizzastation.android.views.CustomSpinner.CustomSpinner
+                             android:id="@+id/spinner_governorate"
+                             android:layout_width="match_parent"
+                             android:layout_height="30dp"
+                             android:background="@drawable/bg_spinner_up"
+                             android:dropDownVerticalOffset="40dp" />
+ -->
                     </LinearLayout>
 
                 </LinearLayout>

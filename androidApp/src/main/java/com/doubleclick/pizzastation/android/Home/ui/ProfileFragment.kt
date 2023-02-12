@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.database.Cursor
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
@@ -14,24 +15,32 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.Spinner
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat.startActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
-import com.doubleclick.pizzastation.android.HistoryActivity
-import com.doubleclick.pizzastation.android.HomeActivity
-import com.doubleclick.pizzastation.android.OrdersActivity
+import com.doubleclick.pizzastation.android.*
+import com.doubleclick.pizzastation.android.Adapter.SpinnerAdapterGoverorate
 import com.doubleclick.pizzastation.android.Repository.remot.RepositoryRemot
 import com.doubleclick.pizzastation.android.ViewModel.MainViewModel
 import com.doubleclick.pizzastation.android.ViewModel.MainViewModelFactory
+import com.doubleclick.pizzastation.android.`interface`.OnSpinnerEventsListener
 import com.doubleclick.pizzastation.android.databinding.FragmentProfileBinding
-import com.doubleclick.pizzastation.android.model.ImageResponseCallback
-import com.doubleclick.pizzastation.android.model.ImageResponseModel
-import com.doubleclick.pizzastation.android.model.MessageCallback
-import com.doubleclick.pizzastation.android.model.SandImage
+import com.doubleclick.pizzastation.android.model.*
 import com.doubleclick.pizzastation.android.utils.SessionManger
+import com.doubleclick.pizzastation.android.utils.SessionManger.getCurrentEmail
+import com.doubleclick.pizzastation.android.utils.SessionManger.getCurrentUserId
+import com.doubleclick.pizzastation.android.utils.SessionManger.getImage
+import com.doubleclick.pizzastation.android.utils.SessionManger.getName
+import com.doubleclick.pizzastation.android.utils.SessionManger.getPhone
+import com.doubleclick.pizzastation.android.utils.SessionManger.setImage
+import com.doubleclick.pizzastation.android.utils.SessionManger.setPhone
 import com.doubleclick.pizzastation.android.utils.UploadRequestBody
 import com.doubleclick.pizzastation.android.utils.getFileName
 import com.iceteck.silicompressorr.SiliCompressor
@@ -115,10 +124,8 @@ class ProfileFragment : Fragment(), UploadRequestBody.UploadCallback {
     @OptIn(DelicateCoroutinesApi::class)
     private fun uploadImage(body: UploadRequestBody, imageResponseModel: ImageResponseModel?) {
         GlobalScope.launch(Dispatchers.Main) {
-            val id = SessionManger.getCurrentUserId(requireActivity()).toString()
-            val name = SessionManger.getName(requireActivity()).toString()
-            Log.e("TAG", "uploadImage: ${imageResponseModel?.user_image}")
-            imageResponseModel?.user_image?.let { SessionManger.setImage(requireActivity(), it) }
+            val id = getCurrentUserId(requireActivity()).toString()
+            val name = getName(requireActivity()).toString()
             viewModel.uploadImage(
                 "Bearer " + SessionManger.getToken(requireActivity()),
                 imageResponseModel?.id.toString(),
@@ -129,12 +136,15 @@ class ProfileFragment : Fragment(), UploadRequestBody.UploadCallback {
                         call: Call<MessageCallback>,
                         response: Response<MessageCallback>
                     ) {
-                        Toast.makeText(
-                            requireActivity(),
-                            response.body()?.message.toString(),
-                            Toast.LENGTH_LONG
-                        ).show()
                         binding.progressBar.visibility = View.GONE
+                        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
+                            binding.userName.text = getName(requireActivity())
+                            binding.email.text = getCurrentEmail(requireActivity())
+                            Glide.with(requireActivity()).load(
+                                "http://172.16.0.98/users_images/${getImage(requireActivity())}.jpg"
+                            ).into(binding.imageProfile)
+                            setImage(requireActivity(), "$id$name")
+                        }
                     }
 
                     override fun onFailure(call: Call<MessageCallback>, t: Throwable) {
@@ -163,13 +173,153 @@ class ProfileFragment : Fragment(), UploadRequestBody.UploadCallback {
         val viewModelFactory = MainViewModelFactory(RepositoryRemot())
         viewModel = ViewModelProvider(this, viewModelFactory)[MainViewModel::class.java]
         viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
-            binding.userName.text = SessionManger.getName(requireActivity())
-            binding.email.text = SessionManger.getCurrentEmail(requireActivity())
+            binding.userName.text = getName(requireActivity())
+            binding.email.text = getCurrentEmail(requireActivity())
+            binding.phone.text = getPhone(requireActivity())
             Glide.with(requireActivity()).load(
-                "http://172.16.0.98/users_images/123456789null.jpg"
+                "http://172.16.0.98/users_images/${
+                    getImage(requireActivity())
+                }.jpg"
             ).into(binding.imageProfile)
+            viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
+                viewModel.getImageResponseModel(
+                    "Bearer " + SessionManger.getToken(
+                        requireActivity()
+                    )
+                )
+                    .observe(viewLifecycleOwner) {
+                        it.clone()
+                            .enqueue(object : Callback<ImageResponseCallback> {
+                                override fun onResponse(
+                                    call: Call<ImageResponseCallback>,
+                                    response: Response<ImageResponseCallback>
+                                ) {
+                                    viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
+                                        response.body()?.data?.get(0)?.phone_number?.let { phone ->
+                                            setPhone(
+                                                requireActivity(),
+                                                phone
+                                            )
+                                        }
+                                    }
+                                }
+
+                                override fun onFailure(
+                                    call: Call<ImageResponseCallback>,
+                                    t: Throwable
+                                ) {
+
+                                }
+
+                            })
+                    }
+
+            }
         }
 
+
+        /* viewModel.getGovernorate().observe(viewLifecycleOwner) {
+             it.clone().enqueue(object : Callback<GovernorateList> {
+                 override fun onResponse(
+                     call: Call<GovernorateList>,
+                     response: Response<GovernorateList>
+                 ) {
+                     governorateModelList = response.body()!!.data
+
+                     val adapter = SpinnerAdapterGoverorate(
+                         requireActivity(),
+                         governorateModelList
+                     )
+                     binding.spinnerGovernorate.adapter = adapter
+                     binding.spinnerGovernorate.onItemSelectedListener = object :
+                         AdapterView.OnItemSelectedListener {
+                         @RequiresApi(Build.VERSION_CODES.N)
+                         override fun onItemSelected(
+                             adapterView: AdapterView<*>?,
+                             view: View,
+                             i: Int,
+                             l: Long
+                         ) {
+                             Toast.makeText(requireContext(), "ddsvf", Toast.LENGTH_LONG).show()
+                             viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
+                                 viewModel.getImageResponseModel(
+                                     "Bearer " + SessionManger.getToken(
+                                         requireActivity()
+                                     )
+                                 )
+                                     .observe(viewLifecycleOwner) {
+                                         it.clone()
+                                             .enqueue(object : Callback<ImageResponseCallback> {
+                                                 override fun onResponse(
+                                                     call: Call<ImageResponseCallback>,
+                                                     response: Response<ImageResponseCallback>
+                                                 ) {
+                                                     binding.phone.text =
+                                                         response.body()?.data?.get(0)?.phone_number
+                                                             ?: ""
+                                                     viewLifecycleOwner.lifecycleScope.launch(
+                                                         Dispatchers.Main
+                                                     ) {
+                                                         viewModel.editGovernment(
+                                                             "Bearer " + SessionManger.getToken(
+                                                                 requireActivity()
+                                                             ),
+                                                             response.body()?.data?.get(0)?.id.toString(),
+                                                             GovernmentId(governorateModelList[i].id.toString())
+                                                         ).observe(viewLifecycleOwner) {
+                                                             it.clone().enqueue(object :
+                                                                 Callback<MessageCallback> {
+                                                                 override fun onResponse(
+                                                                     call: Call<MessageCallback>,
+                                                                     response: Response<MessageCallback>
+                                                                 ) {
+                                                                     Toast.makeText(
+                                                                         requireActivity(),
+                                                                         response.body()?.message.toString(),
+                                                                         Toast.LENGTH_LONG
+                                                                     ).show()
+                                                                 }
+
+                                                                 override fun onFailure(
+                                                                     call: Call<MessageCallback>,
+                                                                     t: Throwable
+                                                                 ) {
+                                                                     Log.e(
+                                                                         "TAG",
+                                                                         "onFailure: ${t.message}"
+                                                                     )
+                                                                 }
+
+                                                             })
+                                                         }
+                                                     }
+                                                 }
+
+                                                 override fun onFailure(
+                                                     call: Call<ImageResponseCallback>,
+                                                     t: Throwable
+                                                 ) {
+
+                                                 }
+
+                                             })
+                                     }
+
+                             }
+                         }
+
+                         override fun onNothingSelected(adapterView: AdapterView<*>?) {
+                         }
+                     }
+
+                 }
+
+                 override fun onFailure(call: Call<GovernorateList>, t: Throwable) {
+
+                 }
+
+             })
+         }*/
     }
 
     private fun onClick() {
@@ -192,6 +342,8 @@ class ProfileFragment : Fragment(), UploadRequestBody.UploadCallback {
                     activity as HomeActivity
                 )
             }
+            startActivity(Intent(requireActivity(), MainActivity::class.java))
+            requireActivity().finish()
         }
 
         binding.changeImage.setOnClickListener {
@@ -215,28 +367,6 @@ class ProfileFragment : Fragment(), UploadRequestBody.UploadCallback {
         getContent.launch("image/*")
     }
 
-    fun getImageContentUri(context: Context, imageFile: File): Uri? {
-        val filePath = imageFile.absolutePath
-        val cursor: Cursor? = context.contentResolver.query(
-            MediaStore.Images.Media.EXTERNAL_CONTENT_URI, arrayOf(MediaStore.Images.Media._ID),
-            MediaStore.Images.Media.DATA + "=? ", arrayOf(filePath), null
-        )
-        return if (cursor != null && cursor.moveToFirst()) {
-            val id: Int = cursor.getInt(cursor.getColumnIndex(MediaStore.MediaColumns._ID))
-            cursor.close()
-            Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "" + id)
-        } else {
-            if (imageFile.exists()) {
-                val values = ContentValues()
-                values.put(MediaStore.Images.Media.DATA, filePath)
-                context.contentResolver.insert(
-                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values
-                )
-            } else {
-                null
-            }
-        }
-    }
 
     override fun onProgressUpdate(percentage: Int) {
         binding.progressBar.progress = percentage

@@ -163,23 +163,31 @@ class HomeFragment : Fragment(), itemListener, OpenSearchView {
     }
 
     private fun loadMenu(categoryModel: List<CategoryModel>) {
-        viewModel.getMenu().observe(viewLifecycleOwner) {
-            it.enqueue(object : Callback<MenuList> {
-                override fun onResponse(
-                    call: Call<MenuList>,
-                    response: Response<MenuList>
-                ) {
-                    classification(categoryModel = categoryModel, menus = response.body()!!.data)
-                    Log.e(TAG, "onResponse: ${response.body()!!.toString()}")
+        try {
+            viewModel.getMenu().observe(viewLifecycleOwner) {
+                it.enqueue(object : Callback<MenuList> {
+                    override fun onResponse(
+                        call: Call<MenuList>,
+                        response: Response<MenuList>
+                    ) {
+                        classification(
+                            categoryModel = categoryModel,
+                            menus = response.body()!!.data
+                        )
+                        Log.e(TAG, "onResponse: ${response.body()!!.toString()}")
 
-                }
+                    }
 
-                override fun onFailure(call: Call<MenuList>, t: Throwable) {
-                    Log.e(TAG, "onFailure: ${t.message}")
-                }
+                    override fun onFailure(call: Call<MenuList>, t: Throwable) {
+                        Log.e(TAG, "onFailure: ${t.message}")
+                    }
 
-            })
+                })
+            }
+        } catch (e: IllegalStateException) {
+            Log.e(TAG, "loadMenu: ${e.message}")
         }
+
     }
 
     private fun classification(categoryModel: List<CategoryModel>, menus: List<MenuModel>) {

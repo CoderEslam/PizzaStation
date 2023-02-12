@@ -14,6 +14,7 @@ object Constants {
     const val EMAIL_KEY = "EMAIL_KEY"
     const val NAME_KEY = "NAME_KEY"
     const val IMAGE_KEY = "IMAGE_KEY"
+    const val PHONE_KEY = "PHONE_KEY"
 
     const val ID_KEY = "ID_KEY"
 

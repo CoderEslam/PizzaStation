@@ -89,6 +89,14 @@ class RepositoryRemot {
         return RetrofitInstance.api.uploadImage(token, id, image)
     }
 
+    fun editPhone(token: String, id: String, phone_number: PhoneNumber): Call<MessageCallback> {
+        return RetrofitInstance.api.editPhone(token, id, phone_number)
+    }
+
+    fun editGovernment(token: String, id: String, government_id: GovernmentId): Call<MessageCallback> {
+        return RetrofitInstance.api.editGovernment(token, id, government_id)
+    }
+
     fun getImageResponseModel(token: String): Call<ImageResponseCallback> {
         return RetrofitInstance.api.getImageResponseModel(token)
     }

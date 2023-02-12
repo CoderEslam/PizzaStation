@@ -36,6 +36,10 @@ class MainViewModel(private val repository: RepositoryRemot) : ViewModel() {
         MutableLiveData()
     private val uploadImageMutableLiveData: MutableLiveData<Call<MessageCallback>> =
         MutableLiveData()
+    private val editPhoneMutableLiveData: MutableLiveData<Call<MessageCallback>> =
+        MutableLiveData()
+    private val editGovernmentMutableLiveData: MutableLiveData<Call<MessageCallback>> =
+        MutableLiveData()
     private val getFavoriteMutableLiveData: MutableLiveData<Call<FavoriteModelList>> =
         MutableLiveData()
     private val getGovernorateMutableLiveData: MutableLiveData<Call<GovernorateList>> =
@@ -156,6 +160,24 @@ class MainViewModel(private val repository: RepositoryRemot) : ViewModel() {
     ): LiveData<Call<MessageCallback>> {
         uploadImageMutableLiveData.value = repository.uploadImage(token, id, image);
         return uploadImageMutableLiveData;
+    }
+
+    fun editPhone(
+        token: String,
+        id: String,
+        phone_number: PhoneNumber
+    ): LiveData<Call<MessageCallback>> {
+        editPhoneMutableLiveData.value = repository.editPhone(token, id, phone_number);
+        return editPhoneMutableLiveData;
+    }
+
+    fun editGovernment(
+        token: String,
+        id: String,
+        government_id: GovernmentId
+    ): LiveData<Call<MessageCallback>> {
+        editGovernmentMutableLiveData.value = repository.editGovernment(token, id, government_id);
+        return editGovernmentMutableLiveData;
     }
 
     fun getImageResponseModel(token: String): LiveData<Call<ImageResponseCallback>> {

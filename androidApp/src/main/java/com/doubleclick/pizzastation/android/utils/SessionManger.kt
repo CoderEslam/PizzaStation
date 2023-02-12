@@ -9,6 +9,7 @@ import com.doubleclick.pizzastation.android.utils.Constants.ID_KEY
 import com.doubleclick.pizzastation.android.utils.Constants.IMAGE_KEY
 import com.doubleclick.pizzastation.android.utils.Constants.NAME_KEY
 import com.doubleclick.pizzastation.android.utils.Constants.PASSWORD_KEY
+import com.doubleclick.pizzastation.android.utils.Constants.PHONE_KEY
 import com.doubleclick.pizzastation.android.utils.Constants.TOKEN_KEY
 import com.doubleclick.pizzastation.android.utils.DataStore.dataStore
 import kotlinx.coroutines.flow.first
@@ -78,6 +79,19 @@ object SessionManger {
         val imageKey = stringPreferencesKey(IMAGE_KEY)
         context.dataStore.edit { preferences ->
             preferences[imageKey] = image
+        }
+    }
+
+    suspend fun getPhone(context: Context): String? {
+        val phoneKey = stringPreferencesKey(PHONE_KEY)
+        val preferences = context.dataStore.data.first()
+        return preferences[phoneKey]
+    }
+
+    suspend fun setPhone(context: Context, phone: String) {
+        val phoneKey = stringPreferencesKey(PHONE_KEY)
+        context.dataStore.edit { preferences ->
+            preferences[phoneKey] = phone
         }
     }
 

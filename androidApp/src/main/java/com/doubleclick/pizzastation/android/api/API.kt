@@ -18,6 +18,20 @@ interface API {
         @Part image: MultipartBody.Part,
     ): Call<MessageCallback>
 
+    @POST("user_profile/{id}")
+    fun editPhone(
+        @Header("Authorization") token: String,
+        @Path("id") id: String,
+        @Body phoneNumber: PhoneNumber
+    ): Call<MessageCallback>
+
+    @POST("user_profile/{id}")
+    fun editGovernment(
+        @Header("Authorization") token: String,
+        @Path("id") id: String,
+        @Body governmentId: GovernmentId
+    ): Call<MessageCallback>
+
     @GET("user_profile")
     fun getImageResponseModel(
         @Header("Authorization") token: String
