@@ -17,6 +17,7 @@ import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.doubleclick.pizzastation.android.HistoryActivity
+import com.doubleclick.pizzastation.android.Home.PaymentActivity
 import com.doubleclick.pizzastation.android.HomeActivity
 import com.doubleclick.pizzastation.android.MainActivity
 import com.doubleclick.pizzastation.android.OrdersActivity
@@ -332,7 +333,7 @@ class ProfileFragment : Fragment(), UploadRequestBody.UploadCallback {
 
 
         binding.historyCard.setOnClickListener {
-            startActivity(Intent(requireActivity(), HistoryActivity::class.java))
+            startActivity(Intent(requireActivity(), PaymentActivity::class.java))
         }
 
         binding.ordersCard.setOnClickListener {

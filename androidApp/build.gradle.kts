@@ -91,6 +91,8 @@ dependencies {
 
     implementation("io.reactivex.rxjava2:rxandroid:2.0.1")
 
+    implementation(files("D:\\pizzastation\\androidApp\\libs\\acceptsdk-release"))
+    implementation(files("libs\\acceptsdk-release.aar"))
 
 //    implementation("com.android.support:multidex:2.0.1")
 
