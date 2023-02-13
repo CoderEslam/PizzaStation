@@ -23,6 +23,7 @@ object Constants {
     const val FCM_URL = "https://fcm.googleapis.com/"
     const val IMAGE_URL = "http://172.16.0.98/pizza/"
     const val OFFERS_URL = "http://172.16.0.98/offers/"
+    const val IMAGE_PROFILE_URL = "http://172.16.0.98/users_images/"
 
 
 }
