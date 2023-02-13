@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.ViewModelProvider
@@ -66,8 +67,6 @@ class FoodItemEditActivity : AppCompatActivity(), ItemSizeListener, ItemExtraLis
         cartModel?.extra?.let {
             extraList.addAll(it)
         }
-        sizePrice
-        Log.d(TAG, "onCreate: $cartModel")
         onEdit(cartModel);
         putSizes();
 
@@ -237,37 +236,37 @@ class FoodItemEditActivity : AppCompatActivity(), ItemSizeListener, ItemExtraLis
                 jsonObjectParent.addProperty("name", cartModel!!.name!!)
                 jsonObjectParent.addProperty("quantity", amount.toString())
                 jsonObjectParent.addProperty("size", nameSize)
-                jsonObjectParent.addProperty("image", cartModel?.image.toString())
-                jsonObjectMenuModel.addProperty("FB", cartModel.menuModel?.FB.toString());
-                jsonObjectMenuModel.addProperty("FB", cartModel.menuModel?.FB.toString());
-                jsonObjectMenuModel.addProperty("L", cartModel.menuModel?.L.toString());
-                jsonObjectMenuModel.addProperty("M", cartModel.menuModel?.M.toString());
-                jsonObjectMenuModel.addProperty("Slice", cartModel.menuModel?.Slice.toString());
-                jsonObjectMenuModel.addProperty("XXL", cartModel.menuModel?.XXL.toString());
+                jsonObjectParent.addProperty("image", cartModel.image.toString())
+                jsonObjectMenuModel.addProperty("FB", cartModel.menuModel.FB.toString());
+                jsonObjectMenuModel.addProperty("FB", cartModel.menuModel.FB.toString());
+                jsonObjectMenuModel.addProperty("L", cartModel.menuModel.L.toString());
+                jsonObjectMenuModel.addProperty("M", cartModel.menuModel.M.toString());
+                jsonObjectMenuModel.addProperty("Slice", cartModel.menuModel.Slice.toString());
+                jsonObjectMenuModel.addProperty("XXL", cartModel.menuModel.XXL.toString());
                 jsonObjectMenuModel.addProperty(
                     "category",
-                    cartModel.menuModel?.category.toString()
+                    cartModel.menuModel.category.toString()
                 );
-                jsonObjectMenuModel.addProperty("half_L", cartModel.menuModel?.half_L.toString());
+                jsonObjectMenuModel.addProperty("half_L", cartModel.menuModel.half_L.toString());
                 jsonObjectMenuModel.addProperty(
                     "half_stuffed_crust_L",
-                    cartModel.menuModel?.half_stuffed_crust_L.toString()
+                    cartModel.menuModel.half_stuffed_crust_L.toString()
                 );
-                jsonObjectMenuModel.addProperty("id", cartModel.menuModel?.id.toString());
-                jsonObjectMenuModel.addProperty("image", cartModel.menuModel?.image.toString());
-                jsonObjectMenuModel.addProperty("name", cartModel.menuModel?.name.toString());
+                jsonObjectMenuModel.addProperty("id", cartModel.menuModel.id.toString());
+                jsonObjectMenuModel.addProperty("image", cartModel.menuModel.image.toString());
+                jsonObjectMenuModel.addProperty("name", cartModel.menuModel.name.toString());
                 jsonObjectMenuModel.addProperty(
                     "quarter_XXL",
-                    cartModel.menuModel?.quarter_XXL.toString()
+                    cartModel.menuModel.quarter_XXL.toString()
                 );
-                jsonObjectMenuModel.addProperty("status", cartModel.menuModel?.status.toString());
+                jsonObjectMenuModel.addProperty("status", cartModel.menuModel.status.toString());
                 jsonObjectMenuModel.addProperty(
                     "stuffed_crust_L",
-                    cartModel.menuModel?.stuffed_crust_L.toString()
+                    cartModel.menuModel.stuffed_crust_L.toString()
                 );
                 jsonObjectMenuModel.addProperty(
                     "stuffed_crust_M",
-                    cartModel.menuModel?.stuffed_crust_M.toString()
+                    cartModel.menuModel.stuffed_crust_M.toString()
                 );
                 jsonObjectParent.add("menuModel", jsonObjectMenuModel)
                 val jsonArray = JsonArray();
@@ -461,9 +460,12 @@ class FoodItemEditActivity : AppCompatActivity(), ItemSizeListener, ItemExtraLis
         view.setPadding(30, 5, 30, 5)
         val rv_extra_sizes: RecyclerView = view.findViewById(R.id.rv_extra_sizes);
         val image_item: ImageView = view.findViewById(R.id.image_item);
+        val name: TextView = view.findViewById(R.id.name);
+        Log.e(TAG, "onItemExtraListener: ${menuModel?.name}")
+        name.text = menuModel?.name
         Glide.with(this@FoodItemEditActivity).load(Constants.IMAGE_URL + menuModel?.image)
             .into(image_item)
-        rv_extra_sizes.adapter = ItemExtraSizeAdapter(this, sizes, "")
+        rv_extra_sizes.adapter = ItemExtraSizeAdapter(this, sizes, cartModel?.extra)
         builder.setPositiveButton(
             "Close"
         ) { dialog, _ ->

@@ -1,5 +1,6 @@
 package com.doubleclick.pizzastation.android
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -7,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -49,8 +51,10 @@ class FoodItemActivity : AppCompatActivity(), ItemSizeListener, ItemExtraListene
     private val TAG = "FoodItemActivity"
     private val extraList: ArrayList<Extra> = ArrayList()
     private var favoriteModelList: ArrayList<FavoriteModel> = ArrayList();
+    private var menuModelList: ArrayList<MenuModel> = ArrayList();
     private lateinit var viewModel: MainViewModel
     private var isFavorite: Boolean = false
+    private lateinit var extrasAdapter: ExtrasAdapter
 
     private lateinit var itemSizeAdapter: ItemSizeAdapter
 
@@ -168,10 +172,12 @@ class FoodItemActivity : AppCompatActivity(), ItemSizeListener, ItemExtraListene
         viewModel.getExtraFilters().observe(this) {
             it.enqueue(object : Callback<MenuList> {
                 override fun onResponse(call: Call<MenuList>, response: Response<MenuList>) {
-                    binding.extrasRv.apply {
-                        adapter =
-                            ExtrasAdapter(this@FoodItemActivity, response.body()!!.data, null)
-                    }
+                    menuModelList = response.body()!!.data as ArrayList<MenuModel>
+                    extrasAdapter =
+                        ExtrasAdapter(this@FoodItemActivity, response.body()!!.data, extraList)
+                    binding.extrasRv.adapter = extrasAdapter
+                    extrasAdapter.notifyItemRangeChanged(0, menuModelList.size)
+
                 }
 
                 override fun onFailure(call: Call<MenuList>, t: Throwable) {
@@ -303,91 +309,100 @@ class FoodItemActivity : AppCompatActivity(), ItemSizeListener, ItemExtraListene
             }
         }
         binding.addToCard.setOnClickListener {
-            GlobalScope.launch(Dispatchers.Main) {
-                val jsonObjectParent = JsonObject();
-                val jsonObjectMenuModel = JsonObject();
-                jsonObjectParent.addProperty("price", priceTotal.toString())
-                jsonObjectParent.addProperty("name", menuModel!!.name!!)
-                jsonObjectParent.addProperty("quantity", amount.toString())
-                jsonObjectParent.addProperty("size", nameSize)
-                jsonObjectParent.addProperty("image", menuModel?.image.toString())
-                jsonObjectMenuModel.addProperty("FB", menuModel?.FB.toString());
-                jsonObjectMenuModel.addProperty("FB", menuModel?.FB.toString());
-                jsonObjectMenuModel.addProperty("L", menuModel?.L.toString());
-                jsonObjectMenuModel.addProperty("M", menuModel?.M.toString());
-                jsonObjectMenuModel.addProperty("Slice", menuModel?.Slice.toString());
-                jsonObjectMenuModel.addProperty("XXL", menuModel?.XXL.toString());
-                jsonObjectMenuModel.addProperty("category", menuModel?.category.toString());
-                jsonObjectMenuModel.addProperty("half_L", menuModel?.half_L.toString());
-                jsonObjectMenuModel.addProperty(
-                    "half_stuffed_crust_L",
-                    menuModel?.half_stuffed_crust_L.toString()
-                );
-                jsonObjectMenuModel.addProperty("id", menuModel?.id.toString());
-                jsonObjectMenuModel.addProperty("image", menuModel?.image.toString());
-                jsonObjectMenuModel.addProperty("name", menuModel?.name.toString());
-                jsonObjectMenuModel.addProperty("quarter_XXL", menuModel?.quarter_XXL.toString());
-                jsonObjectMenuModel.addProperty("status", menuModel?.status.toString());
-                jsonObjectMenuModel.addProperty(
-                    "stuffed_crust_L",
-                    menuModel?.stuffed_crust_L.toString()
-                );
-                jsonObjectMenuModel.addProperty(
-                    "stuffed_crust_M",
-                    menuModel?.stuffed_crust_M.toString()
-                );
-                jsonObjectParent.add("menuModel", jsonObjectMenuModel)
-                val jsonArray = JsonArray();
+            if (nameSize == "") {
+                Toast.makeText(this@FoodItemActivity, "select size first", Toast.LENGTH_LONG).show()
+                return@setOnClickListener
+            } else {
+                GlobalScope.launch(Dispatchers.Main) {
+                    val jsonObjectParent = JsonObject();
+                    val jsonObjectMenuModel = JsonObject();
+                    jsonObjectParent.addProperty("price", priceTotal.toString())
+                    jsonObjectParent.addProperty("name", menuModel!!.name!!)
+                    jsonObjectParent.addProperty("quantity", amount.toString())
+                    jsonObjectParent.addProperty("size", nameSize)
+                    jsonObjectParent.addProperty("image", menuModel?.image.toString())
+                    jsonObjectMenuModel.addProperty("FB", menuModel?.FB.toString());
+                    jsonObjectMenuModel.addProperty("FB", menuModel?.FB.toString());
+                    jsonObjectMenuModel.addProperty("L", menuModel?.L.toString());
+                    jsonObjectMenuModel.addProperty("M", menuModel?.M.toString());
+                    jsonObjectMenuModel.addProperty("Slice", menuModel?.Slice.toString());
+                    jsonObjectMenuModel.addProperty("XXL", menuModel?.XXL.toString());
+                    jsonObjectMenuModel.addProperty("category", menuModel?.category.toString());
+                    jsonObjectMenuModel.addProperty("half_L", menuModel?.half_L.toString());
+                    jsonObjectMenuModel.addProperty(
+                        "half_stuffed_crust_L",
+                        menuModel?.half_stuffed_crust_L.toString()
+                    );
+                    jsonObjectMenuModel.addProperty("id", menuModel?.id.toString());
+                    jsonObjectMenuModel.addProperty("image", menuModel?.image.toString());
+                    jsonObjectMenuModel.addProperty("name", menuModel?.name.toString());
+                    jsonObjectMenuModel.addProperty(
+                        "quarter_XXL",
+                        menuModel?.quarter_XXL.toString()
+                    );
+                    jsonObjectMenuModel.addProperty("status", menuModel?.status.toString());
+                    jsonObjectMenuModel.addProperty(
+                        "stuffed_crust_L",
+                        menuModel?.stuffed_crust_L.toString()
+                    );
+                    jsonObjectMenuModel.addProperty(
+                        "stuffed_crust_M",
+                        menuModel?.stuffed_crust_M.toString()
+                    );
+                    jsonObjectParent.add("menuModel", jsonObjectMenuModel)
+                    val jsonArray = JsonArray();
 
-                for (extraItem in extraList) {
-                    val jsonObjectChild = JsonObject();
-                    jsonObjectChild.addProperty("name", extraItem.name)
-                    jsonObjectChild.addProperty("price", extraItem.price)
-                    jsonObjectChild.addProperty("size", extraItem.size)
-                    jsonObjectChild.addProperty("image", extraItem.image)
-                    jsonObjectChild.addProperty("quantity", "1")
-                    jsonArray.add(jsonObjectChild)
-                    jsonObjectParent.add("extra", jsonArray)
-                }
-                Log.e(TAG, "onCreate: ${jsonObjectParent.toString()}")
-                viewModel.setCart(
-                    "Bearer " + SessionManger.getToken(this@FoodItemActivity),
-                    jsonObjectParent
-                ).observe(this@FoodItemActivity) {
-                    it.enqueue(object : Callback<CartCallback> {
-                        override fun onResponse(
-                            call: Call<CartCallback>,
-                            response: Response<CartCallback>
-                        ) {
-                            Toast.makeText(
-                                this@FoodItemActivity,
-                                "Response = " + response.body()!!.message.toString(),
-                                Toast.LENGTH_LONG
-                            ).show()
-                            GlobalScope.launch(Dispatchers.Main) {
-                                binding.animationView.visibility = View.VISIBLE
-                                binding.addToCard.isEnabled = false
-                                binding.tvAddToCard.setTextColor(resources.getColor(R.color.grey_600))
-                                delay(1000)
-                                startActivity(
-                                    Intent(
+                    for (extraItem in extraList) {
+                        val jsonObjectChild = JsonObject();
+                        jsonObjectChild.addProperty("name", extraItem.name)
+                        jsonObjectChild.addProperty("price", extraItem.price)
+                        jsonObjectChild.addProperty("size", extraItem.size)
+                        jsonObjectChild.addProperty("image", extraItem.image)
+                        jsonObjectChild.addProperty("quantity", "1")
+                        jsonArray.add(jsonObjectChild)
+                        jsonObjectParent.add("extra", jsonArray)
+                    }
+                    viewModel.setCart(
+                        "Bearer " + SessionManger.getToken(this@FoodItemActivity),
+                        jsonObjectParent
+                    ).observe(this@FoodItemActivity) {
+                        it.enqueue(object : Callback<CartCallback> {
+                            override fun onResponse(
+                                call: Call<CartCallback>,
+                                response: Response<CartCallback>
+                            ) {
+                                try {
+                                    Toast.makeText(
                                         this@FoodItemActivity,
-                                        HomeActivity::class.java
-                                    )
-                                )
-                                finish()
+                                        response.body()?.message.toString(),
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                    GlobalScope.launch(Dispatchers.Main) {
+                                        binding.animationView.visibility = View.VISIBLE
+                                        binding.addToCard.isEnabled = false
+                                        binding.tvAddToCard.setTextColor(resources.getColor(R.color.grey_600))
+                                        delay(1000)
+                                        startActivity(
+                                            Intent(
+                                                this@FoodItemActivity,
+                                                HomeActivity::class.java
+                                            )
+                                        )
+                                        finish()
+                                    }
+                                } catch (e: NullPointerException) {
+                                }
                             }
 
-                        }
-
-                        override fun onFailure(call: Call<CartCallback>, t: Throwable) {
-                            Toast.makeText(
-                                this@FoodItemActivity,
-                                "Error " + t.message,
-                                Toast.LENGTH_LONG
-                            ).show()
-                        }
-                    })
+                            override fun onFailure(call: Call<CartCallback>, t: Throwable) {
+                                Toast.makeText(
+                                    this@FoodItemActivity,
+                                    "Error " + t.message,
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            }
+                        })
+                    }
                 }
             }
         }
@@ -525,6 +540,8 @@ class FoodItemActivity : AppCompatActivity(), ItemSizeListener, ItemExtraListene
         view.setPadding(30, 5, 30, 5)
         val rv_extra_sizes: RecyclerView = view.findViewById(R.id.rv_extra_sizes);
         val image_item: ImageView = view.findViewById(R.id.image_item);
+        val name: TextView = view.findViewById(R.id.name);
+        name.text = menuModel?.name
         Glide.with(this@FoodItemActivity).load(IMAGE_URL + menuModel?.image).into(image_item)
         rv_extra_sizes.adapter = ItemExtraSizeAdapter(this, sizes)
         builder.setPositiveButton(
@@ -541,7 +558,15 @@ class FoodItemActivity : AppCompatActivity(), ItemSizeListener, ItemExtraListene
 
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onItemExtraListenerDeleted(menuModel: MenuModel?, pos: Int) {
+        val e = Extra(menuModel!!.name, "", "", "", "")
+        if (extraList.contains(e)) {
+            extraList.remove(e)
+            extrasAdapter.notifyItemRangeChanged(0, menuModelList.size)
+            extrasAdapter.notifyItemChanged(pos)
+            extrasAdapter.notifyDataSetChanged()
+        }
 
     }
 
@@ -559,8 +584,10 @@ class FoodItemActivity : AppCompatActivity(), ItemSizeListener, ItemExtraListene
             val extra = Extra(sizeSosTypeName, sizePriceExtra, image, "1", sizeNameExtra)
             if (extraList.contains(extra)) {
                 extraList[extraList.indexOf(extra)] = extra
+                extrasAdapter.notifyItemRangeChanged(0, menuModelList.size)
             } else {
                 extraList.add(extra)
+                extrasAdapter.notifyItemRangeChanged(0, menuModelList.size)
             }
         } catch (e: NumberFormatException) {
             Log.e(TAG, "onItemSizeExtraListener btn: ${e.message}")

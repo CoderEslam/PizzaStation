@@ -55,14 +55,13 @@ class ExtrasAdapter(
 
     @SuppressLint("UseCompatLoadingForDrawables")
     override fun onBindViewHolder(holder: ItemExtrasViewHolder, position: Int) {
-
         holder.name.text = menuModel[position].name
         Glide.with(holder.itemView.context).load(IMAGE_URL + menuModel[position].image)
             .into(holder.imageItem)
         val e = Extra(menuModel[position].name, "", "", "", "")
         holder.selected.visibility = if (extraList.contains(e)) View.VISIBLE else View.GONE
         holder.selected.setOnClickListener {
-            itemListener.onItemExtraListenerDeleted(menuModel[position],position)
+            itemListener.onItemExtraListenerDeleted(menuModel[position], position)
         }
         holder.itemView.setOnClickListener {
             itemListener.onItemExtraListener(menuModel[position])

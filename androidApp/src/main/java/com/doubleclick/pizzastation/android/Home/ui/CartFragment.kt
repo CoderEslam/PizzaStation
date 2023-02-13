@@ -90,14 +90,12 @@ class CartFragment : Fragment(), ExtraDeleteListener {
         }
 
 
-        if (carts.size == 0) {
-            binding.selectLocation.setTextColor(resources.getColor(R.color.grey_600))
-            binding.selectLocation.setOnClickListener {
+        binding.selectLocation.setOnClickListener {
+            if (carts.size == 0) {
+                binding.selectLocation.setTextColor(resources.getColor(R.color.grey_600))
                 Toast.makeText(requireActivity(), "Choose item first", Toast.LENGTH_LONG).show()
-            }
-        } else {
-            binding.selectLocation.setTextColor(resources.getColor(R.color.black))
-            binding.selectLocation.setOnClickListener {
+                return@setOnClickListener
+            } else {
                 var total = 0.0
                 var amount = 0
                 for (cart in carts) {
@@ -116,6 +114,7 @@ class CartFragment : Fragment(), ExtraDeleteListener {
                 )
             }
         }
+
 
     }
 

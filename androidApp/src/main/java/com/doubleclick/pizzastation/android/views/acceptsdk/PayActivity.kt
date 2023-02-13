@@ -470,6 +470,7 @@ class PayActivity : AppCompatActivity(), View.OnClickListener,
         }
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == IntentConstants.THREE_D_SECURE_VERIFICATION_REQUEST) {
@@ -480,7 +481,7 @@ class PayActivity : AppCompatActivity(), View.OnClickListener,
             } else if (resultCode == 17) {
                 val raw_pay_response = data!!.getStringExtra("raw_pay_response")
                 try {
-                    payDict = JSONObject(raw_pay_response)
+                    payDict = raw_pay_response?.let { JSONObject(it) }
                     paymentInquiry()
                 } catch (var6: Exception) {
                     notifySuccesfulTransactionParsingIssue(raw_pay_response)

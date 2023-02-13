@@ -194,16 +194,19 @@ class ProfileFragment : Fragment(), UploadRequestBody.UploadCallback {
                                     call: Call<ImageResponseCallback>,
                                     response: Response<ImageResponseCallback>
                                 ) {
-                                    viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
-                                        response.body()?.data?.get(0)?.phone_number?.let { phone ->
-                                            setPhone(
-                                                requireActivity(),
-                                                phone
-                                            )
+                                    try {
+                                        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
+                                            response.body()?.data?.get(0)?.phone_number?.let { phone ->
+                                                setPhone(
+                                                    requireActivity(),
+                                                    phone
+                                                )
+                                            }
+                                            response.body()?.data?.get(0)?.user_image?.let { image ->
+                                                setImage(requireActivity(), image)
+                                            }
                                         }
-                                        response.body()?.data?.get(0)?.user_image?.let { image ->
-                                            setImage(requireActivity(), image)
-                                        }
+                                    } catch (e: IllegalStateException) {
                                     }
                                 }
 
