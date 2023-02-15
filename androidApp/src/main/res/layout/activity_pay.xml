@@ -74,7 +74,7 @@
                     android:textColor="@color/colorText"
                     android:textSize="@dimen/normal_text_size" />
 
-                <com.doubleclick.pizzastation.android.views.editcard.EditCard
+                <morxander.editcard.EditCard
                     android:id="@+id/cardNumber"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

@@ -1,8 +1,11 @@
+/*
 package com.doubleclick.pizzastation.android.views.editcard
 
+*/
 /**
  * Created by morxander on 11/21/16.
- */
+ *//*
+
 object CardPattern {
     // VISA
     const val VISA = "4[0-9]{12}(?:[0-9]{3})?"
@@ -35,3 +38,4 @@ object CardPattern {
     const val DINERS_CLUB_SHORT = "^30[0-5]"
     const val DINERS_CLUB_VALID = "^3(?:0[0-5]|[68][0-9])[0-9]{11}$"
 }
+*/

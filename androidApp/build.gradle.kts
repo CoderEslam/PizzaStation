@@ -102,8 +102,10 @@ dependencies {
 
     implementation("io.reactivex.rxjava2:rxandroid:2.0.1")
 
-//    implementation(files("D:\\pizzastation\\androidApp\\libs\\acceptsdk-release"))
-//    implementation(files("libs\\acceptsdk-release.aar"))
+//    implementation(files("C:\\pizzastation\\androidApp\\libs\\acceptsdk-release"))
+    implementation(files("libs\\acceptsdk-release.aar"))
+//    implementation(files("C:\\pizzastation\\androidApp\\libs\\editcard-release"))
+    implementation(files("libs\\editcard-release.aar"))
 //    implementation("morxander.editcard:EditCard:1.0.1")
     implementation("com.android.volley:volley:1.2.0")
     implementation("org.apache.httpcomponents:httpclient:4.5")

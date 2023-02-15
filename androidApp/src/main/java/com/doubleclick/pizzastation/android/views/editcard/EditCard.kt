@@ -1,3 +1,4 @@
+/*
 package com.doubleclick.pizzastation.android.views.editcard
 
 import android.annotation.TargetApi;
@@ -126,3 +127,4 @@ class EditCard : androidx.appcompat.widget.AppCompatEditText {
             return if (cardNumber.matches(CardPattern.JCB_VALID.toRegex())) true else false
         }
 }
+*/

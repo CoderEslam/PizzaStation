@@ -14,7 +14,6 @@
         android:allowBackup="false"
         android:label="@string/app_name"
         android:networkSecurityConfig="@xml/network_security_config"
-        android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="android:allowBackup">
         <activity
@@ -103,6 +102,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <!--        https://stackoverflow.com/questions/58220057/crash-in-com-paymob-acceptsdk-payactivity-void-androidx-appcompat-app-actionbar-->
+        <activity
+            android:name="com.paymob.acceptsdk.PayActivity"
+            android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar" />
     </application>
 
 </manifest>

@@ -1,3 +1,4 @@
+/*
 package com.doubleclick.pizzastation.android.views.acceptsdk
 
 import android.app.ProgressDialog
@@ -22,11 +23,11 @@ import com.android.volley.toolbox.HurlStack
 import com.android.volley.toolbox.Volley
 import com.doubleclick.pizzastation.android.views.acceptsdk.helper.StringPOSTRequest
 import com.doubleclick.pizzastation.android.views.acceptsdk.helper.TLSSocketFactory
-import com.doubleclick.pizzastation.android.views.editcard.EditCard
 import org.json.JSONException
 import org.json.JSONObject
 import java.util.*
 import com.doubleclick.pizzastation.android.R
+import morxander.editcard.EditCard
 
 
 class PayActivity : AppCompatActivity(), View.OnClickListener,
@@ -512,7 +513,9 @@ class PayActivity : AppCompatActivity(), View.OnClickListener,
     private fun linkViews(language: String?) {
         val intent = this.intent
         val showActionBar = intent.getBooleanExtra("ActionBar", false)
-        if (/*showActionBar*/false) {
+        if (*/
+/*showActionBar*//*
+false) {
             val actionBar = this.supportActionBar
             actionBar!!.setDisplayHomeAsUpEnabled(true)
             val colorDrawable = ColorDrawable(themeColor)
@@ -704,3 +707,4 @@ class PayActivity : AppCompatActivity(), View.OnClickListener,
 //
 //    }
 }
+*/
