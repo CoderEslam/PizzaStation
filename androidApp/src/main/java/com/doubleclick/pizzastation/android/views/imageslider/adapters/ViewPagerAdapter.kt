@@ -75,9 +75,9 @@ class ViewPagerAdapter(
     override fun instantiateItem(container: ViewGroup, position: Int): View {
         val itemView = layoutInflater!!.inflate(R.layout.pager_row, container, false)
 
-        val imageView = itemView.findViewById<ImageView>(R.id.image_view)
-        val linearLayout = itemView.findViewById<LinearLayout>(R.id.linear_layout)
-        val textView = itemView.findViewById<TextView>(R.id.text_view)
+        val imageView: ImageView = itemView.findViewById(R.id.image_view)
+        val linearLayout: LinearLayout = itemView.findViewById(R.id.linear_layout)
+        val textView: TextView = itemView.findViewById(R.id.text_view)
 
         if (imageList!![position].offer_name != null) {
             textView.text = imageList!![position].offer_name
@@ -111,7 +111,12 @@ class ViewPagerAdapter(
 
         container.addView(itemView)
 
-        imageView.setOnClickListener { itemClickListener?.onItemSelected(position) }
+        imageView.setOnClickListener {
+            itemClickListener?.onItemSelected(
+                position,
+                imageList!![position]
+            )
+        }
 
         if (touchListener != null) {
             imageView!!.setOnTouchListener { v, event ->

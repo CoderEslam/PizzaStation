@@ -143,7 +143,7 @@ class ImageSlider @JvmOverloads constructor(
      * @param  imageList  the image list by user
      * @param  scaleType  scale type for all image
      */
-    fun setImageList(imageList: List<OffersModel>, scaleType: ScaleTypes? = null) {
+    fun setImageList(imageList: List<OffersModel>, scaleType: ScaleTypes? = null) : ImageSlider{
         viewPagerAdapter = ViewPagerAdapter(
             context,
             imageList,
@@ -162,6 +162,7 @@ class ImageSlider @JvmOverloads constructor(
                 startSliding()
             }
         }
+        return this
     }
 
     private fun setupDots(size: Int) {

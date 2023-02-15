@@ -6,11 +6,11 @@ import android.widget.Toast
 
 object ToastMaker {
     fun displayLongToast(activity: Activity, msg: String) {
-        displayToast(activity.applicationContext, msg, 1)
+        displayToast(activity.applicationContext, msg, Toast.LENGTH_LONG)
     }
 
     fun displayShortToast(activity: Activity, msg: String) {
-        displayToast(activity.applicationContext, msg, 0)
+        displayToast(activity.applicationContext, msg, Toast.LENGTH_SHORT)
     }
 
     private fun displayToast(c: Context, msg: String, length: Int) {

@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.doubleclick.pizzastation.android.Auth.AuthActivity
+import com.doubleclick.pizzastation.android.HomeActivity
 import com.doubleclick.pizzastation.android.R
 import com.doubleclick.pizzastation.android.Repository.remot.RepositoryRemot
 import com.doubleclick.pizzastation.android.ViewModel.MainViewModel
@@ -94,7 +95,7 @@ class SignInFragment : Fragment() {
                                 Log.e(TAG, "onResponse: ${e.message}")
                             }
 
-                            startActivity(Intent(requireActivity(), MapsActivity::class.java))
+                            startActivity(Intent(requireActivity(), HomeActivity::class.java))
                         }
 
                         override fun onFailure(call: Call<LoginResponse>, t: Throwable) {

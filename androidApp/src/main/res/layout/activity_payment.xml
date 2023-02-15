@@ -6,37 +6,38 @@
     android:layout_height="match_parent"
     tools:context=".Home.PaymentActivity">
 
-    <!--    <com.myfatoorah.sdk.views.embeddedpayment.MFPaymentCardView
-            android:id="@+id/mfPaymentView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:cardHolderNameHint="cardHolderNameHint"
-            app:cardHolderNameLabel="cardHolderNameLabel"
-            app:cardNumberHint="cardNumberHint"
-            app:cardNumberLabel="cardNumberLabel"
-            app:cvvHint="cvvHint"
-            app:cvvLabel="cvvLabel"
-            app:errorColor="@color/paymentCardViewValidateTextColor"
-            app:expiryDateHint="expiryDateHint"
-            app:expiryDateLabel="expiryDateLabel"
-            app:inputColor="@color/paymentCardViewTextColor"
-            app:labelColor="@color/red"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:showLabels="false" />-->
+    <com.myfatoorah.sdk.views.embeddedpayment.MFPaymentCardView
+        android:id="@+id/mfPaymentView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:cardHolderNameHint="cardHolderNameHint"
+        app:cardHolderNameLabel="cardHolderNameLabel"
+        app:cardNumberHint="cardNumberHint"
+        app:cardNumberLabel="cardNumberLabel"
+        app:cvvHint="cvvHint"
+        app:cvvLabel="cvvLabel"
+        app:errorColor="@color/paymentCardViewValidateTextColor"
+        app:expiryDateHint="expiryDateHint"
+        app:expiryDateLabel="expiryDateLabel"
+        app:inputColor="@color/paymentCardViewTextColor"
+        app:labelColor="@color/red"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:showLabels="false"
+        app:showNFCReadCardIcon="true" />
 
     <!--  <WebView
           android:id="@+id/web"
           android:layout_width="match_parent"
           android:layout_height="match_parent" />-->
-    <Button
-        android:id="@+id/Button1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="No token - show save card!"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <!-- <Button
+         android:id="@+id/Button1"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:text="No token - show save card!"
+         app:layout_constraintLeft_toLeftOf="parent"
+         app:layout_constraintRight_toRightOf="parent"
+         app:layout_constraintTop_toTopOf="parent" />-->
 </androidx.constraintlayout.widget.ConstraintLayout>

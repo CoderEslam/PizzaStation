@@ -28,6 +28,7 @@ import com.doubleclick.pizzastation.android.databinding.ActivityFoodItemEditBind
 import com.doubleclick.pizzastation.android.model.*
 import com.doubleclick.pizzastation.android.utils.Constants
 import com.doubleclick.pizzastation.android.utils.SessionManger
+import com.doubleclick.pizzastation.android.utils.SessionManger.getToken
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.squareup.picasso.Picasso
@@ -50,7 +51,7 @@ class FoodItemEditActivity : AppCompatActivity(), ItemSizeListener, ItemExtraLis
     private var sizeNameExtra: String = ""
     private val TAG = "FoodItemActivity"
     private val extraList: ArrayList<Extra> = ArrayList()
-    private val extraMenuModelList: ArrayList<MenuModel> = ArrayList()
+    private var extraMenuModelList: ArrayList<MenuModel> = ArrayList()
     private var favoriteModelList: ArrayList<FavoriteModel> = ArrayList();
     private lateinit var viewModel: MainViewModel
     private var isFavorite: Boolean = false
@@ -64,8 +65,12 @@ class FoodItemEditActivity : AppCompatActivity(), ItemSizeListener, ItemExtraLis
         val viewModelFactory = MainViewModelFactory(RepositoryRemot())
         viewModel = ViewModelProvider(this, viewModelFactory)[MainViewModel::class.java]
         cartModel = intent?.getSerializableExtra("cartModel") as CartModel?;
-        cartModel?.extra?.let {
-            extraList.addAll(it)
+        cartModel?.extra?.let { extra ->
+            extra.forEach {
+                val sumExtra = SumExtra(it.name, it.price.toDouble())
+                extraList.add(it)
+                sumExtraList.add(sumExtra)
+            }
         }
         onEdit(cartModel);
         putSizes();
@@ -74,8 +79,7 @@ class FoodItemEditActivity : AppCompatActivity(), ItemSizeListener, ItemExtraLis
             try {
                 amount++
                 binding.count.text = amount.toString()
-                priceTotal = (this.sizePrice * amount).plus(sizePriceExtras.toDouble())
-                binding.priceTotal.text = priceTotal.toString() + " ج.م "
+                setTotalPrice()
             } catch (e: NumberFormatException) {
                 Log.e(TAG, "add btn: ${e.message}")
             }
@@ -90,8 +94,7 @@ class FoodItemEditActivity : AppCompatActivity(), ItemSizeListener, ItemExtraLis
             try {
                 amount--
                 binding.count.text = amount.toString()
-                priceTotal = (this.sizePrice * amount).plus(sizePriceExtras.toDouble())
-                binding.priceTotal.text = priceTotal.toString() + " ج.م "
+                setTotalPrice()
             } catch (e: NumberFormatException) {
                 Log.e(TAG, "mins btn: ${e.message}")
             }
@@ -102,7 +105,7 @@ class FoodItemEditActivity : AppCompatActivity(), ItemSizeListener, ItemExtraLis
             it.enqueue(object : Callback<MenuList> {
                 @SuppressLint("NotifyDataSetChanged")
                 override fun onResponse(call: Call<MenuList>, response: Response<MenuList>) {
-                    extraMenuModelList.addAll(response.body()!!.data)
+                    extraMenuModelList = response.body()!!.data as ArrayList<MenuModel>
                     extrasAdapter =
                         ExtrasAdapter(this@FoodItemEditActivity, extraMenuModelList, extraList)
                     binding.extrasRv.adapter = extrasAdapter
@@ -298,7 +301,7 @@ class FoodItemEditActivity : AppCompatActivity(), ItemSizeListener, ItemExtraLis
                 Log.d(TAG, "onEdit: $jsonObjectParent")
                 GlobalScope.launch(Dispatchers.Main) {
                     viewModel.updateCart(
-                        "Bearer " + SessionManger.getToken(this@FoodItemEditActivity),
+                        "Bearer " + getToken(this@FoodItemEditActivity),
                         cartModel.id.toString(),
                         jsonObjectParent
                     ).observe(
@@ -443,12 +446,7 @@ class FoodItemEditActivity : AppCompatActivity(), ItemSizeListener, ItemExtraLis
                 )
             )
         }
-        try {
-            priceTotal = (this.sizePrice * amount).plus(sizePriceExtras.toDouble())
-            binding.priceTotal.text = priceTotal.toString() + " ج.م "
-        } catch (e: NumberFormatException) {
-            Log.e(TAG, "onItemSizeListener: ${e.message}")
-        }
+        setTotalPrice()
         val builder = AlertDialog.Builder(this@FoodItemEditActivity)
         builder.setTitle(resources.getString(R.string.add_extras));
         val view: View = LayoutInflater.from(this@FoodItemEditActivity)
@@ -481,8 +479,12 @@ class FoodItemEditActivity : AppCompatActivity(), ItemSizeListener, ItemExtraLis
     @SuppressLint("NotifyDataSetChanged")
     override fun onItemExtraListenerDeleted(menuModel: MenuModel?, pos: Int) {
         val e = Extra(menuModel!!.name, "", "", "", "")
+        val sumExtra = SumExtra(menuModel!!.name, 0.0)
         if (extraList.contains(e)) {
             extraList.remove(e)
+            sumExtraList.remove(sumExtra)
+            Log.e(TAG, "onItemSizeExtraListener: ${sumExtras()}")
+            setTotalPrice()
             extrasAdapter.notifyItemRangeChanged(0, extraMenuModelList.size)
             extrasAdapter.notifyItemChanged(pos)
             extrasAdapter.notifyDataSetChanged()
@@ -499,18 +501,21 @@ class FoodItemEditActivity : AppCompatActivity(), ItemSizeListener, ItemExtraLis
         this.sizePriceExtras = sizePriceExtra;
         this.sizeNameExtra = sizeNameExtra;
         try {
-            priceTotal = (this.sizePrice * amount).plus(sizePriceExtras.toDouble())
-            binding.priceTotal.text = priceTotal.toString() + " ج.م "
             val extra = Extra(sizeSosTypeName, sizePriceExtra, imageExtra, "1", sizeNameExtra)
-            val sum = SumExtra(sizeSosTypeName, sizePriceExtra.toDouble())
+            val sumExtra = SumExtra(sizeSosTypeName, sizePriceExtra.toDouble())
             if (extraList.contains(extra)) {
                 extraList[extraList.indexOf(extra)] = extra
-                Toast.makeText(this, "Exist", Toast.LENGTH_LONG).show()
-
+                sumExtraList[sumExtraList.indexOf(sumExtra)] = sumExtra
+                extrasAdapter.notifyItemRangeChanged(0, extraMenuModelList.size)
+                Log.e(TAG, "onItemSizeExtraListener: ${sumExtras()}")
+                Toast.makeText(this, "Updated", Toast.LENGTH_LONG).show()
+                setTotalPrice()
             } else {
                 extraList.add(extra)
-//                totalSizePriceExtras += sizePriceExtras.toDouble()
-//                Log.e(TAG, "onItemSizeExtraListener: $totalSizePriceExtras")
+                sumExtraList.add(sumExtra)
+                extrasAdapter.notifyItemRangeChanged(0, extraMenuModelList.size)
+                Log.e(TAG, "onItemSizeExtraListener: ${sumExtras()}")
+                setTotalPrice()
                 Toast.makeText(this, "Added", Toast.LENGTH_LONG).show()
             }
         } catch (e: NumberFormatException) {
@@ -525,5 +530,14 @@ class FoodItemEditActivity : AppCompatActivity(), ItemSizeListener, ItemExtraLis
             sum += price.price
         }
         return sum
+    }
+
+    private fun setTotalPrice() {
+        try {
+            priceTotal = (this.sizePrice * amount).plus(sumExtras())
+            binding.priceTotal.text = priceTotal.toString() + " ج.م "
+        } catch (e: NumberFormatException) {
+            Log.e(TAG, "setTotalPrice: ${e.message}")
+        }
     }
 }

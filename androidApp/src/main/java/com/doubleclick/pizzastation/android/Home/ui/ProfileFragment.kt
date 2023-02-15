@@ -152,7 +152,7 @@ class ProfileFragment : Fragment(), UploadRequestBody.UploadCallback {
                             binding.email.text = getCurrentEmail(requireActivity())
                             setImage(requireActivity(), "$id$name.jpg")
                             Glide.with(requireActivity()).load(
-                                "http://172.16.0.98/users_images/${getImage(requireActivity())}"
+                                "$IMAGE_PROFILE_URL${getImage(requireActivity())}"
                             ).diskCacheStrategy(DiskCacheStrategy.NONE)
                                 .skipMemoryCache(true)
                                 .into(binding.imageProfile)
@@ -387,7 +387,6 @@ class ProfileFragment : Fragment(), UploadRequestBody.UploadCallback {
     private fun openImage() {
         getContent.launch("image/*")
     }
-
 
     override fun onProgressUpdate(percentage: Int) {
         binding.progressBar.progress = percentage

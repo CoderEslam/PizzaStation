@@ -109,4 +109,7 @@ dependencies {
     implementation("org.apache.httpcomponents:httpclient:4.5")
 //    implementation("com.android.support:multidex:2.0.1")
 
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
+
+
 }

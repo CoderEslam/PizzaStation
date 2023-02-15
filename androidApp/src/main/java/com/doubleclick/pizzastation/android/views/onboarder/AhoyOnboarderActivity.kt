@@ -212,6 +212,7 @@ abstract class AhoyOnboarderActivity : AppCompatActivity(), View.OnClickListener
     }
 
     abstract fun onFinishButtonPressed()
+
     fun showNavigationControls(navigation: Boolean) {
         if (navigation) {
             navigationControls!!.visibility = View.VISIBLE

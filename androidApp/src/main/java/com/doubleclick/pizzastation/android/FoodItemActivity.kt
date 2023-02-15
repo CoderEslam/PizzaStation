@@ -50,6 +50,7 @@ class FoodItemActivity : AppCompatActivity(), ItemSizeListener, ItemExtraListene
     private var sizeNameExtra: String = ""
     private val TAG = "FoodItemActivity"
     private val extraList: ArrayList<Extra> = ArrayList()
+    private var sumExtraList: ArrayList<SumExtra> = ArrayList()
     private var favoriteModelList: ArrayList<FavoriteModel> = ArrayList();
     private var menuModelList: ArrayList<MenuModel> = ArrayList();
     private lateinit var viewModel: MainViewModel
@@ -191,8 +192,7 @@ class FoodItemActivity : AppCompatActivity(), ItemSizeListener, ItemExtraListene
             try {
                 amount++
                 binding.count.text = amount.toString()
-                priceTotal = (this.sizePrice * amount).plus(sizePriceExtras.toDouble())
-                binding.priceTotal.text = priceTotal.toString() + " ج.م "
+                setTotalPrice()
             } catch (e: NumberFormatException) {
                 Log.e(TAG, "add btn: ${e.message}")
             }
@@ -207,8 +207,7 @@ class FoodItemActivity : AppCompatActivity(), ItemSizeListener, ItemExtraListene
             try {
                 amount--
                 binding.count.text = amount.toString()
-                priceTotal = (this.sizePrice * amount).plus(sizePriceExtras.toDouble())
-                binding.priceTotal.text = priceTotal.toString() + " ج.م "
+                setTotalPrice()
             } catch (e: NumberFormatException) {
                 Log.e(TAG, "mins btn: ${e.message}")
             }
@@ -522,13 +521,7 @@ class FoodItemActivity : AppCompatActivity(), ItemSizeListener, ItemExtraListene
                 )
             )
         }
-        try {
-            priceTotal = (this.sizePrice * amount).plus(sizePriceExtras.toDouble())
-            binding.priceTotal.text = priceTotal.toString() + " ج.م "
-        } catch (e: NumberFormatException) {
-            Log.e(TAG, "onItemSizeListener: ${e.message}")
-        }
-
+        setTotalPrice()
         val builder = AlertDialog.Builder(this@FoodItemActivity)
         builder.setTitle(resources.getString(R.string.add_extras));
         val view: View = LayoutInflater.from(this@FoodItemActivity)
@@ -561,8 +554,12 @@ class FoodItemActivity : AppCompatActivity(), ItemSizeListener, ItemExtraListene
     @SuppressLint("NotifyDataSetChanged")
     override fun onItemExtraListenerDeleted(menuModel: MenuModel?, pos: Int) {
         val e = Extra(menuModel!!.name, "", "", "", "")
+        val sumExtra = SumExtra(menuModel!!.name, 0.0)
         if (extraList.contains(e)) {
             extraList.remove(e)
+            sumExtraList.remove(sumExtra)
+            Log.e(TAG, "onItemSizeExtraListener: ${sumExtras()}")
+            setTotalPrice()
             extrasAdapter.notifyItemRangeChanged(0, menuModelList.size)
             extrasAdapter.notifyItemChanged(pos)
             extrasAdapter.notifyDataSetChanged()
@@ -579,20 +576,42 @@ class FoodItemActivity : AppCompatActivity(), ItemSizeListener, ItemExtraListene
         this.sizePriceExtras = sizePriceExtra;
         this.sizeNameExtra = sizeNameExtra;
         try {
-            priceTotal = (this.sizePrice * amount).plus(sizePriceExtras.toDouble())
-            binding.priceTotal.text = priceTotal.toString() + " ج.م "
             val extra = Extra(sizeSosTypeName, sizePriceExtra, image, "1", sizeNameExtra)
+            val sumExtra = SumExtra(sizeSosTypeName, sizePriceExtra.toDouble())
             if (extraList.contains(extra)) {
                 extraList[extraList.indexOf(extra)] = extra
+                sumExtraList[sumExtraList.indexOf(sumExtra)] = sumExtra
                 extrasAdapter.notifyItemRangeChanged(0, menuModelList.size)
+                Log.e(TAG, "onItemSizeExtraListener: ${sumExtras()}")
+                Toast.makeText(this, "Updated", Toast.LENGTH_LONG).show()
+                setTotalPrice()
             } else {
                 extraList.add(extra)
+                sumExtraList.add(sumExtra)
                 extrasAdapter.notifyItemRangeChanged(0, menuModelList.size)
+                Log.e(TAG, "onItemSizeExtraListener: ${sumExtras()}")
+                Toast.makeText(this, "Added", Toast.LENGTH_LONG).show()
+                setTotalPrice()
             }
         } catch (e: NumberFormatException) {
             Log.e(TAG, "onItemSizeExtraListener btn: ${e.message}")
         }
     }
 
+    private fun sumExtras(): Double {
+        var sum = 0.0
+        for (price in sumExtraList) {
+            sum += price.price
+        }
+        return sum
+    }
 
+    private fun setTotalPrice() {
+        try {
+            priceTotal = (this.sizePrice * amount).plus(sumExtras())
+            binding.priceTotal.text = priceTotal.toString() + " ج.م "
+        } catch (e: NumberFormatException) {
+            Log.e(TAG, "onItemSizeListener: ${e.message}")
+        }
+    }
 }

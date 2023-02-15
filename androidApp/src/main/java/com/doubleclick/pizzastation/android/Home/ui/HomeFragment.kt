@@ -25,6 +25,8 @@ import com.doubleclick.pizzastation.android.model.*
 import com.doubleclick.pizzastation.android.views.SimpleSearchView.SimpleSearchView
 import com.doubleclick.pizzastation.android.views.SimpleSearchView.utils.DimensUtils.convertDpToPx
 import com.doubleclick.pizzastation.android.views.imageslider.constants.ScaleTypes
+import com.doubleclick.pizzastation.android.views.imageslider.interfaces.ItemChangeListener
+import com.doubleclick.pizzastation.android.views.imageslider.interfaces.ItemClickListener
 import com.doubleclick.pizzastation.android.views.imageslider.models.SlideModel
 import kotlinx.android.synthetic.main.fragment_home.*
 import retrofit2.Call
@@ -77,7 +79,23 @@ class HomeFragment : Fragment(), itemListener, OpenSearchView {
                         binding.imageSlider.setImageList(
                             response.body()!!.data,
                             ScaleTypes.FIT
-                        )
+                        ).setItemClickListener(object : ItemClickListener {
+                            override fun onItemSelected(position: Int, offersModel: OffersModel) {
+                                Toast.makeText(
+                                    requireContext(),
+                                    "" + offersModel.toString(),
+                                    Toast.LENGTH_SHORT
+                                )
+                                    .show()
+                                startActivity(
+                                    Intent(
+                                        requireActivity(),
+                                        CustomizePizzaActivity::class.java
+                                    )
+                                )
+                            }
+
+                        })
                     } catch (e: NullPointerException) {
                         Log.e(TAG, "onResponse: ${e.message}")
                     }
@@ -91,7 +109,6 @@ class HomeFragment : Fragment(), itemListener, OpenSearchView {
         }
 
         binding.fab.setOnClickListener {
-            startActivity(Intent(requireActivity(), CustomizePizzaActivity::class.java))
 //            val sender = Sender(Data(""), "")
 //            RetrofitInstanceFCM.api.sendNotification(sender).enqueue(object : Callback<MyResponse> {
 //                override fun onResponse(call: Call<MyResponse>, response: Response<MyResponse>) {

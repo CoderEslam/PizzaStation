@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.doubleclick.pizzastation.android.Adapter.CartAdapter
 import com.doubleclick.pizzastation.android.Home.BottomSheetNotesFragment
 import com.doubleclick.pizzastation.android.R
@@ -118,12 +119,11 @@ class CartFragment : Fragment(), ExtraDeleteListener {
 
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
     private fun OnActionClicked(cartModel: CartModel, action: SwipeAction, pos: Int) {
         when (action.actionId) {
             R.id.delete -> {
                 try {
-                    GlobalScope.launch(Dispatchers.Main) {
+                    lifecycleScope.launch {
                         viewModel.deleteCartById(
                             "Bearer " + SessionManger.getToken(requireActivity()).toString(),
                             cartModel.id.toString()

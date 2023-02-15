@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.doubleclick.pizzastation.android.Auth.AuthActivity
+import com.doubleclick.pizzastation.android.HomeActivity
 import com.doubleclick.pizzastation.android.R
 import com.doubleclick.pizzastation.android.Repository.remot.RepositoryRemot
 import com.doubleclick.pizzastation.android.ViewModel.MainViewModel
@@ -87,7 +88,7 @@ class SignUpFragment : Fragment() {
                                     response.body()!!.user.name
                                 )
                             }
-                            startActivity(Intent(requireActivity(), MapsActivity::class.java))
+                            startActivity(Intent(requireActivity(), HomeActivity::class.java))
                         }
 
                         override fun onFailure(call: Call<RegistrationResponse>, t: Throwable) {
