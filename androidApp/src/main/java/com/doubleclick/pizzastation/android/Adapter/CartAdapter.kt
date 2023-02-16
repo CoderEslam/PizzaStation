@@ -9,13 +9,10 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.doubleclick.pizzastation.android.FoodItemActivity
-import com.doubleclick.pizzastation.android.FoodItemEditActivity
+import com.doubleclick.pizzastation.android.activies.FoodItemEditActivity
 import com.doubleclick.pizzastation.android.R
 import com.doubleclick.pizzastation.android.`interface`.ExtraDeleteListener
-import com.doubleclick.pizzastation.android.model.Cart
 import com.doubleclick.pizzastation.android.model.CartModel
-import com.doubleclick.pizzastation.android.utils.Constants
 import com.doubleclick.pizzastation.android.utils.Constants.IMAGE_URL
 import com.doubleclick.pizzastation.android.views.swipetoactionlayout.ActionBindHelper
 import com.doubleclick.pizzastation.android.views.swipetoactionlayout.SwipeAction
@@ -67,6 +64,7 @@ class CartAdapter(
             .into(holder.image_item)
         holder.name_item.text = carts[position].name
         holder.price_total.text = carts[position].price
+        holder.item_size.text = carts[position].size
         holder.count.text = carts[position].quantity
         block(carts[position].count)
         holder.edit.setOnClickListener {
@@ -91,6 +89,7 @@ class CartAdapter(
         var edit: ImageView = itemView.findViewById(R.id.edit)
         var name_item: TextView = itemView.findViewById(R.id.name_item)
         var price_total: TextView = itemView.findViewById(R.id.price_total)
+        var item_size: TextView = itemView.findViewById(R.id.item_size)
         var rv_item_extra_cart: RecyclerView = itemView.findViewById(R.id.rv_item_extra_cart)
         val swipeToActionLayout: SwipeToActionLayout =
             itemView.findViewById(R.id.swipe_to_action_layout)

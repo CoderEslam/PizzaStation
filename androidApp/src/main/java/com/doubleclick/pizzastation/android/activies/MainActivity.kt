@@ -1,4 +1,4 @@
-package com.doubleclick.pizzastation.android
+package com.doubleclick.pizzastation.android.activies
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity

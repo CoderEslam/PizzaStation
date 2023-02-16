@@ -93,12 +93,20 @@ class RepositoryRemot {
         return RetrofitInstance.api.editPhone(token, id, phone_number)
     }
 
-    fun editGovernment(token: String, id: String, government_id: GovernmentId): Call<MessageCallback> {
+    fun editGovernment(
+        token: String,
+        id: String,
+        government_id: GovernmentId
+    ): Call<MessageCallback> {
         return RetrofitInstance.api.editGovernment(token, id, government_id)
     }
 
     fun getImageResponseModel(token: String): Call<ImageResponseCallback> {
         return RetrofitInstance.api.getImageResponseModel(token)
+    }
+
+    fun getPizzaInOffer(): Call<MenuList> {
+        return RetrofitInstance.api.getPizzaInOffer()
     }
 
 }

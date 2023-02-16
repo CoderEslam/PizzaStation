@@ -1,4 +1,4 @@
-package com.doubleclick.pizzastation.android
+package com.doubleclick.pizzastation.android.activies
 
 import android.app.AlertDialog
 import android.content.DialogInterface
@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.doubleclick.pizzastation.android.Adapter.CustomPizzaItemAdapter
 import com.doubleclick.pizzastation.android.Adapter.onPizzaClicked
+import com.doubleclick.pizzastation.android.R
 import com.doubleclick.pizzastation.android.Repository.remot.RepositoryRemot
 import com.doubleclick.pizzastation.android.ViewModel.MainViewModel
 import com.doubleclick.pizzastation.android.ViewModel.MainViewModelFactory
@@ -39,7 +40,7 @@ class CustomizePizzaActivity : AppCompatActivity() {
         setContentView(binding.root)
         val viewModelFactory = MainViewModelFactory(RepositoryRemot())
         viewModel = ViewModelProvider(this, viewModelFactory)[MainViewModel::class.java]
-        viewModel.getMenu().observe(this) {
+        viewModel.getPizzaInOffer().observe(this) {
             it.enqueue(object : Callback<MenuList> {
                 override fun onResponse(
                     call: Call<MenuList>,
@@ -55,15 +56,19 @@ class CustomizePizzaActivity : AppCompatActivity() {
             })
         }
         binding.quarter1.setOnClickListener {
+            binding.addPlus1.visibility = View.GONE
             selectQurter(quarter1)
         }
         binding.quarter2.setOnClickListener {
+            binding.addPlus2.visibility = View.GONE
             selectQurter(quarter2)
         }
         binding.quarter3.setOnClickListener {
+            binding.addPlus3.visibility = View.GONE
             selectQurter(quarter3)
         }
         binding.quarter4.setOnClickListener {
+            binding.addPlus4.visibility = View.GONE
             selectQurter(quarter4)
         }
 

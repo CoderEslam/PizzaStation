@@ -1,4 +1,4 @@
-package com.doubleclick.pizzastation.android
+package com.doubleclick.pizzastation.android.activies
 
 import android.content.Intent
 import android.graphics.Typeface
@@ -6,6 +6,7 @@ import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import com.doubleclick.pizzastation.android.R
 import com.doubleclick.pizzastation.android.views.onboarder.AhoyOnboarderActivity
 import com.doubleclick.pizzastation.android.views.onboarder.AhoyOnboarderCard
 

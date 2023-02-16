@@ -9,11 +9,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.doubleclick.pizzastation.android.Auth.AuthActivity
-import com.doubleclick.pizzastation.android.HomeActivity
-import com.doubleclick.pizzastation.android.MainActivity
+import com.doubleclick.pizzastation.android.activies.HomeActivity
+import com.doubleclick.pizzastation.android.activies.MainActivity
 import com.doubleclick.pizzastation.android.R
 import com.doubleclick.pizzastation.android.databinding.FragmentSplashBinding
-import com.doubleclick.pizzastation.android.map.MapsActivity
 import com.doubleclick.pizzastation.android.utils.SessionManger
 import kotlinx.coroutines.launch
 

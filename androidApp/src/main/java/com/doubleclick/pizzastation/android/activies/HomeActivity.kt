@@ -1,4 +1,4 @@
-package com.doubleclick.pizzastation.android
+package com.doubleclick.pizzastation.android.activies
 
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
@@ -6,13 +6,12 @@ import android.os.Bundle
 import androidx.annotation.RequiresApi
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.NavigationUI.setupWithNavController
 import com.doubleclick.pizzastation.android.databinding.ActivityHomeBinding
 import androidx.navigation.ui.setupActionBarWithNavController
+import com.doubleclick.pizzastation.android.R
 import com.doubleclick.pizzastation.android.databinding.NoInternetConnectionBinding
 import com.doubleclick.pizzastation.android.utils.isNetworkConnected
 import com.doubleclick.pizzastation.android.views.curvedBottomNavigation.CbnMenuItem
-import org.json.JSONObject
 
 class HomeActivity : AppCompatActivity() {
 

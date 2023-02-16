@@ -4,30 +4,23 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.doubleclick.pizzastation.android.Adapter.HomeAdapter
-import com.doubleclick.pizzastation.android.CustomizePizzaActivity
+import com.doubleclick.pizzastation.android.activies.CustomizePizzaActivity
 import com.doubleclick.pizzastation.android.Home.BottomSheetFragment
-import com.doubleclick.pizzastation.android.R
 import com.doubleclick.pizzastation.android.Repository.remot.RepositoryRemot
 import com.doubleclick.pizzastation.android.ViewModel.MainViewModel
 import com.doubleclick.pizzastation.android.ViewModel.MainViewModelFactory
 import com.doubleclick.pizzastation.android.databinding.FragmentHomeBinding
 import com.doubleclick.pizzastation.android.`interface`.OpenSearchView
 import com.doubleclick.pizzastation.android.`interface`.itemListener
-import com.doubleclick.pizzastation.android.api.RetrofitInstanceFCM
-import com.doubleclick.pizzastation.android.fcm.model.Data
-import com.doubleclick.pizzastation.android.fcm.model.MyResponse
-import com.doubleclick.pizzastation.android.fcm.model.Sender
+import com.doubleclick.pizzastation.android.activies.CustomSlicePizzaActivity
 import com.doubleclick.pizzastation.android.model.*
 import com.doubleclick.pizzastation.android.views.SimpleSearchView.SimpleSearchView
 import com.doubleclick.pizzastation.android.views.SimpleSearchView.utils.DimensUtils.convertDpToPx
 import com.doubleclick.pizzastation.android.views.imageslider.constants.ScaleTypes
-import com.doubleclick.pizzastation.android.views.imageslider.interfaces.ItemChangeListener
 import com.doubleclick.pizzastation.android.views.imageslider.interfaces.ItemClickListener
-import com.doubleclick.pizzastation.android.views.imageslider.models.SlideModel
 import kotlinx.android.synthetic.main.fragment_home.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -39,6 +32,7 @@ class HomeFragment : Fragment(), itemListener, OpenSearchView {
     private lateinit var viewModel: MainViewModel
     private val TAG = "APIHOMEFRAGMENT"
     private var listAutoComplete: ArrayList<String> = ArrayList()
+    private lateinit var set: Set<String>
 
     private var isSearch = true
     override fun onCreateView(
@@ -81,18 +75,9 @@ class HomeFragment : Fragment(), itemListener, OpenSearchView {
                             ScaleTypes.FIT
                         ).setItemClickListener(object : ItemClickListener {
                             override fun onItemSelected(position: Int, offersModel: OffersModel) {
-                                Toast.makeText(
-                                    requireContext(),
-                                    "" + offersModel.toString(),
-                                    Toast.LENGTH_SHORT
-                                )
-                                    .show()
-                                startActivity(
-                                    Intent(
-                                        requireActivity(),
-                                        CustomizePizzaActivity::class.java
-                                    )
-                                )
+                                val intent = Intent(requireActivity(), CustomSlicePizzaActivity::class.java)
+                                intent.putExtra("offersModel",offersModel)
+                                startActivity(intent)
                             }
 
                         })
@@ -148,11 +133,11 @@ class HomeFragment : Fragment(), itemListener, OpenSearchView {
 
             override fun onQueryTextSubmit(query: String): Boolean {
                 try {
-                    val sheet = BottomSheetFragment(query)
-                    sheet.show(
+                    BottomSheetFragment(query).show(
                         requireActivity().supportFragmentManager,
                         "BottomSheetFragment"
                     )
+
                 } catch (e: NullPointerException) {
                     Log.e(TAG, "onResponse: ${e.message}")
                 }
@@ -192,7 +177,6 @@ class HomeFragment : Fragment(), itemListener, OpenSearchView {
                             menus = response.body()!!.data
                         )
                         Log.e(TAG, "onResponse: ${response.body()!!.toString()}")
-
                     }
 
                     override fun onFailure(call: Call<MenuList>, t: Throwable) {
@@ -223,6 +207,10 @@ class HomeFragment : Fragment(), itemListener, OpenSearchView {
         }
         binding.animationView.visibility = View.GONE
         binding.itemMenuRv.adapter = HomeAdapter(listParent)
+        // to not repeat items on listAutoComplete
+        set = HashSet<String>(listAutoComplete)
+        listAutoComplete.clear()
+        listAutoComplete.addAll(set)
         binding.searchView.setAutoComplete(listAutoComplete)
 
     }

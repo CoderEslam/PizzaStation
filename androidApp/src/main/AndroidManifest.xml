@@ -17,6 +17,13 @@
         android:theme="@style/AppTheme"
         tools:replace="android:allowBackup">
         <activity
+            android:name=".DealOfferActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".views.acceptsdk.ThreeDSecureWebViewActivty"
             android:exported="false">
             <meta-data
@@ -31,14 +38,21 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".FoodItemEditActivity"
+            android:name=".activies.FoodItemEditActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".CustomizePizzaActivity"
+            android:name=".activies.CustomizePizzaActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".activies.CustomSlicePizzaActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
@@ -52,7 +66,7 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".GradientBackgroundActivity"
+            android:name=".activies.GradientBackgroundActivity"
             android:exported="false" />
         <!--
              TODO: Before you run your application, you need a Google Maps API key.
@@ -70,19 +84,19 @@
             android:value="@string/google_api_key" />
 
         <activity
-            android:name=".FoodItemActivity"
+            android:name=".activies.FoodItemActivity"
             android:exported="false" />
         <activity
-            android:name=".OrdersActivity"
+            android:name=".activies.OrdersActivity"
             android:exported="false" />
         <activity
-            android:name=".OffersActivity"
+            android:name=".activies.OffersActivity"
             android:exported="false" />
         <activity
-            android:name=".HistoryActivity"
+            android:name=".activies.HistoryActivity"
             android:exported="false" />
         <activity
-            android:name=".HomeActivity"
+            android:name=".activies.HomeActivity"
             android:exported="false"
             android:theme="@style/HomeTheme" />
         <activity
@@ -94,15 +108,14 @@
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".MainActivity"
+            android:name=".activies.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-        <!--        https://stackoverflow.com/questions/58220057/crash-in-com-paymob-acceptsdk-payactivity-void-androidx-appcompat-app-actionbar-->
+        </activity> <!-- https://stackoverflow.com/questions/58220057/crash-in-com-paymob-acceptsdk-payactivity-void-androidx-appcompat-app-actionbar -->
         <activity
             android:name="com.paymob.acceptsdk.PayActivity"
             android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar" />

@@ -10,15 +10,12 @@ import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.doubleclick.pizzastation.android.Auth.AuthActivity
-import com.doubleclick.pizzastation.android.HomeActivity
+import com.doubleclick.pizzastation.android.activies.HomeActivity
 import com.doubleclick.pizzastation.android.R
 import com.doubleclick.pizzastation.android.Repository.remot.RepositoryRemot
 import com.doubleclick.pizzastation.android.ViewModel.MainViewModel
 import com.doubleclick.pizzastation.android.ViewModel.MainViewModelFactory
 import com.doubleclick.pizzastation.android.databinding.FragmentSignUpBinding
-import com.doubleclick.pizzastation.android.map.MapsActivity
-import com.doubleclick.pizzastation.android.model.Login
-import com.doubleclick.pizzastation.android.model.LoginResponse
 import com.doubleclick.pizzastation.android.model.Registration
 import com.doubleclick.pizzastation.android.model.RegistrationResponse
 import com.doubleclick.pizzastation.android.utils.SessionManger

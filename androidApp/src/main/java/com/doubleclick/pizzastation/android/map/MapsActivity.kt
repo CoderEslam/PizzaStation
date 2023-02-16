@@ -10,8 +10,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.doubleclick.pizzastation.android.Adapter.InfoWindowAdapter
-import com.doubleclick.pizzastation.android.FoodItemActivity
-import com.doubleclick.pizzastation.android.HomeActivity
+import com.doubleclick.pizzastation.android.activies.HomeActivity
 import com.doubleclick.pizzastation.android.R
 import com.doubleclick.pizzastation.android.databinding.ActivityMapsBinding
 import com.google.android.gms.location.FusedLocationProviderClient

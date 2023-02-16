@@ -12,14 +12,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.doubleclick.pizzastation.android.Auth.AuthActivity
-import com.doubleclick.pizzastation.android.HomeActivity
+import com.doubleclick.pizzastation.android.activies.HomeActivity
 import com.doubleclick.pizzastation.android.R
 import com.doubleclick.pizzastation.android.Repository.remot.RepositoryRemot
 import com.doubleclick.pizzastation.android.ViewModel.MainViewModel
 import com.doubleclick.pizzastation.android.ViewModel.MainViewModelFactory
-import com.doubleclick.pizzastation.android.databinding.FragmentSignInBinding
 import com.doubleclick.pizzastation.android.databinding.SignInBinding
-import com.doubleclick.pizzastation.android.map.MapsActivity
 import com.doubleclick.pizzastation.android.model.Login
 import com.doubleclick.pizzastation.android.model.LoginResponse
 import com.doubleclick.pizzastation.android.utils.SessionManger

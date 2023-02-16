@@ -10,4 +10,4 @@ data class OffersModel(
     val offer_image: String,
     val user_id: Int,
     var scaleType: ScaleTypes? = null
-)
+) : java.io.Serializable

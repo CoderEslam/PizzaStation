@@ -1,4 +1,4 @@
-package com.doubleclick.pizzastation.android
+package com.doubleclick.pizzastation.android.activies
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -18,6 +18,7 @@ import com.bumptech.glide.Glide
 import com.doubleclick.pizzastation.android.Adapter.ExtrasAdapter
 import com.doubleclick.pizzastation.android.Adapter.ItemExtraSizeAdapter
 import com.doubleclick.pizzastation.android.Adapter.ItemSizeAdapter
+import com.doubleclick.pizzastation.android.R
 import com.doubleclick.pizzastation.android.Repository.remot.RepositoryRemot
 import com.doubleclick.pizzastation.android.ViewModel.MainViewModel
 import com.doubleclick.pizzastation.android.ViewModel.MainViewModelFactory
@@ -27,7 +28,6 @@ import com.doubleclick.pizzastation.android.`interface`.ItemSizeListener
 import com.doubleclick.pizzastation.android.databinding.ActivityFoodItemEditBinding
 import com.doubleclick.pizzastation.android.model.*
 import com.doubleclick.pizzastation.android.utils.Constants
-import com.doubleclick.pizzastation.android.utils.SessionManger
 import com.doubleclick.pizzastation.android.utils.SessionManger.getToken
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
@@ -232,6 +232,7 @@ class FoodItemEditActivity : AppCompatActivity(), ItemSizeListener, ItemExtraLis
             binding.count.text = amount.toString()
             binding.priceTotal.text = cartModel.price
             binding.nameItem.text = cartModel.name
+            setTotalPrice()
             binding.addToCard.setOnClickListener {
                 val jsonObjectParent = JsonObject();
                 val jsonObjectMenuModel = JsonObject();
@@ -338,8 +339,7 @@ class FoodItemEditActivity : AppCompatActivity(), ItemSizeListener, ItemExtraLis
         try {
             this.sizePrice = sizePrice.toDouble()
             this.nameSize = sizeName
-            priceTotal = (this.sizePrice * amount).plus(sizePriceExtras.toDouble())
-            binding.priceTotal.text = priceTotal.toString() + " ج.م "
+            setTotalPrice()
         } catch (e: NumberFormatException) {
             Log.e(TAG, "onItemSizeListener: ${e.message}")
         }

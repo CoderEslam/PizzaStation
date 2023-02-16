@@ -1,7 +1,8 @@
-package com.doubleclick.pizzastation.android
+package com.doubleclick.pizzastation.android.activies
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.doubleclick.pizzastation.android.R
 
 class OffersActivity : AppCompatActivity() {
 

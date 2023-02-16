@@ -101,4 +101,5 @@
         app:layout_anchor="@id/app_bar"
         app:layout_anchorGravity="bottom|end"
         app:srcCompat="@drawable/search" />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

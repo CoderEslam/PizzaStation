@@ -1,11 +1,8 @@
 package com.doubleclick.pizzastation.android.Home
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
-import com.doubleclick.pizzastation.android.MainActivity
 import com.doubleclick.pizzastation.android.R
 import com.google.gson.Gson
 import com.myfatoorah.sdk.entity.executepayment.MFExecutePaymentRequest
@@ -18,7 +15,6 @@ import com.myfatoorah.sdk.enums.MFAPILanguage
 import com.myfatoorah.sdk.enums.MFCurrencyISO
 import com.myfatoorah.sdk.views.MFResult
 import com.myfatoorah.sdk.views.MFSDK
-import com.paymob.acceptsdk.*
 
 
 class PaymentActivity : AppCompatActivity() {
@@ -47,10 +43,12 @@ class PaymentActivity : AppCompatActivity() {
             MFAPILanguage.EN
         ) { result: MFResult<MFInitiatePaymentResponse> ->
             when (result) {
-                is MFResult.Success ->
+                is MFResult.Success -> {
                     Log.d(TAG, "Response: " + Gson().toJson(result.response))
-                is MFResult.Fail ->
+                }
+                is MFResult.Fail -> {
                     Log.d(TAG, "Fail: " + Gson().toJson(result.error))
+                }
                 else -> {}
             }
         }
@@ -72,10 +70,12 @@ class PaymentActivity : AppCompatActivity() {
         ) { invoiceId: String,
             result: MFResult<MFDirectPaymentResponse> ->
             when (result) {
-                is MFResult.Success ->
+                is MFResult.Success -> {
                     Log.d("MFCardInfo", "Response => : " + Gson().toJson(result.response))
-                is MFResult.Fail ->
+                }
+                is MFResult.Fail -> {
                     Log.d("MFCardInfo", "Fail => : " + Gson().toJson(result.error))
+                }
                 else -> {}
             }
         }
@@ -88,10 +88,12 @@ class PaymentActivity : AppCompatActivity() {
             }
         ) { invoiceId: String, result: MFResult<MFGetPaymentStatusResponse> ->
             when (result) {
-                is MFResult.Success ->
+                is MFResult.Success -> {
                     Log.d(TAG, "Response: " + Gson().toJson(result.response))
-                is MFResult.Fail ->
+                }
+                is MFResult.Fail -> {
                     Log.d(TAG, "Fail: " + Gson().toJson(result.error))
+                }
                 else -> {}
             }
         }

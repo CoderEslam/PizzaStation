@@ -1,4 +1,4 @@
-package com.doubleclick.pizzastation.android
+package com.doubleclick.pizzastation.android.activies
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -18,6 +18,7 @@ import com.bumptech.glide.Glide
 import com.doubleclick.pizzastation.android.Adapter.ExtrasAdapter
 import com.doubleclick.pizzastation.android.Adapter.ItemExtraSizeAdapter
 import com.doubleclick.pizzastation.android.Adapter.ItemSizeAdapter
+import com.doubleclick.pizzastation.android.R
 import com.doubleclick.pizzastation.android.Repository.remot.RepositoryRemot
 import com.doubleclick.pizzastation.android.ViewModel.MainViewModel
 import com.doubleclick.pizzastation.android.ViewModel.MainViewModelFactory

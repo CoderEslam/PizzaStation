@@ -17,4 +17,17 @@ data class MenuModel(
     val status: String,
     val stuffed_crust_L: String,
     val stuffed_crust_M: String,
-) : java.io.Serializable
+) : java.io.Serializable{
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is MenuModel) return false
+
+        if (id != other.id) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return id
+    }
+}
