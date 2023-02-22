@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.doubleclick.pizzastation.android.Home.BottomSheetPopUpExtrasFragment
 import com.doubleclick.pizzastation.android.R
 import com.doubleclick.pizzastation.android.ViewHolder.ItemCategoryViewHolder
 import com.doubleclick.pizzastation.android.`interface`.ItemSizeExtraListener
@@ -18,7 +19,8 @@ import com.doubleclick.pizzastation.android.model.Sizes
 class ItemExtraSizeAdapter(
     itemListener: ItemSizeExtraListener,
     sizes: ArrayList<Sizes>,
-    extrasAdded: MutableList<Extra>? = null
+    extrasAdded: MutableList<Extra>? = null,
+    val bottomSheetPopUpExtrasFragment: BottomSheetPopUpExtrasFragment
 ) :
     RecyclerView.Adapter<ItemCategoryViewHolder>() {
 
@@ -93,6 +95,7 @@ class ItemExtraSizeAdapter(
                 sizes[position].sizeName,
                 sizes[position].image
             )
+            bottomSheetPopUpExtrasFragment.dismiss()
             lastCheckedPosition = sizes[position].sizeName
             notifyItemRangeChanged(0, sizes.size)
         }

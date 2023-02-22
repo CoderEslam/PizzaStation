@@ -1,6 +1,8 @@
 package com.doubleclick.pizzastation.android.Adapter
 
+import android.graphics.Rect
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.doubleclick.pizzastation.android.R
@@ -18,6 +20,7 @@ class HomeAdapter(private val menu: ArrayList<CategoricalMenu>) :
             LayoutInflater.from(parent.context).inflate(R.layout.item_menu_layout, parent, false)
         )
     }
+
 
     override fun getItemCount(): Int {
         return menu.size

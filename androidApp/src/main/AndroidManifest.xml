@@ -17,7 +17,14 @@
         android:theme="@style/AppTheme"
         tools:replace="android:allowBackup">
         <activity
-            android:name=".DealOfferActivity"
+            android:name=".MantomanActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".activies.DealOfferActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"

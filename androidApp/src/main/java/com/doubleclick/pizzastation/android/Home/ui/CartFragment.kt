@@ -19,12 +19,8 @@ import com.doubleclick.pizzastation.android.ViewModel.MainViewModelFactory
 import com.doubleclick.pizzastation.android.`interface`.ExtraDeleteListener
 import com.doubleclick.pizzastation.android.databinding.FragmentCartBinding
 import com.doubleclick.pizzastation.android.model.*
-import com.doubleclick.pizzastation.android.utils.SessionManger
+import com.doubleclick.pizzastation.android.utils.SessionManger.getToken
 import com.doubleclick.pizzastation.android.views.swipetoactionlayout.SwipeAction
-import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -32,7 +28,6 @@ import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.util.concurrent.TimeUnit
 
 class CartFragment : Fragment(), ExtraDeleteListener {
 
@@ -57,7 +52,7 @@ class CartFragment : Fragment(), ExtraDeleteListener {
         val viewModelFactory = MainViewModelFactory(RepositoryRemot())
         viewModel = ViewModelProvider(this, viewModelFactory)[MainViewModel::class.java]
         GlobalScope.launch(Dispatchers.Main) {
-            viewModel.getCart("Bearer " + SessionManger.getToken(requireActivity()))
+            viewModel.getCart("Bearer " + getToken(requireActivity()))
                 .observe(requireActivity()) {
                     it.clone().enqueue(object : Callback<CartModelList> {
                         @SuppressLint("NotifyDataSetChanged")
@@ -125,7 +120,7 @@ class CartFragment : Fragment(), ExtraDeleteListener {
                 try {
                     lifecycleScope.launch {
                         viewModel.deleteCartById(
-                            "Bearer " + SessionManger.getToken(requireActivity()).toString(),
+                            "Bearer " + getToken(requireActivity()).toString(),
                             cartModel.id.toString()
                         ).observe(viewLifecycleOwner) { it ->
                             try {

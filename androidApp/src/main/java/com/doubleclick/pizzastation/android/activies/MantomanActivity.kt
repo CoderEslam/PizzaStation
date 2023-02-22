@@ -18,19 +18,18 @@ import com.doubleclick.pizzastation.android.ViewModel.MainViewModelFactory
 import com.doubleclick.pizzastation.android.`interface`.DeletedSliceListener
 import com.doubleclick.pizzastation.android.`interface`.ItemSizeListener
 import com.doubleclick.pizzastation.android.`interface`.OnSpinnerEventsListener
-import com.doubleclick.pizzastation.android.databinding.ActivityDealOfferBinding
+import com.doubleclick.pizzastation.android.databinding.ActivityMantomanBinding
 import com.doubleclick.pizzastation.android.model.MenuList
 import com.doubleclick.pizzastation.android.model.MenuModel
 import com.doubleclick.pizzastation.android.model.Sizes
-import com.doubleclick.pizzastation.android.utils.ItemDecoration
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class DealOfferActivity : AppCompatActivity(), ItemSizeListener, DeletedSliceListener {
+class MantomanActivity : AppCompatActivity(), ItemSizeListener, DeletedSliceListener {
 
-    private val TAG = "DealOfferActivity"
-    private lateinit var binding: ActivityDealOfferBinding
+    private val TAG = "MantomanActivity"
+    private lateinit var binding: ActivityMantomanBinding
     private var menusAdded: ArrayList<MenuModel> = ArrayList();
     private lateinit var viewModel: MainViewModel
     private var menus: ArrayList<MenuModel> = ArrayList();
@@ -39,11 +38,11 @@ class DealOfferActivity : AppCompatActivity(), ItemSizeListener, DeletedSliceLis
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityDealOfferBinding.inflate(layoutInflater)
+        binding = ActivityMantomanBinding.inflate(layoutInflater)
         setContentView(binding.root)
         val viewModelFactory = MainViewModelFactory(RepositoryRemot())
         viewModel = ViewModelProvider(this, viewModelFactory)[MainViewModel::class.java]
-        menuDealAdapter = MenuDealAdapter(menusAdded, this@DealOfferActivity)
+        menuDealAdapter = MenuDealAdapter(menusAdded, this@MantomanActivity)
         binding.rvSlices.adapter = menuDealAdapter
         viewModel.getPizzaInOffer().observe(this) {
             it.enqueue(object : Callback<MenuList> {
@@ -54,13 +53,11 @@ class DealOfferActivity : AppCompatActivity(), ItemSizeListener, DeletedSliceLis
                     Log.e(TAG, "onResponse: ${response.body()!!.data}")
 
                     for (menu in response.body()!!.data) {
-                        if (menu.name == "مارجريتا" || menu.name == "فيجيتريان" || menu.name == "ببرونى" || menu.name == "سوبريم" || menu.name == "سجق ايطالي") {
-                            menus.add(menu)
-                        }
+                        menus.add(menu)
                     }
 
                     adapter = SpinnerAdapterSlice(
-                        this@DealOfferActivity,
+                        this@MantomanActivity,
                         menus
                     )
 
@@ -75,6 +72,16 @@ class DealOfferActivity : AppCompatActivity(), ItemSizeListener, DeletedSliceLis
             })
         }
 
+        val sizes: ArrayList<Sizes> = ArrayList();
+        sizes.add(
+            Sizes(
+                "FB",
+                "FB",
+                "",
+                "245"
+            )
+        )
+        binding.rvSizes.adapter = ItemSizeAdapter(this@MantomanActivity, sizes, "FB")
         binding.addToCard.setOnClickListener {
 
         }

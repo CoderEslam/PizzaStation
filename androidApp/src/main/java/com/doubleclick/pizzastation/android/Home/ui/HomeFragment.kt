@@ -16,7 +16,10 @@ import com.doubleclick.pizzastation.android.databinding.FragmentHomeBinding
 import com.doubleclick.pizzastation.android.`interface`.OpenSearchView
 import com.doubleclick.pizzastation.android.`interface`.itemListener
 import com.doubleclick.pizzastation.android.activies.CustomSlicePizzaActivity
+import com.doubleclick.pizzastation.android.activies.DealOfferActivity
 import com.doubleclick.pizzastation.android.model.*
+import com.doubleclick.pizzastation.android.utils.ItemDecoration
+import com.doubleclick.pizzastation.android.views.HiveLayoutManger.HiveLayoutManager
 import com.doubleclick.pizzastation.android.views.SimpleSearchView.SimpleSearchView
 import com.doubleclick.pizzastation.android.views.SimpleSearchView.utils.DimensUtils.convertDpToPx
 import com.doubleclick.pizzastation.android.views.imageslider.constants.ScaleTypes
@@ -75,9 +78,20 @@ class HomeFragment : Fragment(), itemListener, OpenSearchView {
                             ScaleTypes.FIT
                         ).setItemClickListener(object : ItemClickListener {
                             override fun onItemSelected(position: Int, offersModel: OffersModel) {
-                                val intent = Intent(requireActivity(), CustomSlicePizzaActivity::class.java)
-                                intent.putExtra("offersModel",offersModel)
-                                startActivity(intent)
+                                if (offersModel.offer_name == "الميجا مييل") {
+                                    val intent =
+                                        Intent(
+                                            requireActivity(),
+                                            CustomizePizzaActivity::class.java
+                                        )
+                                    intent.putExtra("offersModel", offersModel)
+                                    startActivity(intent)
+                                } else {
+                                    val intent =
+                                        Intent(requireActivity(), DealOfferActivity::class.java)
+                                    intent.putExtra("offersModel", offersModel)
+                                    startActivity(intent)
+                                }
                             }
 
                         })

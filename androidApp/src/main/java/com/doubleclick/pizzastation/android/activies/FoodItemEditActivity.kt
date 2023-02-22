@@ -18,6 +18,7 @@ import com.bumptech.glide.Glide
 import com.doubleclick.pizzastation.android.Adapter.ExtrasAdapter
 import com.doubleclick.pizzastation.android.Adapter.ItemExtraSizeAdapter
 import com.doubleclick.pizzastation.android.Adapter.ItemSizeAdapter
+import com.doubleclick.pizzastation.android.Home.BottomSheetPopUpExtrasFragment
 import com.doubleclick.pizzastation.android.R
 import com.doubleclick.pizzastation.android.Repository.remot.RepositoryRemot
 import com.doubleclick.pizzastation.android.ViewModel.MainViewModel
@@ -28,6 +29,7 @@ import com.doubleclick.pizzastation.android.`interface`.ItemSizeListener
 import com.doubleclick.pizzastation.android.databinding.ActivityFoodItemEditBinding
 import com.doubleclick.pizzastation.android.model.*
 import com.doubleclick.pizzastation.android.utils.Constants
+import com.doubleclick.pizzastation.android.utils.SessionManger
 import com.doubleclick.pizzastation.android.utils.SessionManger.getToken
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
@@ -119,6 +121,72 @@ class FoodItemEditActivity : AppCompatActivity(), ItemSizeListener, ItemExtraLis
             })
         }
 
+        binding.favorite.setOnClickListener {
+            GlobalScope.launch(Dispatchers.Main) {
+                try {
+                    if (!isFavorite) {
+                        Log.i(TAG, "onCreate: " + getToken(this@FoodItemEditActivity))
+                        viewModel.setFavorite(
+                            "Bearer " + getToken(this@FoodItemEditActivity),
+                            MenuId(cartModel?.menuModel?.id.toString())
+                        ).observe(this@FoodItemEditActivity) {
+                            it.enqueue(object : Callback<MessageCallback> {
+                                override fun onResponse(
+                                    call: Call<MessageCallback>,
+                                    response: Response<MessageCallback>
+                                ) {
+                                    for (id in favoriteModelList) {
+                                        if (id.menu.id == cartModel?.menuModel?.id) {
+                                            binding.favorite.setChecked(true)
+                                            isFavorite = true;
+                                        }
+                                    }
+                                }
+
+                                override fun onFailure(call: Call<MessageCallback>, t: Throwable) {
+
+                                }
+
+                            })
+                        }
+                    } else {
+                        for (id in favoriteModelList) {
+                            if (id.menu.id == cartModel?.menuModel?.id) {
+                                viewModel.deleteFavorite(
+                                    "Bearer " + getToken(this@FoodItemEditActivity),
+                                    id.id.toString()
+                                ).observe(this@FoodItemEditActivity) {
+                                    it.enqueue(object : Callback<MessageCallback> {
+                                        override fun onResponse(
+                                            call: Call<MessageCallback>,
+                                            response: Response<MessageCallback>
+                                        ) {
+                                            for (favoritemodel in favoriteModelList) {
+                                                if (favoritemodel.menu.id == cartModel?.menuModel?.id) {
+                                                    binding.favorite.setChecked(false)
+                                                    isFavorite = false;
+                                                }
+                                            }
+                                        }
+
+                                        override fun onFailure(
+                                            call: Call<MessageCallback>,
+                                            t: Throwable
+                                        ) {
+
+                                        }
+
+                                    })
+                                }
+                            }
+                        }
+                    }
+                } catch (e: IllegalStateException) {
+                    Log.e(TAG, "onCreate: ${e.message}")
+                }
+
+            }
+        }
     }
 
     private fun putSizes() {
@@ -226,7 +294,6 @@ class FoodItemEditActivity : AppCompatActivity(), ItemSizeListener, ItemExtraLis
     @OptIn(DelicateCoroutinesApi::class)
     private fun onEdit(cartModel: CartModel?) {
         if (cartModel != null) {
-            Log.e(TAG, "onEdit: ${cartModel}")
             Picasso.get().load(Constants.IMAGE_URL + cartModel.image).into(binding.imageItem)
             amount = cartModel.quantity.toInt()
             binding.count.text = amount.toString()
@@ -241,36 +308,36 @@ class FoodItemEditActivity : AppCompatActivity(), ItemSizeListener, ItemExtraLis
                 jsonObjectParent.addProperty("quantity", amount.toString())
                 jsonObjectParent.addProperty("size", nameSize)
                 jsonObjectParent.addProperty("image", cartModel.image.toString())
-                jsonObjectMenuModel.addProperty("FB", cartModel.menuModel.FB.toString());
-                jsonObjectMenuModel.addProperty("FB", cartModel.menuModel.FB.toString());
-                jsonObjectMenuModel.addProperty("L", cartModel.menuModel.L.toString());
-                jsonObjectMenuModel.addProperty("M", cartModel.menuModel.M.toString());
-                jsonObjectMenuModel.addProperty("Slice", cartModel.menuModel.Slice.toString());
-                jsonObjectMenuModel.addProperty("XXL", cartModel.menuModel.XXL.toString());
+                jsonObjectMenuModel.addProperty("FB", cartModel.menuModel?.FB.toString());
+                jsonObjectMenuModel.addProperty("FB", cartModel.menuModel?.FB.toString());
+                jsonObjectMenuModel.addProperty("L", cartModel.menuModel?.L.toString());
+                jsonObjectMenuModel.addProperty("M", cartModel.menuModel?.M.toString());
+                jsonObjectMenuModel.addProperty("Slice", cartModel.menuModel?.Slice.toString());
+                jsonObjectMenuModel.addProperty("XXL", cartModel.menuModel?.XXL.toString());
                 jsonObjectMenuModel.addProperty(
                     "category",
-                    cartModel.menuModel.category.toString()
+                    cartModel.menuModel?.category.toString()
                 );
-                jsonObjectMenuModel.addProperty("half_L", cartModel.menuModel.half_L.toString());
+                jsonObjectMenuModel.addProperty("half_L", cartModel.menuModel?.half_L.toString());
                 jsonObjectMenuModel.addProperty(
                     "half_stuffed_crust_L",
-                    cartModel.menuModel.half_stuffed_crust_L.toString()
+                    cartModel.menuModel?.half_stuffed_crust_L.toString()
                 );
-                jsonObjectMenuModel.addProperty("id", cartModel.menuModel.id.toString());
-                jsonObjectMenuModel.addProperty("image", cartModel.menuModel.image.toString());
-                jsonObjectMenuModel.addProperty("name", cartModel.menuModel.name.toString());
+                jsonObjectMenuModel.addProperty("id", cartModel.menuModel?.id.toString());
+                jsonObjectMenuModel.addProperty("image", cartModel.menuModel?.image.toString());
+                jsonObjectMenuModel.addProperty("name", cartModel.menuModel?.name.toString());
                 jsonObjectMenuModel.addProperty(
                     "quarter_XXL",
-                    cartModel.menuModel.quarter_XXL.toString()
+                    cartModel.menuModel?.quarter_XXL.toString()
                 );
-                jsonObjectMenuModel.addProperty("status", cartModel.menuModel.status.toString());
+                jsonObjectMenuModel.addProperty("status", cartModel.menuModel?.status.toString());
                 jsonObjectMenuModel.addProperty(
                     "stuffed_crust_L",
-                    cartModel.menuModel.stuffed_crust_L.toString()
+                    cartModel.menuModel?.stuffed_crust_L.toString()
                 );
                 jsonObjectMenuModel.addProperty(
                     "stuffed_crust_M",
-                    cartModel.menuModel.stuffed_crust_M.toString()
+                    cartModel.menuModel?.stuffed_crust_M.toString()
                 );
                 jsonObjectParent.add("menuModel", jsonObjectMenuModel)
                 val jsonArray = JsonArray();
@@ -287,13 +354,6 @@ class FoodItemEditActivity : AppCompatActivity(), ItemSizeListener, ItemExtraLis
                         jsonObjectParent.add("extra", jsonArray)
                     }
                 } else {
-                    val jsonObjectChild = JsonObject();
-                    jsonObjectChild.addProperty("name", "")
-                    jsonObjectChild.addProperty("price", "")
-                    jsonObjectChild.addProperty("size", "")
-                    jsonObjectChild.addProperty("image", "")
-                    jsonObjectChild.addProperty("quantity", "")
-                    jsonArray.add(jsonObjectChild)
                     jsonObjectParent.add("extra", null)
                 }
                 binding.animationView.visibility = View.VISIBLE
@@ -447,33 +507,15 @@ class FoodItemEditActivity : AppCompatActivity(), ItemSizeListener, ItemExtraLis
             )
         }
         setTotalPrice()
-        val builder = AlertDialog.Builder(this@FoodItemEditActivity)
-        builder.setTitle(resources.getString(R.string.add_extras));
-        val view: View = LayoutInflater.from(this@FoodItemEditActivity)
-            .inflate(R.layout.alert_extras_layout, null, false)
-        view.layoutParams = ViewGroup.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.MATCH_PARENT
+        BottomSheetPopUpExtrasFragment(
+            this,
+            sizes,
+            menuModel,
+            extraList
+        ).show(
+            supportFragmentManager,
+            ""
         )
-        view.setPadding(30, 5, 30, 5)
-        val rv_extra_sizes: RecyclerView = view.findViewById(R.id.rv_extra_sizes);
-        val image_item: ImageView = view.findViewById(R.id.image_item);
-        val name: TextView = view.findViewById(R.id.name);
-        Log.e(TAG, "onItemExtraListener: ${menuModel?.name}")
-        name.text = menuModel?.name
-        Glide.with(this@FoodItemEditActivity).load(Constants.IMAGE_URL + menuModel?.image)
-            .into(image_item)
-        rv_extra_sizes.adapter = ItemExtraSizeAdapter(this, sizes, cartModel?.extra)
-        builder.setPositiveButton(
-            "Close"
-        ) { dialog, _ ->
-            run {
-                dialog?.dismiss()
-            }
-        }
-        builder.setCancelable(true);
-        builder.setView(view);
-        builder.show()
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -529,7 +571,7 @@ class FoodItemEditActivity : AppCompatActivity(), ItemSizeListener, ItemExtraLis
         for (price in sumExtraList) {
             sum += price.price
         }
-        return sum
+        return sum * amount
     }
 
     private fun setTotalPrice() {

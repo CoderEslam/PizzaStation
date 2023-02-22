@@ -33,7 +33,8 @@ class SpinnerAdapterSlice(
 
     override fun getView(i: Int, p1: View?, viewGroup: ViewGroup?): View {
         val rootView: View =
-            LayoutInflater.from(context).inflate(R.layout.text_spinner_layout, viewGroup, false)
+            LayoutInflater.from(context)
+                .inflate(R.layout.text_spinner_slice_layout, viewGroup, false)
         val text: TextView = rootView.findViewById(R.id.text_spinner);
         val image_pizza: CircleImageView = rootView.findViewById(R.id.image_pizza);
         text.text = menuModel[i].name

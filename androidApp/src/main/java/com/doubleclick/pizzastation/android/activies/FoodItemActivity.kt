@@ -18,6 +18,7 @@ import com.bumptech.glide.Glide
 import com.doubleclick.pizzastation.android.Adapter.ExtrasAdapter
 import com.doubleclick.pizzastation.android.Adapter.ItemExtraSizeAdapter
 import com.doubleclick.pizzastation.android.Adapter.ItemSizeAdapter
+import com.doubleclick.pizzastation.android.Home.BottomSheetPopUpExtrasFragment
 import com.doubleclick.pizzastation.android.R
 import com.doubleclick.pizzastation.android.Repository.remot.RepositoryRemot
 import com.doubleclick.pizzastation.android.ViewModel.MainViewModel
@@ -31,6 +32,7 @@ import com.doubleclick.pizzastation.android.utils.Constants.IMAGE_URL
 import com.doubleclick.pizzastation.android.utils.SessionManger
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
+import kotlinx.android.synthetic.main.activity_customize_pizza.*
 import kotlinx.coroutines.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -351,16 +353,19 @@ class FoodItemActivity : AppCompatActivity(), ItemSizeListener, ItemExtraListene
                     );
                     jsonObjectParent.add("menuModel", jsonObjectMenuModel)
                     val jsonArray = JsonArray();
-
-                    for (extraItem in extraList) {
-                        val jsonObjectChild = JsonObject();
-                        jsonObjectChild.addProperty("name", extraItem.name)
-                        jsonObjectChild.addProperty("price", extraItem.price)
-                        jsonObjectChild.addProperty("size", extraItem.size)
-                        jsonObjectChild.addProperty("image", extraItem.image)
-                        jsonObjectChild.addProperty("quantity", "1")
-                        jsonArray.add(jsonObjectChild)
-                        jsonObjectParent.add("extra", jsonArray)
+                    if (extraList.isNotEmpty()) {
+                        for (extraItem in extraList) {
+                            val jsonObjectChild = JsonObject();
+                            jsonObjectChild.addProperty("name", extraItem.name)
+                            jsonObjectChild.addProperty("price", extraItem.price)
+                            jsonObjectChild.addProperty("size", extraItem.size)
+                            jsonObjectChild.addProperty("image", extraItem.image)
+                            jsonObjectChild.addProperty("quantity", "1")
+                            jsonArray.add(jsonObjectChild)
+                            jsonObjectParent.add("extra", jsonArray)
+                        }
+                    } else {
+                        jsonObjectParent.add("extra", null)
                     }
                     viewModel.setCart(
                         "Bearer " + SessionManger.getToken(this@FoodItemActivity),
@@ -523,33 +528,14 @@ class FoodItemActivity : AppCompatActivity(), ItemSizeListener, ItemExtraListene
             )
         }
         setTotalPrice()
-        val builder = AlertDialog.Builder(this@FoodItemActivity)
-        builder.setTitle(resources.getString(R.string.add_extras));
-        val view: View = LayoutInflater.from(this@FoodItemActivity)
-            .inflate(R.layout.alert_extras_layout, null, false)
-        view.layoutParams = ViewGroup.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.MATCH_PARENT
+        BottomSheetPopUpExtrasFragment(
+            this,
+            sizes,
+            menuModel
+        ).show(
+            supportFragmentManager,
+            ""
         )
-        view.setPadding(30, 5, 30, 5)
-        val rv_extra_sizes: RecyclerView = view.findViewById(R.id.rv_extra_sizes);
-        val image_item: ImageView = view.findViewById(R.id.image_item);
-        val name: TextView = view.findViewById(R.id.name);
-        name.text = menuModel?.name
-        Glide.with(this@FoodItemActivity).load(IMAGE_URL + menuModel?.image).into(image_item)
-        rv_extra_sizes.adapter = ItemExtraSizeAdapter(this, sizes)
-        builder.setPositiveButton(
-            "Close"
-        ) { dialog, _ ->
-            run {
-                dialog?.dismiss()
-            }
-        }
-        builder.setCancelable(true);
-        builder.setView(view);
-        builder.show()
-
-
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -604,7 +590,7 @@ class FoodItemActivity : AppCompatActivity(), ItemSizeListener, ItemExtraListene
         for (price in sumExtraList) {
             sum += price.price
         }
-        return sum
+        return sum * amount
     }
 
     private fun setTotalPrice() {

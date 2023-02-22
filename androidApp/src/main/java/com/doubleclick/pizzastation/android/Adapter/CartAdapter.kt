@@ -14,6 +14,7 @@ import com.doubleclick.pizzastation.android.R
 import com.doubleclick.pizzastation.android.`interface`.ExtraDeleteListener
 import com.doubleclick.pizzastation.android.model.CartModel
 import com.doubleclick.pizzastation.android.utils.Constants.IMAGE_URL
+import com.doubleclick.pizzastation.android.utils.Constants.OFFERS_URL
 import com.doubleclick.pizzastation.android.views.swipetoactionlayout.ActionBindHelper
 import com.doubleclick.pizzastation.android.views.swipetoactionlayout.SwipeAction
 import com.doubleclick.pizzastation.android.views.swipetoactionlayout.SwipeMenuListener
@@ -59,14 +60,19 @@ class CartAdapter(
         } catch (e: NullPointerException) {
             Log.e(TAG, "onBindViewHolder: ${e.message}")
         }
-
-        Glide.with(holder.itemView.context).load(IMAGE_URL + carts[position].image)
-            .into(holder.image_item)
+        if (carts[position].menuModel == null) {
+            Glide.with(holder.itemView.context).load(OFFERS_URL + carts[position].image)
+                .into(holder.image_item)
+            holder.edit.visibility = View.GONE
+        } else {
+            Glide.with(holder.itemView.context).load(IMAGE_URL + carts[position].image)
+                .into(holder.image_item)
+        }
         holder.name_item.text = carts[position].name
         holder.price_total.text = carts[position].price
         holder.item_size.text = carts[position].size
         holder.count.text = carts[position].quantity
-        block(carts[position].count)
+//        block(carts[position].count)
         holder.edit.setOnClickListener {
             val intent = Intent(
                 holder.itemView.context,

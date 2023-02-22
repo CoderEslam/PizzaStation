@@ -9,5 +9,7 @@ data class OffersModel(
     val offer_price: String,
     val offer_image: String,
     val user_id: Int,
+    val items_limit: String,
+    val offer_group: String,
     var scaleType: ScaleTypes? = null
 ) : java.io.Serializable
