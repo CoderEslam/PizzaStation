@@ -18,6 +18,7 @@ class MainViewModel(private val repository: RepositoryRemot) : ViewModel() {
     private val registerResponseMutableLiveData: MutableLiveData<Call<RegistrationResponse>> =
         MutableLiveData()
     private val menuMutableLiveData: MutableLiveData<Call<MenuList>> = MutableLiveData()
+    private val CustomMenuMutableLiveData: MutableLiveData<Call<MenuList>> = MutableLiveData()
     private val categoryMutableLiveData: MutableLiveData<Call<CategoryList>> = MutableLiveData()
     private val menuSearchMutableLiveData: MutableLiveData<Call<MenuList>> = MutableLiveData()
     private val offersMutableLiveData: MutableLiveData<Call<OffersList>> = MutableLiveData()
@@ -66,6 +67,11 @@ class MainViewModel(private val repository: RepositoryRemot) : ViewModel() {
     fun getMenu(): LiveData<Call<MenuList>> {
         menuMutableLiveData.value = repository.getMenu();
         return menuMutableLiveData;
+    }
+
+    fun getCustomMenu(): LiveData<Call<MenuList>> {
+        CustomMenuMutableLiveData.value = repository.getCustomMenu();
+        return CustomMenuMutableLiveData;
     }
 
     fun getMenuFilter(category: String): LiveData<Call<MenuList>> {

@@ -55,6 +55,10 @@ interface API {
     fun getMenu(): Call<MenuList>
 
     @Headers("Content-Type: application/json")
+    @GET("menu/custom_items")
+    fun getCustomMenu(): Call<MenuList>
+
+    @Headers("Content-Type: application/json")
     @GET("menu/{category}/filter")
     fun getMenuFilter(@Path("category") category: String): Call<MenuList>
 

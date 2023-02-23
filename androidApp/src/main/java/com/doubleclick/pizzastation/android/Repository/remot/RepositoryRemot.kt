@@ -22,6 +22,10 @@ class RepositoryRemot {
         return RetrofitInstance.api.getMenu()
     }
 
+    fun getCustomMenu(): Call<MenuList> {
+        return RetrofitInstance.api.getCustomMenu()
+    }
+
     fun getMenuFilter(category: String): Call<MenuList> {
         return RetrofitInstance.api.getMenuFilter(category = category)
     }

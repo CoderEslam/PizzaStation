@@ -178,7 +178,7 @@ class CustomizePizzaActivity : AppCompatActivity(), BottomSheetPopUpMenuFragment
     }
 
     override fun setImage(menu: MenuModel, image: ImageView) {
-        Glide.with(this).load(Constants.IMAGE_URL + menu.image)
+        Glide.with(this).load(IMAGE_URL + menu.image)
             .into(image)
     }
 

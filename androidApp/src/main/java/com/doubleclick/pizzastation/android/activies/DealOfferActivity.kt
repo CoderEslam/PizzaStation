@@ -23,6 +23,10 @@ import com.doubleclick.pizzastation.android.model.MenuList
 import com.doubleclick.pizzastation.android.model.MenuModel
 import com.doubleclick.pizzastation.android.model.Sizes
 import com.doubleclick.pizzastation.android.utils.ItemDecoration
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -34,6 +38,7 @@ class DealOfferActivity : AppCompatActivity(), ItemSizeListener, DeletedSliceLis
     private var menusAdded: ArrayList<MenuModel> = ArrayList();
     private lateinit var viewModel: MainViewModel
     private var menus: ArrayList<MenuModel> = ArrayList();
+    private var CustomMenus: ArrayList<MenuModel> = ArrayList();
     private lateinit var adapter: SpinnerAdapterSlice
     private lateinit var menuDealAdapter: MenuDealAdapter
 
@@ -45,35 +50,57 @@ class DealOfferActivity : AppCompatActivity(), ItemSizeListener, DeletedSliceLis
         viewModel = ViewModelProvider(this, viewModelFactory)[MainViewModel::class.java]
         menuDealAdapter = MenuDealAdapter(menusAdded, this@DealOfferActivity)
         binding.rvSlices.adapter = menuDealAdapter
-        viewModel.getPizzaInOffer().observe(this) {
-            it.enqueue(object : Callback<MenuList> {
-                override fun onResponse(
-                    call: Call<MenuList>,
-                    response: Response<MenuList>
-                ) {
-                    Log.e(TAG, "onResponse: ${response.body()!!.data}")
-
-                    for (menu in response.body()!!.data) {
-                        if (menu.name == "مارجريتا" || menu.name == "فيجيتريان" || menu.name == "ببرونى" || menu.name == "سوبريم" || menu.name == "سجق ايطالي") {
-                            menus.add(menu)
+        GlobalScope.launch(Dispatchers.Main) {
+            async {
+                viewModel.getCustomMenu().observe(this@DealOfferActivity) {
+                    it.enqueue(object : Callback<MenuList> {
+                        override fun onResponse(
+                            call: Call<MenuList>,
+                            response: Response<MenuList>
+                        ) {
+                            CustomMenus = response.body()?.data as ArrayList<MenuModel>
                         }
-                    }
 
-                    adapter = SpinnerAdapterSlice(
-                        this@DealOfferActivity,
-                        menus
-                    )
+                        override fun onFailure(call: Call<MenuList>, t: Throwable) {
 
-                    binding.spinnerPizzas.adapter = adapter
-                    adapter.notifyDataSetChanged()
+                        }
+
+                    })
                 }
+            }.await()
+            async {
+                viewModel.getPizzaInOffer().observe(this@DealOfferActivity) {
+                    it.enqueue(object : Callback<MenuList> {
+                        override fun onResponse(
+                            call: Call<MenuList>,
+                            response: Response<MenuList>
+                        ) {
 
-                override fun onFailure(call: Call<MenuList>, t: Throwable) {
-                    Log.e(TAG, "onFailure: ${t.message}")
+                            for (menu in response.body()!!.data) {
+                                if (CustomMenus.contains(menu)) {
+                                    menus.add(menu)
+                                }
+                            }
+
+                            adapter = SpinnerAdapterSlice(
+                                this@DealOfferActivity,
+                                menus
+                            )
+
+                            binding.spinnerPizzas.adapter = adapter
+                            adapter.notifyDataSetChanged()
+                        }
+
+                        override fun onFailure(call: Call<MenuList>, t: Throwable) {
+                            Log.e(TAG, "onFailure: ${t.message}")
+                        }
+
+                    })
                 }
+            }.await()
 
-            })
         }
+
 
         binding.addToCard.setOnClickListener {
 

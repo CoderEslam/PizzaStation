@@ -33,7 +33,7 @@ class HomeFragment : Fragment(), itemListener, OpenSearchView {
 
     private lateinit var binding: FragmentHomeBinding
     private lateinit var viewModel: MainViewModel
-    private val TAG = "APIHOMEFRAGMENT"
+    private val TAG = "API HOME FRAGMENT"
     private var listAutoComplete: ArrayList<String> = ArrayList()
     private lateinit var set: Set<String>
 
@@ -78,17 +78,21 @@ class HomeFragment : Fragment(), itemListener, OpenSearchView {
                             ScaleTypes.FIT
                         ).setItemClickListener(object : ItemClickListener {
                             override fun onItemSelected(position: Int, offersModel: OffersModel) {
-                                if (offersModel.offer_name == "الميجا مييل") {
+                                offersModel.offer_group = "1"
+                                if (offersModel.offer_group == "1") {
                                     val intent =
                                         Intent(
                                             requireActivity(),
-                                            CustomizePizzaActivity::class.java
+                                            CustomSlicePizzaActivity::class.java
                                         )
                                     intent.putExtra("offersModel", offersModel)
                                     startActivity(intent)
                                 } else {
                                     val intent =
-                                        Intent(requireActivity(), DealOfferActivity::class.java)
+                                        Intent(
+                                            requireActivity(),
+                                            CustomSlicePizzaActivity::class.java
+                                        )
                                     intent.putExtra("offersModel", offersModel)
                                     startActivity(intent)
                                 }

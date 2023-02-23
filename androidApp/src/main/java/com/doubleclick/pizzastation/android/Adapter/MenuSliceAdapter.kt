@@ -35,7 +35,7 @@ class MenuSliceAdapter(
         Glide.with(holder.itemView.context).load(IMAGE_URL + menus[position].image)
             .into(holder.slice_image)
         holder.itemView.setOnClickListener {
-            deletedSliceListener.deleteSlice(menus[position] ,position)
+            deletedSliceListener.deleteSlice(menus[position], position)
         }
     }
 
