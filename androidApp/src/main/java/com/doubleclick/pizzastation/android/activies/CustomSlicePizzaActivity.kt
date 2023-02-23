@@ -26,9 +26,6 @@ import com.doubleclick.pizzastation.android.model.MenuModel
 import com.doubleclick.pizzastation.android.model.OffersModel
 import com.doubleclick.pizzastation.android.utils.Constants.OFFERS_URL
 import com.doubleclick.pizzastation.android.utils.SessionManger
-import com.doubleclick.pizzastation.android.views.viewpagerlayoutmanager.Util
-import com.doubleclick.viewpagerlayoutmanager.GalleryLayoutManager
-import com.doubleclick.viewpagerlayoutmanager.ViewPagerLayoutManager
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import kotlinx.coroutines.*
