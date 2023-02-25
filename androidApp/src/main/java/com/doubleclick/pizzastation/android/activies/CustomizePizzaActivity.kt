@@ -42,6 +42,7 @@ import retrofit2.Response
 
 class CustomizePizzaActivity : AppCompatActivity(), BottomSheetPopUpMenuFragment.setImagePizza {
 
+    //1
     private lateinit var binding: ActivityCustomizePizzaBinding
     private lateinit var viewModel: MainViewModel
     private val TAG = "CustomizePizzaActivity"

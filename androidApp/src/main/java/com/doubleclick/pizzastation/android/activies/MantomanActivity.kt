@@ -28,6 +28,7 @@ import retrofit2.Response
 
 class MantomanActivity : AppCompatActivity(), ItemSizeListener, DeletedSliceListener {
 
+    //2
     private val TAG = "MantomanActivity"
     private lateinit var binding: ActivityMantomanBinding
     private var menusAdded: ArrayList<MenuModel> = ArrayList();

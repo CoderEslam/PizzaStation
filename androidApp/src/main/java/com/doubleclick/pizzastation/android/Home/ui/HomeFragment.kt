@@ -78,12 +78,21 @@ class HomeFragment : Fragment(), itemListener, OpenSearchView {
                             ScaleTypes.FIT
                         ).setItemClickListener(object : ItemClickListener {
                             override fun onItemSelected(position: Int, offersModel: OffersModel) {
-                                offersModel.offer_group = "1"
-                                if (offersModel.offer_group == "1") {
+                                offersModel.offer_group = "2"
+                                /*if (offersModel.offer_group == "1") {
                                     val intent =
                                         Intent(
                                             requireActivity(),
                                             CustomSlicePizzaActivity::class.java
+                                        )
+                                    intent.putExtra("offersModel", offersModel)
+                                    startActivity(intent)
+                                }*/
+                                if (offersModel.offer_group == "2") {
+                                    val intent =
+                                        Intent(
+                                            requireActivity(),
+                                            DealOfferActivity::class.java
                                         )
                                     intent.putExtra("offersModel", offersModel)
                                     startActivity(intent)

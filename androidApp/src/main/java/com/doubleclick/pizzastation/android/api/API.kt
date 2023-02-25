@@ -143,4 +143,11 @@ interface API {
     @GET("menu/pizza_in_offers")
     fun getPizzaInOffer(): Call<MenuList>
 
+    @Headers("Accept: application/json", "Content-Type: application/json")
+    @POST("order/pay")
+    fun getURLPay(
+        @Header("Authorization") token: String,
+        @Body amount: AmountPayment
+    ): Call<URLPayment>
+
 }

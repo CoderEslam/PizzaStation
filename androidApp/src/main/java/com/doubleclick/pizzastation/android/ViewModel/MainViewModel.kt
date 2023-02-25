@@ -51,6 +51,8 @@ class MainViewModel(private val repository: RepositoryRemot) : ViewModel() {
         MutableLiveData()
     private val getPizzaInOfferCallbackMutableLiveData: MutableLiveData<Call<MenuList>> =
         MutableLiveData()
+    private val getURLPayCallbackMutableLiveData: MutableLiveData<Call<URLPayment>> =
+        MutableLiveData()
 
 
     fun getLoginResponse(login: Login): LiveData<Call<LoginResponse>> {
@@ -196,6 +198,11 @@ class MainViewModel(private val repository: RepositoryRemot) : ViewModel() {
     fun getPizzaInOffer(): LiveData<Call<MenuList>> {
         getPizzaInOfferCallbackMutableLiveData.value = repository.getPizzaInOffer();
         return getPizzaInOfferCallbackMutableLiveData;
+    }
+
+    fun getURLPay(amount: AmountPayment, token: String): LiveData<Call<URLPayment>> {
+        getURLPayCallbackMutableLiveData.value = repository.getURLPay(amount, token);
+        return getURLPayCallbackMutableLiveData;
     }
 
 

@@ -113,4 +113,8 @@ class RepositoryRemot {
         return RetrofitInstance.api.getPizzaInOffer()
     }
 
+    fun getURLPay(amount: AmountPayment, token: String): Call<URLPayment> {
+        return RetrofitInstance.api.getURLPay(token, amount)
+    }
+
 }
