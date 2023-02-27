@@ -1,5 +1,6 @@
 package com.doubleclick.pizzastation.android.Home.ui
 
+import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -65,7 +66,12 @@ class OurBranchsFragment : Fragment() {
                     call: Call<BranchesList>,
                     response: Response<BranchesList>
                 ) {
-                    branchesModelList.addAll(response.body()!!.data)
+                    try {
+                        branchesModelList.addAll(response.body()!!.data)
+                        binding.animationView.visibility = View.GONE
+                    } catch (_: IllegalStateException) {
+                    } catch (_: NullPointerException) {
+                    }
                 }
 
                 override fun onFailure(call: Call<BranchesList>, t: Throwable) {
@@ -80,14 +86,13 @@ class OurBranchsFragment : Fragment() {
                     call: Call<GovernorateList>,
                     response: Response<GovernorateList>
                 ) {
-
-                    Log.d("governorateModelList", "onResponse: " + response.body()?.data.toString())
-                    governorateModelList.addAll(response.body()!!.data)
                     try {
+                        governorateModelList.addAll(response.body()!!.data)
                         binding.spinnerGovernorate.adapter =
                             SpinnerAdapterGoverorate(requireActivity(), governorateModelList)
                     } catch (e: IllegalStateException) {
                         Log.e("TAG", "onResponse: ${e.message}")
+                    } catch (_: NullPointerException) {
                     }
 
                 }
@@ -100,11 +105,13 @@ class OurBranchsFragment : Fragment() {
         }
 
         binding.spinnerGovernorate.setSpinnerEventsListener(object : OnSpinnerEventsListener {
+            @SuppressLint("UseCompatLoadingForDrawables")
             override fun onPopupWindowOpened(spinner: Spinner?) {
                 binding.spinnerGovernorate.background =
                     resources.getDrawable(R.drawable.bg_spinner_down)
             }
 
+            @SuppressLint("UseCompatLoadingForDrawables")
             override fun onPopupWindowClosed(spinner: Spinner?) {
                 binding.spinnerGovernorate.background =
                     resources.getDrawable(R.drawable.bg_spinner_up)

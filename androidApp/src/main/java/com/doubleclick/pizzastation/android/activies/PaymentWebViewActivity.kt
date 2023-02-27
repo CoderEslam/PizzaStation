@@ -1,18 +1,23 @@
 package com.doubleclick.pizzastation.android.activies
 
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.doubleclick.pizzastation.android.Repository.remot.RepositoryRemot
 import com.doubleclick.pizzastation.android.ViewModel.MainViewModel
 import com.doubleclick.pizzastation.android.ViewModel.MainViewModelFactory
+import com.doubleclick.pizzastation.android.databinding.ActivityHomeBinding
 import com.doubleclick.pizzastation.android.databinding.ActivityPaymentWebViewBinding
+import com.doubleclick.pizzastation.android.databinding.NoInternetConnectionBinding
 import com.doubleclick.pizzastation.android.model.AmountPayment
 import com.doubleclick.pizzastation.android.model.URLPayment
 import com.doubleclick.pizzastation.android.utils.SessionManger.getToken
+import com.doubleclick.pizzastation.android.utils.isNetworkConnected
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -25,12 +30,28 @@ class PaymentWebViewActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityPaymentWebViewBinding
     private lateinit var viewModel: MainViewModel
+    private lateinit var networkBinding: NoInternetConnectionBinding
 
+    @RequiresApi(Build.VERSION_CODES.M)
+    private var net: Boolean = false
     private val TAG = "PaymentWebViewActivity"
+
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityPaymentWebViewBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        net = isNetworkConnected(this)
+        if (net) {
+            binding = ActivityPaymentWebViewBinding.inflate(layoutInflater)
+            setContentView(binding.root)
+        } else {
+            networkBinding = NoInternetConnectionBinding.inflate(layoutInflater)
+            setContentView(networkBinding.root)
+            networkBinding.tryAgain.setOnClickListener {
+                //https://stackoverflow.com/questions/3053761/reload-activity-in-android
+                finish()
+                startActivity(intent)
+            }
+        }
         val viewModelFactory = MainViewModelFactory(RepositoryRemot())
         viewModel = ViewModelProvider(this, viewModelFactory)[MainViewModel::class.java]
         // WebViewClient allows you to handle
@@ -48,7 +69,16 @@ class PaymentWebViewActivity : AppCompatActivity() {
                             call: Call<URLPayment>,
                             response: Response<URLPayment>
                         ) {
-                            binding.webView.loadUrl(response.body()?.url.toString())
+                            if (response.body()?.url.toString() == "null") {
+                                networkBinding = NoInternetConnectionBinding.inflate(layoutInflater)
+                                setContentView(networkBinding.root)
+                                networkBinding.tryAgain.setOnClickListener {
+                                    //https://stackoverflow.com/questions/3053761/reload-activity-in-android
+                                    finish()
+                                    startActivity(intent)
+                                }
+                            } else
+                                binding.webView.loadUrl(response.body()?.url.toString())
                         }
 
                         override fun onFailure(call: Call<URLPayment>, t: Throwable) {

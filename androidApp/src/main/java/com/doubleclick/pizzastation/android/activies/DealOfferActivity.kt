@@ -41,11 +41,11 @@ class DealOfferActivity : AppCompatActivity(), ItemSizeListener, DeletedSliceLis
     private var menusAdded: ArrayList<MenuModel> = ArrayList();
     private lateinit var viewModel: MainViewModel
     private var menus: ArrayList<MenuModel> = ArrayList();
-    private var CustomMenus: ArrayList<MenuModel> = ArrayList();
     private lateinit var adapter: SpinnerAdapterSlice
     private lateinit var menuDealAdapter: MenuDealAdapter
     private lateinit var offersModel: OffersModel
     private var amount: Int = 1
+    private var limit: Int = 0
     private var priceTotal: Double = 0.0
     private var sizePrice: Double = 0.0
 
@@ -55,7 +55,8 @@ class DealOfferActivity : AppCompatActivity(), ItemSizeListener, DeletedSliceLis
         binding = ActivityDealOfferBinding.inflate(layoutInflater)
         setContentView(binding.root)
         offersModel = intent.getSerializableExtra("offersModel") as OffersModel
-        Log.e(TAG, "onCreate: ${offersModel}")
+        limit = offersModel.items_limit.toInt()
+        sizePrice = offersModel.offer_price.toDouble()
         val viewModelFactory = MainViewModelFactory(RepositoryRemot())
         viewModel = ViewModelProvider(this, viewModelFactory)[MainViewModel::class.java]
         menuDealAdapter = MenuDealAdapter(menusAdded, this@DealOfferActivity)
@@ -65,23 +66,6 @@ class DealOfferActivity : AppCompatActivity(), ItemSizeListener, DeletedSliceLis
             .into(binding.imageItem)
         GlobalScope.launch(Dispatchers.Main) {
             async {
-                viewModel.getCustomMenu().observe(this@DealOfferActivity) {
-                    it.enqueue(object : Callback<MenuList> {
-                        override fun onResponse(
-                            call: Call<MenuList>,
-                            response: Response<MenuList>
-                        ) {
-                            CustomMenus = response.body()?.data as ArrayList<MenuModel>
-                        }
-
-                        override fun onFailure(call: Call<MenuList>, t: Throwable) {
-
-                        }
-
-                    })
-                }
-            }.await()
-            async {
                 viewModel.getPizzaInOffer().observe(this@DealOfferActivity) {
                     it.enqueue(object : Callback<MenuList> {
                         override fun onResponse(
@@ -89,11 +73,7 @@ class DealOfferActivity : AppCompatActivity(), ItemSizeListener, DeletedSliceLis
                             response: Response<MenuList>
                         ) {
 
-                            for (menu in response.body()!!.data) {
-                                if (CustomMenus.contains(menu)) {
-                                    menus.add(menu)
-                                }
-                            }
+                            menus = response.body()?.data as ArrayList<MenuModel>
 
                             adapter = SpinnerAdapterSlice(
                                 this@DealOfferActivity,
@@ -114,11 +94,6 @@ class DealOfferActivity : AppCompatActivity(), ItemSizeListener, DeletedSliceLis
 
         }
 
-
-        binding.addToCard.setOnClickListener {
-
-        }
-
         binding.spinnerPizzas.setSpinnerEventsListener(object :
             OnSpinnerEventsListener {
             @SuppressLint("UseCompatLoadingForDrawables")
@@ -135,8 +110,13 @@ class DealOfferActivity : AppCompatActivity(), ItemSizeListener, DeletedSliceLis
         })
         binding.spinnerPizzas.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, i: Int, p3: Long) {
-                menusAdded.add(menus[i])
-                menuDealAdapter.notifyItemRangeChanged(0, menusAdded.size)
+                if (menusAdded.size <= limit - 1) {
+                    menusAdded.add(menus[i])
+                    menuDealAdapter.notifyItemRangeChanged(0, menusAdded.size)
+                } else {
+                    menusAdded[limit - 1] = menus[i]
+                    menuDealAdapter.notifyItemRangeChanged(0, menusAdded.size)
+                }
             }
 
             override fun onNothingSelected(p0: AdapterView<*>?) {
@@ -244,6 +224,7 @@ class DealOfferActivity : AppCompatActivity(), ItemSizeListener, DeletedSliceLis
     override fun deleteSlice(pizza: MenuModel, position: Int) {
         try {
             menusAdded.remove(pizza)
+            limit--
             menuDealAdapter.notifyItemRemoved(position)
             menuDealAdapter.notifyItemRangeChanged(0, menusAdded.size)
         } catch (e: IndexOutOfBoundsException) {

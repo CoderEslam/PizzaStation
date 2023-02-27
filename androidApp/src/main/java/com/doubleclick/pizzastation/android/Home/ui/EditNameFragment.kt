@@ -91,38 +91,47 @@ class EditNameFragment : BottomSheetDialogFragment() {
         viewLifecycleOwner.lifecycleScope.launch(
             Dispatchers.Main
         ) {
-            viewModel.editPhone(
-                "Bearer " + SessionManger.getToken(
-                    requireActivity()
-                ),
-                id!!.toString(),
-                PhoneNumber(binding.phone.text.toString())
-            ).observe(viewLifecycleOwner) {
-                it.clone().enqueue(object :
-                    Callback<MessageCallback> {
-                    override fun onResponse(
-                        call: Call<MessageCallback>,
-                        response: Response<MessageCallback>
-                    ) {
-                        Toast.makeText(
-                            requireActivity(),
-                            response.body()?.message.toString(),
-                            Toast.LENGTH_LONG
-                        ).show()
-                    }
+            try {
+                viewModel.editPhone(
+                    "Bearer " + SessionManger.getToken(
+                        requireActivity()
+                    ),
+                    id!!.toString(),
+                    PhoneNumber(binding.phone.text.toString())
+                ).observe(viewLifecycleOwner) {
+                    it.clone().enqueue(object :
+                        Callback<MessageCallback> {
+                        override fun onResponse(
+                            call: Call<MessageCallback>,
+                            response: Response<MessageCallback>
+                        ) {
+                            Toast.makeText(
+                                requireActivity(),
+                                response.body()?.message.toString(),
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
 
-                    override fun onFailure(
-                        call: Call<MessageCallback>,
-                        t: Throwable
-                    ) {
-                        Log.e(
-                            "TAG",
-                            "onFailure: ${t.message}"
-                        )
-                    }
+                        override fun onFailure(
+                            call: Call<MessageCallback>,
+                            t: Throwable
+                        ) {
+                            Log.e(
+                                "TAG",
+                                "onFailure: ${t.message}"
+                            )
+                        }
 
-                })
+                    })
+                }
+            } catch (_: NullPointerException) {
+                Toast.makeText(
+                    requireActivity(),
+                    "Some error occur , try again later",
+                    Toast.LENGTH_LONG
+                ).show()
             }
+
         }
 
     }

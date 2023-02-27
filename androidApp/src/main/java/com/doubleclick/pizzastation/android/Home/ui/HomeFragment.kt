@@ -17,6 +17,7 @@ import com.doubleclick.pizzastation.android.`interface`.OpenSearchView
 import com.doubleclick.pizzastation.android.`interface`.itemListener
 import com.doubleclick.pizzastation.android.activies.CustomSlicePizzaActivity
 import com.doubleclick.pizzastation.android.activies.DealOfferActivity
+import com.doubleclick.pizzastation.android.activies.MantomanActivity
 import com.doubleclick.pizzastation.android.model.*
 import com.doubleclick.pizzastation.android.utils.ItemDecoration
 import com.doubleclick.pizzastation.android.views.HiveLayoutManger.HiveLayoutManager
@@ -78,7 +79,7 @@ class HomeFragment : Fragment(), itemListener, OpenSearchView {
                             ScaleTypes.FIT
                         ).setItemClickListener(object : ItemClickListener {
                             override fun onItemSelected(position: Int, offersModel: OffersModel) {
-                                offersModel.offer_group = "2"
+                                offersModel.offer_group = "3"
                                 /*if (offersModel.offer_group == "1") {
                                     val intent =
                                         Intent(
@@ -88,11 +89,11 @@ class HomeFragment : Fragment(), itemListener, OpenSearchView {
                                     intent.putExtra("offersModel", offersModel)
                                     startActivity(intent)
                                 }*/
-                                if (offersModel.offer_group == "2") {
+                                if (offersModel.offer_group == "3") {
                                     val intent =
                                         Intent(
                                             requireActivity(),
-                                            DealOfferActivity::class.java
+                                            MantomanActivity::class.java
                                         )
                                     intent.putExtra("offersModel", offersModel)
                                     startActivity(intent)

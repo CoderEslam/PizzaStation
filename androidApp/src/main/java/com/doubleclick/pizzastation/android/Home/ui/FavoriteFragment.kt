@@ -65,7 +65,8 @@ class FavoriteFragment : Fragment(), OnFavoriteCheckedItem {
                                     this@FavoriteFragment
                                 )
                                 binding.rvFavorite.adapter = favoriteAdapter
-                            } catch (e: IllegalStateException) {
+                            } catch (_: IllegalStateException) {
+                            } catch (_: NullPointerException) {
                             }
 
 

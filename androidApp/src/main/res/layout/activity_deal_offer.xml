@@ -45,13 +45,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="Neapolitan Pizza"
                 android:textColor="@color/black"
                 android:textSize="22sp"
                 app:layout_constraintBottom_toTopOf="@+id/cardView3"
                 app:layout_constraintEnd_toEndOf="@+id/image_item"
                 app:layout_constraintStart_toStartOf="@+id/image_item"
-                app:layout_constraintTop_toBottomOf="@+id/image_item" />
+                app:layout_constraintTop_toBottomOf="@+id/image_item"
+                tools:text="Neapolitan Pizza" />
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardView3"
@@ -98,10 +98,10 @@
                             android:layout_gravity="center"
                             android:layout_marginLeft="10dp"
                             android:layout_marginRight="10dp"
-                            android:text="1"
                             android:textAllCaps="false"
                             android:textColor="@color/black"
-                            android:textSize="24sp" />
+                            android:textSize="24sp"
+                            android:text="1" />
 
                     </androidx.cardview.widget.CardView>
 
