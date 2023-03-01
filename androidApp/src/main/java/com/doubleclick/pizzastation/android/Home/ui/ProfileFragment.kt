@@ -217,7 +217,7 @@ class ProfileFragment : Fragment(), UploadRequestBody.UploadCallback {
                                                 setImage(requireActivity(), image)
                                             }
                                         }
-                                    } catch (e: IllegalStateException) {
+                                    } catch (_: IllegalStateException) {
                                     }
                                 }
 
@@ -347,7 +347,6 @@ class ProfileFragment : Fragment(), UploadRequestBody.UploadCallback {
 
 
         binding.historyCard.setOnClickListener {
-            startActivity(Intent(requireActivity(), PaymentWebViewActivity::class.java))
         }
 
         binding.ordersCard.setOnClickListener {

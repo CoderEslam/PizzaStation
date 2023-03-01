@@ -71,7 +71,7 @@ class ViewPagerAdapter(
         return imageList!!.size
     }
 
-    @SuppressLint("ClickableViewAccessibility")
+    @SuppressLint("ClickableViewAccessibility", "UseCompatLoadingForDrawables")
     override fun instantiateItem(container: ViewGroup, position: Int): View {
         val itemView = layoutInflater!!.inflate(R.layout.pager_row, container, false)
 
@@ -90,8 +90,7 @@ class ViewPagerAdapter(
 
         try {
             // Image from url or local path check.
-            val loader = Picasso.get().load(OFFERS_URL + imageList!![position].offer_image!!)
-
+            val loader = Picasso.get().load(OFFERS_URL + imageList!![position].offer_image)
             // set Picasso options.
             if ((scaleType != null && scaleType == ScaleTypes.CENTER_CROP) || imageList!![position].scaleType == ScaleTypes.CENTER_CROP) {
                 loader.fit().centerCrop()

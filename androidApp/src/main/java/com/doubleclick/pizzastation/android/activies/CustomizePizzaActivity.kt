@@ -31,10 +31,7 @@ import com.doubleclick.pizzastation.android.utils.SessionManger
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import kotlinx.android.synthetic.main.activity_customize_pizza.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -47,16 +44,21 @@ class CustomizePizzaActivity : AppCompatActivity(), BottomSheetPopUpMenuFragment
     private lateinit var viewModel: MainViewModel
     private val TAG = "CustomizePizzaActivity"
     private var menus: ArrayList<MenuModel> = ArrayList();
+    private var menusAdded: ArrayList<MenuModel> = ArrayList();
     private lateinit var offersModel: OffersModel
     private var amount: Int = 1
+    private var limit: Int = 0
     private var priceTotal: Double = 0.0
     private var sizePrice: Double = 0.0
 
+    @OptIn(DelicateCoroutinesApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityCustomizePizzaBinding.inflate(layoutInflater)
         setContentView(binding.root)
         offersModel = intent.getSerializableExtra("offersModel") as OffersModel
+        limit = offersModel.items_limit.toInt()
+        binding.name.text = offersModel.offer_name
         val viewModelFactory = MainViewModelFactory(RepositoryRemot())
         viewModel = ViewModelProvider(this, viewModelFactory)[MainViewModel::class.java]
         viewModel.getPizzaInOffer().observe(this) {
@@ -74,7 +76,6 @@ class CustomizePizzaActivity : AppCompatActivity(), BottomSheetPopUpMenuFragment
 
             })
         }
-        binding.name.text = offersModel.offer_name
         try {
             sizePrice = offersModel.offer_price.toDouble()
             setTotalPrice()
@@ -87,15 +88,15 @@ class CustomizePizzaActivity : AppCompatActivity(), BottomSheetPopUpMenuFragment
         }
         binding.quarter2.setOnClickListener {
             binding.addPlus2.visibility = View.GONE
-            openPopUpMenu(quarter2)
+            openPopUpMenu(binding.quarter2)
         }
         binding.quarter3.setOnClickListener {
             binding.addPlus3.visibility = View.GONE
-            openPopUpMenu(quarter3)
+            openPopUpMenu(binding.quarter3)
         }
         binding.quarter4.setOnClickListener {
             binding.addPlus4.visibility = View.GONE
-            openPopUpMenu(quarter4)
+            openPopUpMenu(binding.quarter4)
         }
         binding.add.setOnClickListener {
             try {
@@ -129,7 +130,40 @@ class CustomizePizzaActivity : AppCompatActivity(), BottomSheetPopUpMenuFragment
                 jsonObjectParent.addProperty("size", offersModel.offer_name)
                 jsonObjectParent.addProperty("image", offersModel.offer_image)
                 jsonObjectParent.addProperty("id", offersModel.id.toString())
-                jsonObjectParent.add("menuModel", null)
+                val jsonArrayMenuModel = JsonArray();
+                for (menuModel in menusAdded) {
+                    val jsonObjectMenuModel = JsonObject();
+                    jsonObjectMenuModel.addProperty("FB", menuModel?.FB.toString());
+                    jsonObjectMenuModel.addProperty("FB", menuModel?.FB.toString());
+                    jsonObjectMenuModel.addProperty("L", menuModel?.L.toString());
+                    jsonObjectMenuModel.addProperty("M", menuModel?.M.toString());
+                    jsonObjectMenuModel.addProperty("Slice", menuModel?.Slice.toString());
+                    jsonObjectMenuModel.addProperty("XXL", menuModel?.XXL.toString());
+                    jsonObjectMenuModel.addProperty("category", menuModel?.category.toString());
+                    jsonObjectMenuModel.addProperty("half_L", menuModel?.half_L.toString());
+                    jsonObjectMenuModel.addProperty(
+                        "half_stuffed_crust_L",
+                        menuModel?.half_stuffed_crust_L.toString()
+                    );
+                    jsonObjectMenuModel.addProperty("id", menuModel?.id.toString());
+                    jsonObjectMenuModel.addProperty("image", menuModel?.image.toString());
+                    jsonObjectMenuModel.addProperty("name", menuModel?.name.toString());
+                    jsonObjectMenuModel.addProperty(
+                        "quarter_XXL",
+                        menuModel?.quarter_XXL.toString()
+                    );
+                    jsonObjectMenuModel.addProperty("status", menuModel?.status.toString());
+                    jsonObjectMenuModel.addProperty(
+                        "stuffed_crust_L",
+                        menuModel?.stuffed_crust_L.toString()
+                    );
+                    jsonObjectMenuModel.addProperty(
+                        "stuffed_crust_M",
+                        menuModel?.stuffed_crust_M.toString()
+                    );
+                    jsonArrayMenuModel.add(jsonObjectMenuModel)
+                }
+                jsonObjectParent.add("menuModel", jsonArrayMenuModel)
                 val jsonArray = JsonArray();
                 jsonObjectParent.add("extra", null)
                 Log.e("jsonObjectParent", "onCreate: $jsonObjectParent")
@@ -179,8 +213,15 @@ class CustomizePizzaActivity : AppCompatActivity(), BottomSheetPopUpMenuFragment
     }
 
     override fun setImage(menu: MenuModel, image: ImageView) {
-        Glide.with(this).load(IMAGE_URL + menu.image)
-            .into(image)
+        if (menusAdded.size <= limit - 1) {
+            menusAdded.add(menu)
+            Glide.with(this).load(IMAGE_URL + menu.image)
+                .into(image)
+        } else {
+            menusAdded[limit - 1] = menu
+            Glide.with(this).load(IMAGE_URL + menu.image)
+                .into(image)
+        }
     }
 
     private fun openPopUpMenu(image: ImageView) {

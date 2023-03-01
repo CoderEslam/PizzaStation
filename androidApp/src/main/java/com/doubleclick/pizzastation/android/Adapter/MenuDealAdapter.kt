@@ -33,8 +33,8 @@ class MenuDealAdapter(
         holder.name_slice.isSelected = true
         Glide.with(holder.itemView.context).load(IMAGE_URL + menus[position].image)
             .into(holder.slice_image)
-        holder.itemView.setOnClickListener {
-            deletedSliceListener.deleteSlice(menus[position] ,position)
+        holder.delete.setOnClickListener {
+            deletedSliceListener.deleteSlice(menus[position], position)
         }
     }
 

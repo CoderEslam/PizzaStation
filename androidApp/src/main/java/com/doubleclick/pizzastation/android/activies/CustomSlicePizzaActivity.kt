@@ -43,8 +43,8 @@ class CustomSlicePizzaActivity : AppCompatActivity(), DeletedSliceListener {
     private lateinit var adapter: SpinnerAdapterSlice
     private lateinit var menuSliceAdapter: MenuSliceAdapter
     private var amount: Int = 1
+    private var limit: Int = 0
     private var priceTotal: Double = 0.0
-    private var sizePrice: Double = 0.0
     private lateinit var offersModel: OffersModel
 
 
@@ -55,12 +55,13 @@ class CustomSlicePizzaActivity : AppCompatActivity(), DeletedSliceListener {
         setContentView(binding.root)
         val viewModelFactory = MainViewModelFactory(RepositoryRemot())
         offersModel = intent.getSerializableExtra("offersModel") as OffersModel
+        limit = offersModel.items_limit.toInt()
+        Log.e("OffersModel", "onCreate: $offersModel")
         viewModel = ViewModelProvider(this, viewModelFactory)[MainViewModel::class.java]
         menuSliceAdapter = MenuSliceAdapter(menusAdded, this@CustomSlicePizzaActivity)
         binding.rvSlices.adapter = menuSliceAdapter
         Glide.with(this).load(OFFERS_URL + offersModel.offer_image).into(binding.imageItem)
         binding.nameItem.text = offersModel.offer_name
-//        binding.rvSlices.layoutManager = GalleryLayoutManager(this, Util.Dp2px(this, 10f))
         viewModel.getPizzaInOffer().observe(this) {
             it.enqueue(object : Callback<MenuList> {
                 override fun onResponse(
@@ -103,6 +104,7 @@ class CustomSlicePizzaActivity : AppCompatActivity(), DeletedSliceListener {
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, i: Int, p3: Long) {
                 menusAdded.add(menus[i])
                 menuSliceAdapter.notifyItemRangeChanged(0, menusAdded.size)
+                setTotalPrice()
             }
 
             override fun onNothingSelected(p0: AdapterView<*>?) {
@@ -144,7 +146,40 @@ class CustomSlicePizzaActivity : AppCompatActivity(), DeletedSliceListener {
                 jsonObjectParent.addProperty("size", offersModel.offer_name)
                 jsonObjectParent.addProperty("image", offersModel.offer_image)
                 jsonObjectParent.addProperty("id", offersModel.id.toString())
-                jsonObjectParent.add("menuModel", null)
+                val jsonArrayMenuModel = JsonArray();
+                for (menuModel in menusAdded) {
+                    val jsonObjectMenuModel = JsonObject();
+                    jsonObjectMenuModel.addProperty("FB", menuModel?.FB.toString());
+                    jsonObjectMenuModel.addProperty("FB", menuModel?.FB.toString());
+                    jsonObjectMenuModel.addProperty("L", menuModel?.L.toString());
+                    jsonObjectMenuModel.addProperty("M", menuModel?.M.toString());
+                    jsonObjectMenuModel.addProperty("Slice", menuModel?.Slice.toString());
+                    jsonObjectMenuModel.addProperty("XXL", menuModel?.XXL.toString());
+                    jsonObjectMenuModel.addProperty("category", menuModel?.category.toString());
+                    jsonObjectMenuModel.addProperty("half_L", menuModel?.half_L.toString());
+                    jsonObjectMenuModel.addProperty(
+                        "half_stuffed_crust_L",
+                        menuModel?.half_stuffed_crust_L.toString()
+                    );
+                    jsonObjectMenuModel.addProperty("id", menuModel?.id.toString());
+                    jsonObjectMenuModel.addProperty("image", menuModel?.image.toString());
+                    jsonObjectMenuModel.addProperty("name", menuModel?.name.toString());
+                    jsonObjectMenuModel.addProperty(
+                        "quarter_XXL",
+                        menuModel?.quarter_XXL.toString()
+                    );
+                    jsonObjectMenuModel.addProperty("status", menuModel?.status.toString());
+                    jsonObjectMenuModel.addProperty(
+                        "stuffed_crust_L",
+                        menuModel?.stuffed_crust_L.toString()
+                    );
+                    jsonObjectMenuModel.addProperty(
+                        "stuffed_crust_M",
+                        menuModel?.stuffed_crust_M.toString()
+                    );
+                    jsonArrayMenuModel.add(jsonObjectMenuModel)
+                }
+                jsonObjectParent.add("menuModel", jsonArrayMenuModel)
                 val jsonArray = JsonArray();
                 jsonObjectParent.add("extra", null)
                 Log.e("jsonObjectParent", "onCreate: $jsonObjectParent")
@@ -198,15 +233,25 @@ class CustomSlicePizzaActivity : AppCompatActivity(), DeletedSliceListener {
             menusAdded.remove(pizza)
             menuSliceAdapter.notifyItemRemoved(position)
             menuSliceAdapter.notifyItemRangeChanged(0, menusAdded.size)
+            setTotalPrice()
         } catch (e: IndexOutOfBoundsException) {
             Log.e(TAG, "deleteSlice: ${e.message}")
         }
 
     }
 
+    private fun sumTotalPrice(): Double {
+        var sum = 0.0
+        for (price in menusAdded) {
+            sum += price.Slice.toDouble()
+        }
+        return sum
+    }
+
+
     private fun setTotalPrice() {
         try {
-            priceTotal = (this.sizePrice * amount)
+            priceTotal = (sumTotalPrice() * amount)
             binding.count.text = amount.toString()
             binding.priceTotal.text = priceTotal.toString() + " ج.م "
         } catch (e: NumberFormatException) {

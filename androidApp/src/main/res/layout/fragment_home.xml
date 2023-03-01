@@ -37,7 +37,7 @@
                 android:layout_height="300dp"
                 app:iss_auto_cycle="true"
                 app:iss_delay="60000"
-                app:iss_error_image="@drawable/error"
+                app:iss_error_image="@drawable/pizza"
                 app:iss_period="1500"
                 app:iss_selected_dot="@drawable/default_selected_dot"
                 app:iss_text_align="CENTER"

@@ -79,8 +79,7 @@ class HomeFragment : Fragment(), itemListener, OpenSearchView {
                             ScaleTypes.FIT
                         ).setItemClickListener(object : ItemClickListener {
                             override fun onItemSelected(position: Int, offersModel: OffersModel) {
-                                offersModel.offer_group = "3"
-                                /*if (offersModel.offer_group == "1") {
+                                if (offersModel.offer_group == "1") {
                                     val intent =
                                         Intent(
                                             requireActivity(),
@@ -88,8 +87,8 @@ class HomeFragment : Fragment(), itemListener, OpenSearchView {
                                         )
                                     intent.putExtra("offersModel", offersModel)
                                     startActivity(intent)
-                                }*/
-                                if (offersModel.offer_group == "3") {
+                                }
+                                if (offersModel.offer_group == "2") {
                                     val intent =
                                         Intent(
                                             requireActivity(),
@@ -97,11 +96,21 @@ class HomeFragment : Fragment(), itemListener, OpenSearchView {
                                         )
                                     intent.putExtra("offersModel", offersModel)
                                     startActivity(intent)
-                                } else {
+                                }
+                                if (offersModel.offer_group == "3") {
                                     val intent =
                                         Intent(
                                             requireActivity(),
-                                            CustomSlicePizzaActivity::class.java
+                                            DealOfferActivity::class.java
+                                        )
+                                    intent.putExtra("offersModel", offersModel)
+                                    startActivity(intent)
+                                }
+                                if (offersModel.offer_group == "4") {
+                                    val intent =
+                                        Intent(
+                                            requireActivity(),
+                                            CustomizePizzaActivity::class.java
                                         )
                                     intent.putExtra("offersModel", offersModel)
                                     startActivity(intent)

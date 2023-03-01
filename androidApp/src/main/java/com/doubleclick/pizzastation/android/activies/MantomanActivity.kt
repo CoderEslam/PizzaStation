@@ -60,13 +60,15 @@ class MantomanActivity : AppCompatActivity(), DeletedSliceListener {
         sizePrice = offersModel.offer_price.toDouble()
         Glide.with(this).load(OFFERS_URL + offersModel.offer_image).into(binding.imageItem)
         binding.nameItem.text = offersModel.offer_name
+        binding.details.text = offersModel.offer_details
         setTotalPrice()
         Log.d(TAG, "onCreate: $offersModel")
-        val viewModelFactory = MainViewModelFactory(RepositoryRemot())
-        viewModel = ViewModelProvider(this, viewModelFactory)[MainViewModel::class.java]
+        viewModel = ViewModelProvider(
+            this,
+            MainViewModelFactory(RepositoryRemot())
+        )[MainViewModel::class.java]
         menuDealAdapter = MenuDealAdapter(menusAdded, this@MantomanActivity)
         binding.rvSlices.adapter = menuDealAdapter
-
         GlobalScope.launch(Dispatchers.Main) {
             async {
                 viewModel.getCustomMenu().observe(this@MantomanActivity) {
@@ -96,7 +98,7 @@ class MantomanActivity : AppCompatActivity(), DeletedSliceListener {
 
                             adapter = SpinnerAdapterSlice(
                                 this@MantomanActivity,
-                                menus
+                                if (offersModel.id == 3) customMenus else menus
                             )
 
                             binding.spinnerPizzas.adapter = adapter

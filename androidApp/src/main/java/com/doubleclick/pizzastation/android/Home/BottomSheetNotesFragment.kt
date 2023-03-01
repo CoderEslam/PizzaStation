@@ -38,6 +38,7 @@ import retrofit2.Response
 import java.util.function.Predicate
 import java.util.stream.Collectors
 import com.doubleclick.pizzastation.android.R
+import com.doubleclick.pizzastation.android.activies.PaymentWebViewActivity
 
 
 /**
@@ -161,7 +162,8 @@ class BottomSheetNotesFragment(
 
 
         binding.completeOrder.setOnClickListener {
-            startPayActivityNoToken(true)
+//            startPayActivityNoToken(true)
+            startActivity(Intent(requireActivity(), PaymentWebViewActivity::class.java))
         }
 
     }

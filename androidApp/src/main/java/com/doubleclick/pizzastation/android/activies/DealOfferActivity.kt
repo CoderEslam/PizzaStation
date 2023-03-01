@@ -24,6 +24,7 @@ import com.doubleclick.pizzastation.android.`interface`.OnSpinnerEventsListener
 import com.doubleclick.pizzastation.android.databinding.ActivityDealOfferBinding
 import com.doubleclick.pizzastation.android.model.*
 import com.doubleclick.pizzastation.android.utils.Constants
+import com.doubleclick.pizzastation.android.utils.Constants.OFFERS_URL
 import com.doubleclick.pizzastation.android.utils.ItemDecoration
 import com.doubleclick.pizzastation.android.utils.SessionManger
 import com.doubleclick.pizzastation.android.utils.SessionManger.getToken
@@ -62,7 +63,8 @@ class DealOfferActivity : AppCompatActivity(), ItemSizeListener, DeletedSliceLis
         menuDealAdapter = MenuDealAdapter(menusAdded, this@DealOfferActivity)
         binding.rvSlices.adapter = menuDealAdapter
         binding.nameItem.text = offersModel.offer_name
-        Glide.with(this).load(Constants.OFFERS_URL + offersModel.offer_image)
+        binding.details.text = offersModel.offer_details
+        Glide.with(this).load(OFFERS_URL + offersModel.offer_image)
             .into(binding.imageItem)
         GlobalScope.launch(Dispatchers.Main) {
             async {
@@ -151,14 +153,46 @@ class DealOfferActivity : AppCompatActivity(), ItemSizeListener, DeletedSliceLis
         binding.addToCard.setOnClickListener {
             GlobalScope.launch(Dispatchers.Main) {
                 val jsonObjectParent = JsonObject();
-                val jsonObjectMenuModel = JsonObject();
                 jsonObjectParent.addProperty("price", priceTotal.toString())
                 jsonObjectParent.addProperty("name", offersModel.offer_name)
                 jsonObjectParent.addProperty("quantity", amount.toString())
                 jsonObjectParent.addProperty("size", offersModel.offer_name)
                 jsonObjectParent.addProperty("image", offersModel.offer_image)
                 jsonObjectParent.addProperty("id", offersModel.id.toString())
-                jsonObjectParent.add("menuModel", null)
+                val jsonArrayMenuModel = JsonArray();
+                for (menuModel in menusAdded) {
+                    val jsonObjectMenuModel = JsonObject();
+                    jsonObjectMenuModel.addProperty("FB", menuModel?.FB.toString());
+                    jsonObjectMenuModel.addProperty("FB", menuModel?.FB.toString());
+                    jsonObjectMenuModel.addProperty("L", menuModel?.L.toString());
+                    jsonObjectMenuModel.addProperty("M", menuModel?.M.toString());
+                    jsonObjectMenuModel.addProperty("Slice", menuModel?.Slice.toString());
+                    jsonObjectMenuModel.addProperty("XXL", menuModel?.XXL.toString());
+                    jsonObjectMenuModel.addProperty("category", menuModel?.category.toString());
+                    jsonObjectMenuModel.addProperty("half_L", menuModel?.half_L.toString());
+                    jsonObjectMenuModel.addProperty(
+                        "half_stuffed_crust_L",
+                        menuModel?.half_stuffed_crust_L.toString()
+                    );
+                    jsonObjectMenuModel.addProperty("id", menuModel?.id.toString());
+                    jsonObjectMenuModel.addProperty("image", menuModel?.image.toString());
+                    jsonObjectMenuModel.addProperty("name", menuModel?.name.toString());
+                    jsonObjectMenuModel.addProperty(
+                        "quarter_XXL",
+                        menuModel?.quarter_XXL.toString()
+                    );
+                    jsonObjectMenuModel.addProperty("status", menuModel?.status.toString());
+                    jsonObjectMenuModel.addProperty(
+                        "stuffed_crust_L",
+                        menuModel?.stuffed_crust_L.toString()
+                    );
+                    jsonObjectMenuModel.addProperty(
+                        "stuffed_crust_M",
+                        menuModel?.stuffed_crust_M.toString()
+                    );
+                    jsonArrayMenuModel.add(jsonObjectMenuModel)
+                }
+                jsonObjectParent.add("menuModel", jsonArrayMenuModel)
                 val jsonArray = JsonArray();
                 jsonObjectParent.add("extra", null)
                 Log.e("jsonObjectParent", "onCreate: $jsonObjectParent")
@@ -190,7 +224,7 @@ class DealOfferActivity : AppCompatActivity(), ItemSizeListener, DeletedSliceLis
                                     )
                                     finish()
                                 }
-                            } catch (e: NullPointerException) {
+                            } catch (_: NullPointerException) {
                             }
                         }
 
