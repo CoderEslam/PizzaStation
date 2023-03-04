@@ -38,7 +38,7 @@ class PaymentWebViewActivity : AppCompatActivity() {
     private lateinit var viewModel: MainViewModel
     private lateinit var networkBinding: NoInternetConnectionBinding
     private lateinit var menuOptionItemSelectedGovernorateModel: GovernorateModel
-    private lateinit var menuOptionItemSelectedBranchesModel: BranchesModel
+    private lateinit var menuOptionItemSelectedBranchesModel: AreasModel
     private lateinit var carts: ArrayList<CartModel>
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -64,7 +64,7 @@ class PaymentWebViewActivity : AppCompatActivity() {
         menuOptionItemSelectedGovernorateModel =
             intent.extras?.getSerializable("governorateModel") as GovernorateModel
         menuOptionItemSelectedBranchesModel =
-            intent.extras?.getSerializable("branchesModel") as BranchesModel
+            intent.extras?.getSerializable("branchesModel") as AreasModel
         carts = intent.extras?.getSerializable("carts") as ArrayList<CartModel>
         Log.d(TAG, "onCreate: $carts")
         val viewModelFactory = MainViewModelFactory(RepositoryRemot())
