@@ -38,6 +38,7 @@ import retrofit2.Response
 import java.util.function.Predicate
 import java.util.stream.Collectors
 import com.doubleclick.pizzastation.android.R
+import com.doubleclick.pizzastation.android.activies.PaymentChooseActivity
 import com.doubleclick.pizzastation.android.activies.PaymentWebViewActivity
 
 
@@ -76,7 +77,7 @@ class BottomSheetNotesFragment(
         super.onViewCreated(view, savedInstanceState)
         val viewModelFactory = MainViewModelFactory(RepositoryRemot())
         viewModel = ViewModelProvider(this, viewModelFactory)[MainViewModel::class.java]
-
+        Log.e(TAG, "onViewCreated: ${total} ${amount}")
         viewModel.getBranches().observe(viewLifecycleOwner) {
             it.enqueue(object : Callback<BranchesList> {
                 override fun onResponse(
@@ -163,84 +164,18 @@ class BottomSheetNotesFragment(
 
         binding.completeOrder.setOnClickListener {
 //            startPayActivityNoToken(true)
-            startActivity(Intent(requireActivity(), PaymentWebViewActivity::class.java))
+            val intent = Intent(requireActivity(), PaymentChooseActivity::class.java)
+            intent.putExtra("carts", carts)
+            intent.putExtra("total", total)
+            intent.putExtra("amount", amount)
+            intent.putExtra("governorateModel", menuOptionItemSelectedGovernorateModel)
+            intent.putExtra("branchesModel", menuOptionItemSelectedBranchesModel)
+            intent.putExtra("notes", binding.notes.text.toString())
+            startActivity(intent)
         }
 
     }
 
-    private fun sendOrder() {
-        val parentJsonObject = JsonObject();
-        parentJsonObject.addProperty("total", total)
-        parentJsonObject.addProperty("delivery", menuOptionItemSelectedBranchesModel.delivery)
-        parentJsonObject.addProperty("amount", amount)
-        parentJsonObject.addProperty("status", "mobile_app")
-        parentJsonObject.addProperty("notes", binding.notes.text.toString())
-        parentJsonObject.addProperty(
-            "area_id",
-            menuOptionItemSelectedGovernorateModel.id.toString()
-        )
-        parentJsonObject.addProperty(
-            "branch_id",
-            menuOptionItemSelectedBranchesModel.id.toString()
-        )
-        val jsonArrayChildItems = JsonArray();
-        for (cart in carts) {
-            val jsonObjectItemsChild = JsonObject();
-            jsonObjectItemsChild.addProperty("name", cart.name)
-            jsonObjectItemsChild.addProperty("price", cart.price)
-            jsonObjectItemsChild.addProperty("size", cart.size)
-            jsonObjectItemsChild.addProperty("quantity", cart.quantity)
-            jsonObjectItemsChild.addProperty("category", cart.menuModel?.category)
-            val jsonArrayChildExtras = JsonArray();
-            try {
-                if (cart.extra?.isNotEmpty() == true) {
-                    for (extra in cart.extra) {
-                        val jsonObjectChildExtra = JsonObject();
-                        jsonObjectChildExtra.addProperty("name", extra.name)
-                        jsonObjectChildExtra.addProperty("price", extra.price)
-                        jsonObjectChildExtra.addProperty("size", extra.size)
-                        jsonObjectChildExtra.addProperty("quantity", extra.quantity)
-                        jsonArrayChildExtras.add(jsonObjectChildExtra)
-                        jsonObjectItemsChild.add("extra", jsonArrayChildExtras)
-                    }
-                } else {
-
-                }
-                jsonArrayChildItems.add(jsonObjectItemsChild);
-            } catch (e: NullPointerException) {
-                Log.e(TAG, "onViewCreated: ${e.message}")
-            }
-        }
-        parentJsonObject.add("items", jsonArrayChildItems);
-        Log.d(TAG, "onViewCreated: $parentJsonObject")
-        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
-            viewModel.setOrderComplete(
-                "Bearer " + SessionManger.getToken(requireActivity()).toString(),
-                parentJsonObject
-            ).observe(viewLifecycleOwner) {
-                it.enqueue(object : Callback<OrderModelList> {
-                    override fun onResponse(
-                        call: Call<OrderModelList>,
-                        response: Response<OrderModelList>
-                    ) {
-                        Toast.makeText(
-                            requireActivity(),
-                            response.body()!!.message.toString(),
-                            Toast.LENGTH_LONG
-                        ).show()
-                    }
-
-                    override fun onFailure(call: Call<OrderModelList>, t: Throwable) {
-                        Toast.makeText(
-                            requireActivity(),
-                            t.message,
-                            Toast.LENGTH_LONG
-                        ).show()
-                    }
-                })
-            }
-        }
-    }
 
     @RequiresApi(Build.VERSION_CODES.N)
     private fun selectArea() {

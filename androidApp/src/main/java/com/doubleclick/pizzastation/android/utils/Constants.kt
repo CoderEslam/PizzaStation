@@ -17,13 +17,15 @@ object Constants {
     const val PHONE_KEY = "PHONE_KEY"
 
     const val ID_KEY = "ID_KEY"
+    const val NORMAL_ORDER = "NORMAL_ORDER"
+    const val OFFER = "OFFER"
 
 
-    const val BASE_URL = "http://172.16.0.98/api/v1/"
+    const val BASE_URL = "https://api-pizza-station.spectrum-bpo.com/api/v1/"
     const val FCM_URL = "https://fcm.googleapis.com/"
-    const val IMAGE_URL = "http://172.16.0.98/pizza/"
-    const val OFFERS_URL = "http://172.16.0.98/offers/"
-    const val IMAGE_PROFILE_URL = "http://172.16.0.98/users_images/"
+    const val IMAGE_URL = "https://api-pizza-station.spectrum-bpo.com/pizza/"
+    const val OFFERS_URL = "https://api-pizza-station.spectrum-bpo.com/offers/"
+    const val IMAGE_PROFILE_URL = "https://api-pizza-station.spectrum-bpo.com/users_images/"
 
 
 }

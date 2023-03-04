@@ -69,6 +69,7 @@ class CartFragment : Fragment(), ExtraDeleteListener {
                                     this@CartFragment
                                 )
                                 binding.rvCart.adapter = cartAdapter
+                                binding.animationViewLoading.visibility = View.GONE
                                 cartAdapter.notifyItemRangeChanged(0, carts.size)
                                 cartAdapter.notifyDataSetChanged()
                             } catch (e: NullPointerException) {
@@ -95,13 +96,8 @@ class CartFragment : Fragment(), ExtraDeleteListener {
                 var total = 0.0
                 var amount = 0
                 for (cart in carts) {
-                    total = cart.quantity.toDouble() * cart.price.toDouble()
+                    total += cart.price.toDouble()
                     amount++
-                    if (cart.extra != null) {
-                        for (extra in cart.extra) {
-                            total += extra.price.toDouble()
-                        }
-                    }
                 }
                 val sheet = BottomSheetNotesFragment(carts, total, amount)
                 sheet.show(

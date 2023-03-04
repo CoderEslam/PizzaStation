@@ -14,6 +14,7 @@ import com.doubleclick.pizzastation.android.R
 import com.doubleclick.pizzastation.android.`interface`.ExtraDeleteListener
 import com.doubleclick.pizzastation.android.model.CartModel
 import com.doubleclick.pizzastation.android.utils.Constants.IMAGE_URL
+import com.doubleclick.pizzastation.android.utils.Constants.OFFER
 import com.doubleclick.pizzastation.android.utils.Constants.OFFERS_URL
 import com.doubleclick.pizzastation.android.views.swipetoactionlayout.ActionBindHelper
 import com.doubleclick.pizzastation.android.views.swipetoactionlayout.SwipeAction
@@ -35,18 +36,14 @@ class CartAdapter(
     private val block: Block,
     private val actionClicked: OnActionClicked,
     private val extraDeleteListener: ExtraDeleteListener
-) :
-    RecyclerView.Adapter<CartAdapter.CartViewHolder>() {
+) : RecyclerView.Adapter<CartAdapter.CartViewHolder>() {
 
     private val actionsBindHelper = ActionBindHelper()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CartViewHolder {
         return CartViewHolder(
-            LayoutInflater.from(parent.context)
-                .inflate(
-                    R.layout.item_swipe_to_action,
-                    parent,
-                    false
+            LayoutInflater.from(parent.context).inflate(
+                    R.layout.item_swipe_to_action, parent, false
                 )
         )
     }
@@ -54,17 +51,25 @@ class CartAdapter(
     override fun onBindViewHolder(holder: CartViewHolder, position: Int) {
         actionsBindHelper.bind("", holder.swipeToActionLayout)
         holder.bind()
-        try {
-            holder.rv_item_extra_cart.adapter =
-                carts[position].extra?.let { ItemExtraAdapter(it, extraDeleteListener, position) };
-        } catch (e: NullPointerException) {
-            Log.e(TAG, "onBindViewHolder: ${e.message}")
-        }
-        if (carts[position].menuModel == null) {
+        if (carts[position].type == OFFER) {
+            holder.rv_item_pizza_selected.visibility = View.VISIBLE
+            holder.rv_item_extra_cart.visibility = View.GONE
             Glide.with(holder.itemView.context).load(OFFERS_URL + carts[position].image)
                 .into(holder.image_item)
             holder.edit.visibility = View.GONE
+            holder.rv_item_pizza_selected.adapter = ItemInOfferAdapter(carts[position].menuModel)
         } else {
+            try {
+                holder.rv_item_pizza_selected.visibility = View.GONE
+                holder.rv_item_extra_cart.visibility = View.VISIBLE
+                holder.rv_item_extra_cart.adapter = carts[position].extra?.let {
+                    ItemExtraAdapter(
+                        it, extraDeleteListener, position
+                    )
+                };
+            } catch (e: NullPointerException) {
+                Log.e(TAG, "onBindViewHolder: ${e.message}")
+            }
             Glide.with(holder.itemView.context).load(IMAGE_URL + carts[position].image)
                 .into(holder.image_item)
         }
@@ -75,8 +80,7 @@ class CartAdapter(
 //        block(carts[position].count)
         holder.edit.setOnClickListener {
             val intent = Intent(
-                holder.itemView.context,
-                FoodItemEditActivity::class.java
+                holder.itemView.context, FoodItemEditActivity::class.java
             )
             intent.putExtra("cartModel", carts[position])
             holder.itemView.context.startActivity(intent)
@@ -97,6 +101,8 @@ class CartAdapter(
         var price_total: TextView = itemView.findViewById(R.id.price_total)
         var item_size: TextView = itemView.findViewById(R.id.item_size)
         var rv_item_extra_cart: RecyclerView = itemView.findViewById(R.id.rv_item_extra_cart)
+        var rv_item_pizza_selected: RecyclerView =
+            itemView.findViewById(R.id.rv_item_pizza_selected)
         val swipeToActionLayout: SwipeToActionLayout =
             itemView.findViewById(R.id.swipe_to_action_layout)
 

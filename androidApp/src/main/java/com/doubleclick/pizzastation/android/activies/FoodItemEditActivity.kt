@@ -60,6 +60,7 @@ class FoodItemEditActivity : AppCompatActivity(), ItemSizeListener, ItemExtraLis
     private lateinit var itemSizeAdapter: ItemSizeAdapter
     private lateinit var extrasAdapter: ExtrasAdapter
 
+    @OptIn(DelicateCoroutinesApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityFoodItemEditBinding.inflate(layoutInflater)
@@ -125,10 +126,9 @@ class FoodItemEditActivity : AppCompatActivity(), ItemSizeListener, ItemExtraLis
             GlobalScope.launch(Dispatchers.Main) {
                 try {
                     if (!isFavorite) {
-                        Log.i(TAG, "onCreate: " + getToken(this@FoodItemEditActivity))
                         viewModel.setFavorite(
                             "Bearer " + getToken(this@FoodItemEditActivity),
-                            MenuId(cartModel?.menuModel?.id.toString())
+                            MenuId(cartModel?.menuModel?.get(0)?.id.toString())
                         ).observe(this@FoodItemEditActivity) {
                             it.enqueue(object : Callback<MessageCallback> {
                                 override fun onResponse(
@@ -136,7 +136,7 @@ class FoodItemEditActivity : AppCompatActivity(), ItemSizeListener, ItemExtraLis
                                     response: Response<MessageCallback>
                                 ) {
                                     for (id in favoriteModelList) {
-                                        if (id.menu.id == cartModel?.menuModel?.id) {
+                                        if (id.menu.id == cartModel?.menuModel?.get(0)?.id) {
                                             binding.favorite.setChecked(true)
                                             isFavorite = true;
                                         }
@@ -151,7 +151,7 @@ class FoodItemEditActivity : AppCompatActivity(), ItemSizeListener, ItemExtraLis
                         }
                     } else {
                         for (id in favoriteModelList) {
-                            if (id.menu.id == cartModel?.menuModel?.id) {
+                            if (id.menu.id == cartModel?.menuModel?.get(0)?.id) {
                                 viewModel.deleteFavorite(
                                     "Bearer " + getToken(this@FoodItemEditActivity),
                                     id.id.toString()
@@ -162,7 +162,10 @@ class FoodItemEditActivity : AppCompatActivity(), ItemSizeListener, ItemExtraLis
                                             response: Response<MessageCallback>
                                         ) {
                                             for (favoritemodel in favoriteModelList) {
-                                                if (favoritemodel.menu.id == cartModel?.menuModel?.id) {
+                                                if (favoritemodel.menu.id == cartModel?.menuModel?.get(
+                                                        0
+                                                    )?.id
+                                                ) {
                                                     binding.favorite.setChecked(false)
                                                     isFavorite = false;
                                                 }
@@ -191,99 +194,99 @@ class FoodItemEditActivity : AppCompatActivity(), ItemSizeListener, ItemExtraLis
 
     private fun putSizes() {
         val sizes: ArrayList<Sizes> = ArrayList();
-        if (cartModel?.menuModel?.FB.toString() != "null") {
+        if (cartModel?.menuModel?.get(0)?.FB.toString() != "null") {
             sizes.add(
                 Sizes(
-                    cartModel?.menuModel?.name.toString(),
+                    cartModel?.menuModel?.get(0)?.name.toString(),
                     "FB",
-                    cartModel?.menuModel?.image ?: "",
-                    cartModel?.menuModel?.FB ?: "0"
+                    cartModel?.menuModel?.get(0)?.image ?: "",
+                    cartModel?.menuModel?.get(0)?.FB ?: "0"
                 )
             )
         }
-        if (cartModel?.menuModel?.L.toString() != "null") {
+        if (cartModel?.menuModel?.get(0)?.L.toString() != "null") {
             sizes.add(
                 Sizes(
-                    cartModel?.menuModel?.name.toString(),
+                    cartModel?.menuModel?.get(0)?.name.toString(),
                     "L",
-                    cartModel?.menuModel?.image ?: "",
-                    cartModel?.menuModel?.L ?: "0"
+                    cartModel?.menuModel?.get(0)?.image ?: "",
+                    cartModel?.menuModel?.get(0)?.L ?: "0"
                 )
             )
         }
-        if (cartModel?.menuModel?.M.toString() != "null") {
+        if (cartModel?.menuModel?.get(0)?.M.toString() != "null") {
             sizes.add(
                 Sizes(
-                    cartModel?.menuModel?.name.toString(), "M",
-                    cartModel?.menuModel?.image ?: "",
-                    cartModel?.menuModel?.M ?: "0"
+                    cartModel?.menuModel?.get(0)?.name.toString(), "M",
+                    cartModel?.menuModel?.get(0)?.image ?: "",
+                    cartModel?.menuModel?.get(0)?.M ?: "0"
                 )
             )
         }
-        if (cartModel?.menuModel?.Slice.toString() != "null") {
+        if (cartModel?.menuModel?.get(0)?.Slice.toString() != "null") {
             sizes.add(
                 Sizes(
-                    cartModel?.menuModel?.name.toString(), "Slice",
-                    cartModel?.menuModel?.image ?: "",
-                    cartModel?.menuModel?.Slice ?: "0"
+                    cartModel?.menuModel?.get(0)?.name.toString(), "Slice",
+                    cartModel?.menuModel?.get(0)?.image ?: "",
+                    cartModel?.menuModel?.get(0)?.Slice ?: "0"
                 )
             )
         }
-        if (cartModel?.menuModel?.XXL.toString() != "null") {
+        if (cartModel?.menuModel?.get(0)?.XXL.toString() != "null") {
             sizes.add(
                 Sizes(
-                    cartModel?.menuModel?.name.toString(), "XXL",
-                    cartModel?.menuModel?.image ?: "",
-                    cartModel?.menuModel?.XXL ?: "0",
+                    cartModel?.menuModel?.get(0)?.name.toString(), "XXL",
+                    cartModel?.menuModel?.get(0)?.image ?: "",
+                    cartModel?.menuModel?.get(0)?.XXL ?: "0",
                 )
             )
         }
-        if (cartModel?.menuModel?.half_L != "null") {
+        if (cartModel?.menuModel?.get(0)?.half_L != "null") {
             sizes.add(
                 Sizes(
-                    cartModel?.menuModel?.name.toString(), "Half L",
-                    cartModel?.menuModel?.image ?: "",
-                    cartModel?.menuModel?.half_L ?: "0",
+                    cartModel?.menuModel?.get(0)?.name.toString(), "Half L",
+                    cartModel?.menuModel?.get(0)?.image ?: "",
+                    cartModel?.menuModel?.get(0)?.half_L ?: "0",
                 )
             )
         }
-        if (cartModel?.menuModel?.half_stuffed_crust_L.toString() != "null") {
+        if (cartModel?.menuModel?.get(0)?.half_stuffed_crust_L.toString() != "null") {
             sizes.add(
                 Sizes(
-                    cartModel?.menuModel?.name.toString(),
+                    cartModel?.menuModel?.get(0)?.name.toString(),
                     "Half stuffed crust L",
-                    cartModel?.menuModel?.image ?: "",
-                    cartModel?.menuModel?.half_stuffed_crust_L ?: "0"
+                    cartModel?.menuModel?.get(0)?.image ?: "",
+                    cartModel?.menuModel?.get(0)?.half_stuffed_crust_L ?: "0"
                 )
             )
         }
-        if (cartModel?.menuModel?.quarter_XXL.toString() != "null") {
+        if (cartModel?.menuModel?.get(0)?.quarter_XXL.toString() != "null") {
             sizes.add(
                 Sizes(
-                    cartModel?.menuModel?.name.toString(),
+                    cartModel?.menuModel?.get(0)?.name.toString(),
                     "Quarter XXL",
-                    cartModel?.menuModel?.image ?: "",
-                    cartModel?.menuModel?.quarter_XXL ?: "0"
+                    cartModel?.menuModel?.get(0)?.image ?: "",
+                    cartModel?.menuModel?.get(0)?.quarter_XXL ?: "0"
                 )
             )
         }
-        if (cartModel?.menuModel?.stuffed_crust_L.toString() != "null") {
+        if (cartModel?.menuModel?.get(0)?.stuffed_crust_L.toString() != "null") {
             sizes.add(
                 Sizes(
-                    cartModel?.menuModel?.name.toString(),
+                    cartModel?.menuModel?.get(0)?.name.toString(),
                     "Stuffed crust L",
-                    cartModel?.menuModel?.image ?: "",
-                    cartModel?.menuModel?.stuffed_crust_L ?: "0"
+                    cartModel?.menuModel?.get(0)?.image ?: "",
+                    cartModel?.menuModel?.get(0)?.stuffed_crust_L ?: "0"
                 )
             )
         }
-        if (cartModel?.menuModel?.stuffed_crust_M.toString() != "null") {
+        if (cartModel?.menuModel?.get(0)?.stuffed_crust_M.toString() != "null") {
             sizes.add(
                 Sizes(
-                    cartModel?.menuModel?.name.toString(),
+                    cartModel?.menuModel?.get(0)?.name.toString(),
                     "Stuffed crust M",
-                    cartModel?.menuModel?.image ?: "",
-                    cartModel?.menuModel?.stuffed_crust_M ?: "0"
+                    cartModel?.menuModel?.get(0)?.image ?: "",
+                    cartModel?.menuModel?.get(0)?.stuffed_crust_M ?: "0"
                 )
             )
         }
@@ -303,44 +306,62 @@ class FoodItemEditActivity : AppCompatActivity(), ItemSizeListener, ItemExtraLis
             binding.addToCard.setOnClickListener {
                 val jsonObjectParent = JsonObject();
                 val jsonObjectMenuModel = JsonObject();
+                val jsonArray = JsonArray();
+                val jsonArrayMenuModel = JsonArray();
                 jsonObjectParent.addProperty("price", priceTotal.toString())
                 jsonObjectParent.addProperty("name", cartModel!!.name!!)
                 jsonObjectParent.addProperty("quantity", amount.toString())
                 jsonObjectParent.addProperty("size", nameSize)
                 jsonObjectParent.addProperty("image", cartModel.image.toString())
-                jsonObjectMenuModel.addProperty("FB", cartModel.menuModel?.FB.toString());
-                jsonObjectMenuModel.addProperty("FB", cartModel.menuModel?.FB.toString());
-                jsonObjectMenuModel.addProperty("L", cartModel.menuModel?.L.toString());
-                jsonObjectMenuModel.addProperty("M", cartModel.menuModel?.M.toString());
-                jsonObjectMenuModel.addProperty("Slice", cartModel.menuModel?.Slice.toString());
-                jsonObjectMenuModel.addProperty("XXL", cartModel.menuModel?.XXL.toString());
+                jsonObjectMenuModel.addProperty("FB", cartModel.menuModel?.get(0)?.FB.toString());
+                jsonObjectMenuModel.addProperty("FB", cartModel.menuModel?.get(0)?.FB.toString());
+                jsonObjectMenuModel.addProperty("L", cartModel.menuModel?.get(0)?.L.toString());
+                jsonObjectMenuModel.addProperty("M", cartModel.menuModel?.get(0)?.M.toString());
+                jsonObjectMenuModel.addProperty(
+                    "Slice",
+                    cartModel.menuModel?.get(0)?.Slice.toString()
+                );
+                jsonObjectMenuModel.addProperty("XXL", cartModel.menuModel?.get(0)?.XXL.toString());
                 jsonObjectMenuModel.addProperty(
                     "category",
-                    cartModel.menuModel?.category.toString()
+                    cartModel.menuModel?.get(0)?.category.toString()
                 );
-                jsonObjectMenuModel.addProperty("half_L", cartModel.menuModel?.half_L.toString());
+                jsonObjectMenuModel.addProperty(
+                    "half_L",
+                    cartModel.menuModel?.get(0)?.half_L.toString()
+                );
                 jsonObjectMenuModel.addProperty(
                     "half_stuffed_crust_L",
-                    cartModel.menuModel?.half_stuffed_crust_L.toString()
+                    cartModel.menuModel?.get(0)?.half_stuffed_crust_L.toString()
                 );
-                jsonObjectMenuModel.addProperty("id", cartModel.menuModel?.id.toString());
-                jsonObjectMenuModel.addProperty("image", cartModel.menuModel?.image.toString());
-                jsonObjectMenuModel.addProperty("name", cartModel.menuModel?.name.toString());
+                jsonObjectMenuModel.addProperty("id", cartModel.menuModel?.get(0)?.id.toString());
+                jsonObjectMenuModel.addProperty(
+                    "image",
+                    cartModel.menuModel?.get(0)?.image.toString()
+                );
+                jsonObjectMenuModel.addProperty(
+                    "name",
+                    cartModel.menuModel?.get(0)?.name.toString()
+                );
                 jsonObjectMenuModel.addProperty(
                     "quarter_XXL",
-                    cartModel.menuModel?.quarter_XXL.toString()
+                    cartModel.menuModel?.get(0)?.quarter_XXL.toString()
                 );
-                jsonObjectMenuModel.addProperty("status", cartModel.menuModel?.status.toString());
+                jsonObjectMenuModel.addProperty(
+                    "status",
+                    cartModel.menuModel?.get(0)?.status.toString()
+                );
                 jsonObjectMenuModel.addProperty(
                     "stuffed_crust_L",
-                    cartModel.menuModel?.stuffed_crust_L.toString()
+                    cartModel.menuModel?.get(0)?.stuffed_crust_L.toString()
                 );
                 jsonObjectMenuModel.addProperty(
                     "stuffed_crust_M",
-                    cartModel.menuModel?.stuffed_crust_M.toString()
+                    cartModel.menuModel?.get(0)?.stuffed_crust_M.toString()
                 );
-                jsonObjectParent.add("menuModel", jsonObjectMenuModel)
-                val jsonArray = JsonArray();
+                jsonArrayMenuModel.add(jsonObjectMenuModel)
+                jsonObjectParent.add("menuModel", jsonArrayMenuModel)
+                jsonObjectParent.addProperty("type", Constants.NORMAL_ORDER)
                 if (extraList.isNotEmpty()) {
                     for (extraItem in extraList) {
                         val jsonObjectChild = JsonObject();

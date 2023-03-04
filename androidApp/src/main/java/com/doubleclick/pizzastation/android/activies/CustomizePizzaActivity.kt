@@ -164,6 +164,7 @@ class CustomizePizzaActivity : AppCompatActivity(), BottomSheetPopUpMenuFragment
                     jsonArrayMenuModel.add(jsonObjectMenuModel)
                 }
                 jsonObjectParent.add("menuModel", jsonArrayMenuModel)
+                jsonObjectParent.addProperty("type", Constants.OFFER)
                 val jsonArray = JsonArray();
                 jsonObjectParent.add("extra", null)
                 Log.e("jsonObjectParent", "onCreate: $jsonObjectParent")

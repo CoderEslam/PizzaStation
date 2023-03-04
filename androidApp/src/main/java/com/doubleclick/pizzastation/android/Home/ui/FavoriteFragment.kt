@@ -65,6 +65,7 @@ class FavoriteFragment : Fragment(), OnFavoriteCheckedItem {
                                     this@FavoriteFragment
                                 )
                                 binding.rvFavorite.adapter = favoriteAdapter
+                                binding.animationView.visibility = View.GONE
                             } catch (_: IllegalStateException) {
                             } catch (_: NullPointerException) {
                             }

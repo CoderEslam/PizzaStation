@@ -24,6 +24,7 @@ import com.doubleclick.pizzastation.android.model.CartCallback
 import com.doubleclick.pizzastation.android.model.MenuList
 import com.doubleclick.pizzastation.android.model.MenuModel
 import com.doubleclick.pizzastation.android.model.OffersModel
+import com.doubleclick.pizzastation.android.utils.Constants
 import com.doubleclick.pizzastation.android.utils.Constants.OFFERS_URL
 import com.doubleclick.pizzastation.android.utils.SessionManger
 import com.google.gson.JsonArray
@@ -180,6 +181,7 @@ class CustomSlicePizzaActivity : AppCompatActivity(), DeletedSliceListener {
                     jsonArrayMenuModel.add(jsonObjectMenuModel)
                 }
                 jsonObjectParent.add("menuModel", jsonArrayMenuModel)
+                jsonObjectParent.addProperty("type", Constants.OFFER)
                 val jsonArray = JsonArray();
                 jsonObjectParent.add("extra", null)
                 Log.e("jsonObjectParent", "onCreate: $jsonObjectParent")

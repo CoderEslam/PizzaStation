@@ -65,7 +65,7 @@ dependencies {
     implementation("androidx.activity:activity-compose:1.5.1")
     implementation("androidx.appcompat:appcompat:1.5.1")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-    implementation("com.airbnb.android:lottie:3.4.0")
+    implementation("com.airbnb.android:lottie:5.2.0")
     implementation("androidx.cardview:cardview:1.0.0")
     implementation("com.google.android.material:material:1.4.0")
     implementation("androidx.navigation:navigation-fragment-ktx:2.5.3")

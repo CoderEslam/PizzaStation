@@ -29,6 +29,7 @@ import com.doubleclick.pizzastation.android.`interface`.ItemSizeListener
 import com.doubleclick.pizzastation.android.databinding.ActivityFoodItemBinding
 import com.doubleclick.pizzastation.android.model.*
 import com.doubleclick.pizzastation.android.utils.Constants.IMAGE_URL
+import com.doubleclick.pizzastation.android.utils.Constants.NORMAL_ORDER
 import com.doubleclick.pizzastation.android.utils.SessionManger
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
@@ -318,6 +319,8 @@ class FoodItemActivity : AppCompatActivity(), ItemSizeListener, ItemExtraListene
                 GlobalScope.launch(Dispatchers.Main) {
                     val jsonObjectParent = JsonObject();
                     val jsonObjectMenuModel = JsonObject();
+                    val jsonArray = JsonArray();
+                    val jsonArrayMenuModel = JsonArray();
                     jsonObjectParent.addProperty("price", priceTotal.toString())
                     jsonObjectParent.addProperty("name", menuModel!!.name!!)
                     jsonObjectParent.addProperty("quantity", amount.toString())
@@ -351,8 +354,9 @@ class FoodItemActivity : AppCompatActivity(), ItemSizeListener, ItemExtraListene
                         "stuffed_crust_M",
                         menuModel?.stuffed_crust_M.toString()
                     );
-                    jsonObjectParent.add("menuModel", jsonObjectMenuModel)
-                    val jsonArray = JsonArray();
+                    jsonArrayMenuModel.add(jsonObjectMenuModel)
+                    jsonObjectParent.add("menuModel", jsonArrayMenuModel)
+                    jsonObjectParent.addProperty("type", NORMAL_ORDER)
                     if (extraList.isNotEmpty()) {
                         for (extraItem in extraList) {
                             val jsonObjectChild = JsonObject();
@@ -367,6 +371,7 @@ class FoodItemActivity : AppCompatActivity(), ItemSizeListener, ItemExtraListene
                     } else {
                         jsonObjectParent.add("extra", null)
                     }
+                    Log.d("jsonObjectParent", "onCreate: $jsonObjectParent")
                     viewModel.setCart(
                         "Bearer " + SessionManger.getToken(this@FoodItemActivity),
                         jsonObjectParent

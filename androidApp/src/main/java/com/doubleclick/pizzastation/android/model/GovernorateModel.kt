@@ -4,4 +4,4 @@ data class GovernorateModel(
     val id: Int,
     val name: String,
     val user_id: Int
-)
+):java.io.Serializable

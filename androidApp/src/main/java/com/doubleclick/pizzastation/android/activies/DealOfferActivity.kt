@@ -24,6 +24,7 @@ import com.doubleclick.pizzastation.android.`interface`.OnSpinnerEventsListener
 import com.doubleclick.pizzastation.android.databinding.ActivityDealOfferBinding
 import com.doubleclick.pizzastation.android.model.*
 import com.doubleclick.pizzastation.android.utils.Constants
+import com.doubleclick.pizzastation.android.utils.Constants.OFFER
 import com.doubleclick.pizzastation.android.utils.Constants.OFFERS_URL
 import com.doubleclick.pizzastation.android.utils.ItemDecoration
 import com.doubleclick.pizzastation.android.utils.SessionManger
@@ -193,6 +194,7 @@ class DealOfferActivity : AppCompatActivity(), ItemSizeListener, DeletedSliceLis
                     jsonArrayMenuModel.add(jsonObjectMenuModel)
                 }
                 jsonObjectParent.add("menuModel", jsonArrayMenuModel)
+                jsonObjectParent.addProperty("type", OFFER)
                 val jsonArray = JsonArray();
                 jsonObjectParent.add("extra", null)
                 Log.e("jsonObjectParent", "onCreate: $jsonObjectParent")

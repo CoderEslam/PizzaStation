@@ -10,4 +10,4 @@ data class BranchesModel(
     val location: String,
     val latlng: String,
     val user_id: Int
-)
+) : java.io.Serializable

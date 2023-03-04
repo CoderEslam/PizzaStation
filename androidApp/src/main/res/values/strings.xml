@@ -53,4 +53,5 @@
     <string name="no">no</string>
     <string name="select_location">select location</string>
     <string name="add_to_card">Add to card</string>
+    <string name="continue_to_next">Continue</string>
 </resources>
