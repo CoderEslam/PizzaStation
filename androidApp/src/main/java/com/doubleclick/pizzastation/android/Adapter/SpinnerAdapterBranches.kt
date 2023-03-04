@@ -8,10 +8,12 @@ import android.widget.ArrayAdapter
 import android.widget.BaseAdapter
 import android.widget.TextView
 import com.doubleclick.pizzastation.android.R
+import com.doubleclick.pizzastation.android.model.AreasModel
 import com.doubleclick.pizzastation.android.model.BranchesModel
+import org.apache.commons.lang3.StringUtils.trim
 
 
-class SpinnerAdapterBranches(val context: Context, val branchesModelList: List<BranchesModel>) :
+class SpinnerAdapterBranches(val context: Context, val branchesModelList: List<AreasModel>) :
     BaseAdapter() {
 
     override fun getCount(): Int {
@@ -30,7 +32,7 @@ class SpinnerAdapterBranches(val context: Context, val branchesModelList: List<B
         val rootView: View =
             LayoutInflater.from(context).inflate(R.layout.text_spinner_layout, viewGroup, false)
         val text: TextView = rootView.findViewById(R.id.text_spinner);
-        text.text = branchesModelList[i].branch_name.trim()
+        text.text = branchesModelList[i].name.trim()
         return rootView;
     }
 

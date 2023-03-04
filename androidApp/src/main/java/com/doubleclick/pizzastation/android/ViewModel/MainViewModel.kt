@@ -47,6 +47,8 @@ class MainViewModel(private val repository: RepositoryRemot) : ViewModel() {
         MutableLiveData()
     private val getBranchesMutableLiveData: MutableLiveData<Call<BranchesList>> =
         MutableLiveData()
+    private val getAreasMutableLiveData: MutableLiveData<Call<AreasList>> =
+        MutableLiveData()
     private val getImageResponseCallbackMutableLiveData: MutableLiveData<Call<ImageResponseCallback>> =
         MutableLiveData()
     private val getPizzaInOfferCallbackMutableLiveData: MutableLiveData<Call<MenuList>> =
@@ -161,6 +163,11 @@ class MainViewModel(private val repository: RepositoryRemot) : ViewModel() {
     fun getBranches(): LiveData<Call<BranchesList>> {
         getBranchesMutableLiveData.value = repository.getBranches();
         return getBranchesMutableLiveData;
+    }
+
+    fun getAreas(): LiveData<Call<AreasList>> {
+        getAreasMutableLiveData.value = repository.getAreas();
+        return getAreasMutableLiveData;
     }
 
     fun uploadImage(

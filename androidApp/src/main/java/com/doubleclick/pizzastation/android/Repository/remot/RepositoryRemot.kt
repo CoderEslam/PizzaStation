@@ -89,6 +89,10 @@ class RepositoryRemot {
         return RetrofitInstance.api.getBranches()
     }
 
+    fun getAreas(): Call<AreasList> {
+        return RetrofitInstance.api.getAreas()
+    }
+
     fun uploadImage(token: String, id: String, image: MultipartBody.Part): Call<MessageCallback> {
         return RetrofitInstance.api.uploadImage(token, id, image)
     }

@@ -139,6 +139,12 @@ interface API {
     @GET("branches")
     fun getBranches(): Call<BranchesList>
 
+
+    @Headers("Accept: application/json", "Content-Type: application/json")
+    @GET("areas")
+    fun getAreas(): Call<AreasList>
+
+
     @Headers("Accept: application/json", "Content-Type: application/json")
     @GET("menu/pizza_in_offers")
     fun getPizzaInOffer(): Call<MenuList>

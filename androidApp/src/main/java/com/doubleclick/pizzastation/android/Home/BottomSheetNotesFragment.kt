@@ -55,9 +55,9 @@ class BottomSheetNotesFragment(
     private val TAG = "BottomSheetFragment"
     private lateinit var viewModel: MainViewModel
     private lateinit var menuOptionItemSelectedGovernorateModel: GovernorateModel
-    private lateinit var menuOptionItemSelectedBranchesModel: BranchesModel
+    private lateinit var menuOptionItemSelectedBranchesModel: AreasModel
     private var governorateModelList: List<GovernorateModel> = ArrayList()
-    private var branchesModelList: List<BranchesModel> = ArrayList()
+    private var branchesModelList: List<AreasModel> = ArrayList()
     val ACCEPT_PAYMENT_REQUEST = 10
     val paymentKey: String =
         "ZXlKaGJHY2lPaUpJVXpVeE1pSXNJblI1Y0NJNklrcFhWQ0o5LmV5SmxlSEFpT2pFMk5Ea3dPREUzTkRNc0ltOXlaR1Z5WDJsa0lqbzBNREkxTXpneE5pd2lZM1Z5Y21WdVkza2lPaUpGUjFBaUxDSnNiMk5yWDI5eVpHVnlYM2RvWlc1ZmNHRnBaQ0k2Wm1Gc2MyVXNJbUpwYkd4cGJtZGZaR0YwWVNJNmV5Sm1hWEp6ZEY5dVlXMWxJam9pUTJ4cFptWnZjbVFpTENKc1lYTjBYMjVoYldVaU9pSk9hV052YkdGeklpd2ljM1J5WldWMElqb2lSWFJvWVc0Z1RHRnVaQ0lzSW1KMWFXeGthVzVuSWpvaU9EQXlPQ0lzSW1ac2IyOXlJam9pTkRJaUxDSmhjR0Z5ZEcxbGJuUWlPaUk0TURNaUxDSmphWFI1SWpvaVNtRnphMjlzYzJ0cFluVnlaMmdpTENKemRHRjBaU0k2SWxWMFlXZ2lMQ0pqYjNWdWRISjVJam9pUTFJaUxDSmxiV0ZwYkNJNkltTnNZWFZrWlhSMFpUQTVRR1Y0WVM1amIyMGlMQ0p3YUc5dVpWOXVkVzFpWlhJaU9pSXJPRFlvT0NrNU1UTTFNakV3TkRnM0lpd2ljRzl6ZEdGc1gyTnZaR1VpT2lJd01UZzVPQ0lzSW1WNGRISmhYMlJsYzJOeWFYQjBhVzl1SWpvaVRrRWlmU3dpZFhObGNsOXBaQ0k2TVRJNU16WXNJbUZ0YjNWdWRGOWpaVzUwY3lJNk1UQXdMQ0p3Yld0ZmFYQWlPaUl4T1RZdU1UVXpMak0wTGpFNU5DSXNJbWx1ZEdWbmNtRjBhVzl1WDJsa0lqb3hPRFk0TlgwLkFzazlYa0U0a1c5VnBOa0NuR1BZekpWaGc4NTFfRjg2a3JabzMyU05ael8xSGlNNVZ6RVBBVC1ScjNjOUs1bHlHNXpsczVPQjhTeUxiVWZPWGNtNjRR"
@@ -78,16 +78,16 @@ class BottomSheetNotesFragment(
         val viewModelFactory = MainViewModelFactory(RepositoryRemot())
         viewModel = ViewModelProvider(this, viewModelFactory)[MainViewModel::class.java]
         Log.e(TAG, "onViewCreated: ${total} ${amount}")
-        viewModel.getBranches().observe(viewLifecycleOwner) {
-            it.enqueue(object : Callback<BranchesList> {
+        viewModel.getAreas().observe(viewLifecycleOwner) {
+            it.enqueue(object : Callback<AreasList> {
                 override fun onResponse(
-                    call: Call<BranchesList>,
-                    response: Response<BranchesList>
+                    call: Call<AreasList>,
+                    response: Response<AreasList>
                 ) {
                     branchesModelList = response.body()!!.data
                 }
 
-                override fun onFailure(call: Call<BranchesList>, t: Throwable) {
+                override fun onFailure(call: Call<AreasList>, t: Throwable) {
 
                 }
 
@@ -180,8 +180,8 @@ class BottomSheetNotesFragment(
     @RequiresApi(Build.VERSION_CODES.N)
     private fun selectArea() {
 
-        val byGovernorate: Predicate<BranchesModel> =
-            Predicate<BranchesModel> { branch -> branch.government_id == menuOptionItemSelectedGovernorateModel.id }
+        val byGovernorate: Predicate<AreasModel> =
+            Predicate<AreasModel> { branch -> branch.government_id == menuOptionItemSelectedGovernorateModel.id }
 
         binding.spinnerArea.adapter = SpinnerAdapterBranches(
             requireActivity(),
