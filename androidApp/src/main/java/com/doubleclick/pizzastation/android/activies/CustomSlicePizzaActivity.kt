@@ -103,8 +103,13 @@ class CustomSlicePizzaActivity : AppCompatActivity(), DeletedSliceListener {
         })
         binding.spinnerPizzas.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, i: Int, p3: Long) {
-                menusAdded.add(menus[i])
-                menuSliceAdapter.notifyItemRangeChanged(0, menusAdded.size)
+                if (menusAdded.size <= limit - 1) {
+                    menusAdded.add(menus[i])
+                    menuSliceAdapter.notifyItemRangeChanged(0, menusAdded.size)
+                } else {
+                    menusAdded[limit - 1] = menus[i]
+                    menuSliceAdapter.notifyItemRangeChanged(0, menusAdded.size)
+                }
                 setTotalPrice()
             }
 
@@ -233,6 +238,7 @@ class CustomSlicePizzaActivity : AppCompatActivity(), DeletedSliceListener {
     override fun deleteSlice(pizza: MenuModel, position: Int) {
         try {
             menusAdded.remove(pizza)
+            limit--
             menuSliceAdapter.notifyItemRemoved(position)
             menuSliceAdapter.notifyItemRangeChanged(0, menusAdded.size)
             setTotalPrice()

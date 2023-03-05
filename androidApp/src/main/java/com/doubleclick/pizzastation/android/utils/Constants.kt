@@ -25,7 +25,7 @@ object Constants {
     const val FCM_URL = "https://fcm.googleapis.com/"
     const val IMAGE_URL = "https://api-pizza-station.spectrum-bpo.com/pizza/"
     const val OFFERS_URL = "https://api-pizza-station.spectrum-bpo.com/offers/"
-    const val IMAGE_PROFILE_URL = "https://api-pizza-station.spectrum-bpo.com/users_images/"
+    const val IMAGE_PROFILE_URL = "https://api-pizza-station.spectrum-bpo.com/public/users_images/"
 
 
 }

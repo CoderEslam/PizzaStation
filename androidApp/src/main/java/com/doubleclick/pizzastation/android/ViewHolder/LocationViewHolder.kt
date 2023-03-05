@@ -3,6 +3,7 @@ package com.doubleclick.pizzastation.android.ViewHolder
 import android.view.View
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.airbnb.lottie.LottieAnimationView
 import com.doubleclick.pizzastation.android.R
 import com.doubleclick.pizzastation.android.model.BranchesModel
 import com.google.android.gms.maps.*
@@ -17,6 +18,7 @@ class LocationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), On
     val name: TextView = itemView.findViewById(R.id.name)
     val location: TextView = itemView.findViewById(R.id.location)
     val numbers: TextView = itemView.findViewById(R.id.numbers)
+    val call_us: LottieAnimationView = itemView.findViewById(R.id.call_us)
     var googleMap: GoogleMap? = null
     var mMapLocation: LatLng? = null
     lateinit var branchesModel: BranchesModel
