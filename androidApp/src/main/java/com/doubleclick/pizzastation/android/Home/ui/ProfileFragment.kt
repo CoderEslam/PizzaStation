@@ -29,10 +29,7 @@ import com.doubleclick.pizzastation.android.Home.PaymentActivity
 import com.doubleclick.pizzastation.android.Repository.remot.RepositoryRemot
 import com.doubleclick.pizzastation.android.ViewModel.MainViewModel
 import com.doubleclick.pizzastation.android.ViewModel.MainViewModelFactory
-import com.doubleclick.pizzastation.android.activies.HomeActivity
-import com.doubleclick.pizzastation.android.activies.MainActivity
-import com.doubleclick.pizzastation.android.activies.OrdersActivity
-import com.doubleclick.pizzastation.android.activies.PaymentWebViewActivity
+import com.doubleclick.pizzastation.android.activies.*
 import com.doubleclick.pizzastation.android.databinding.FragmentProfileBinding
 import com.doubleclick.pizzastation.android.model.ImageResponseCallback
 import com.doubleclick.pizzastation.android.model.ImageResponseModel
@@ -347,6 +344,7 @@ class ProfileFragment : Fragment(), UploadRequestBody.UploadCallback {
 
 
         binding.historyCard.setOnClickListener {
+            startActivity(Intent(requireActivity(), HistoryActivity::class.java))
         }
 
         binding.ordersCard.setOnClickListener {

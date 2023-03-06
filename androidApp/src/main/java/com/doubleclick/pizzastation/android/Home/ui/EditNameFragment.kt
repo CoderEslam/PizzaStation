@@ -105,11 +105,15 @@ class EditNameFragment : BottomSheetDialogFragment() {
                             call: Call<MessageCallback>,
                             response: Response<MessageCallback>
                         ) {
-                            Toast.makeText(
-                                requireActivity(),
-                                response.body()?.message.toString(),
-                                Toast.LENGTH_LONG
-                            ).show()
+                            try {
+                                Toast.makeText(
+                                    requireActivity(),
+                                    response.body()?.message.toString(),
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            } catch (_: IllegalStateException) {
+                            }
+
                         }
 
                         override fun onFailure(

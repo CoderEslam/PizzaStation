@@ -121,4 +121,12 @@ class RepositoryRemot {
         return RetrofitInstance.api.getURLPay(token, amount)
     }
 
+    fun getOldOrderList(token: String): Call<OldOrderList> {
+        return RetrofitInstance.api.getOldOrderList(token)
+    }
+
+    fun getOrderInProgressList(token: String): Call<JsonObject> {
+        return RetrofitInstance.api.getOrderInProgressList(token)
+    }
+
 }

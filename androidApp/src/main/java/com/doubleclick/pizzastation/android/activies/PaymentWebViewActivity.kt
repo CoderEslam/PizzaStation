@@ -24,6 +24,7 @@ import com.doubleclick.pizzastation.android.utils.SessionManger.getToken
 import com.doubleclick.pizzastation.android.utils.isNetworkConnected
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -45,6 +46,7 @@ class PaymentWebViewActivity : AppCompatActivity() {
     private var net: Boolean = false
     private val TAG = "PaymentWebViewActivity"
 
+    @OptIn(DelicateCoroutinesApi::class)
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,7 +77,10 @@ class PaymentWebViewActivity : AppCompatActivity() {
 
         GlobalScope.launch(Dispatchers.Main) {
             viewModel.getURLPay(
-                AmountPayment(intent.extras?.getDouble("total").toString()),
+                AmountPayment(
+                    intent.extras?.getDouble("total")
+                        ?.plus(menuOptionItemSelectedBranchesModel.delivery.toDouble()).toString()
+                ),
                 "Bearer " + getToken(this@PaymentWebViewActivity).toString()
             )
                 .observe(this@PaymentWebViewActivity) {

@@ -55,6 +55,10 @@ class MainViewModel(private val repository: RepositoryRemot) : ViewModel() {
         MutableLiveData()
     private val getURLPayCallbackMutableLiveData: MutableLiveData<Call<URLPayment>> =
         MutableLiveData()
+    private val getOldOrderListMutableLiveData: MutableLiveData<Call<OldOrderList>> =
+        MutableLiveData()
+    private val getOldOrderListJSONMutableLiveData: MutableLiveData<Call<JsonObject>> =
+        MutableLiveData()
 
 
     fun getLoginResponse(login: Login): LiveData<Call<LoginResponse>> {
@@ -210,6 +214,16 @@ class MainViewModel(private val repository: RepositoryRemot) : ViewModel() {
     fun getURLPay(amount: AmountPayment, token: String): LiveData<Call<URLPayment>> {
         getURLPayCallbackMutableLiveData.value = repository.getURLPay(amount, token);
         return getURLPayCallbackMutableLiveData;
+    }
+
+    fun getOldOrderList(token: String): LiveData<Call<OldOrderList>> {
+        getOldOrderListMutableLiveData.value = repository.getOldOrderList(token);
+        return getOldOrderListMutableLiveData;
+    }
+
+    fun getOrderInProgressList(token: String): LiveData<Call<JsonObject>> {
+        getOldOrderListJSONMutableLiveData.value = repository.getOrderInProgressList(token);
+        return getOldOrderListJSONMutableLiveData;
     }
 
 

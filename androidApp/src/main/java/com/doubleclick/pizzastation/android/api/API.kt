@@ -4,6 +4,7 @@ import com.doubleclick.pizzastation.android.model.*
 import com.google.gson.JsonObject
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -155,5 +156,17 @@ interface API {
         @Header("Authorization") token: String,
         @Body amount: AmountPayment
     ): Call<URLPayment>
+
+    @Headers("Accept: application/json", "Content-Type: application/json")
+    @GET("orders")
+    fun getOldOrderList(
+        @Header("Authorization") token: String,
+    ): Call<OldOrderList>
+
+    @Headers("Accept: application/json", "Content-Type: application/json")
+    @GET("orders/in_progress")
+    fun getOrderInProgressList(
+        @Header("Authorization") token: String,
+    ): Call<JsonObject>
 
 }

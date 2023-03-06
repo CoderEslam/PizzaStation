@@ -117,13 +117,17 @@ class MantomanActivity : AppCompatActivity(), DeletedSliceListener {
 
         binding.spinnerPizzas.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, i: Int, p3: Long) {
-                if (menusAdded.size <= limit - 1) {
-                    menusAdded.add(menus[i])
-                    menuDealAdapter.notifyItemRangeChanged(0, menusAdded.size)
-                } else {
-                    menusAdded[limit - 1] = menus[i]
-                    menuDealAdapter.notifyItemRangeChanged(0, menusAdded.size)
+                try {
+                    if (menusAdded.size <= limit - 1) {
+                        menusAdded.add(menus[i])
+                        menuDealAdapter.notifyItemRangeChanged(0, menusAdded.size)
+                    } else {
+                        menusAdded[limit - 1] = menus[i]
+                        menuDealAdapter.notifyItemRangeChanged(0, menusAdded.size)
+                    }
+                } catch (_: IndexOutOfBoundsException) {
                 }
+                setTotalPrice()
             }
 
             override fun onNothingSelected(p0: AdapterView<*>?) {

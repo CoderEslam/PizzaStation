@@ -73,11 +73,7 @@ class SignInFragment : Fragment() {
                             call: Call<LoginResponse>,
                             response: Response<LoginResponse>
                         ) {
-                            Toast.makeText(
-                                requireContext(),
-                                response.body().toString(),
-                                Toast.LENGTH_SHORT
-                            ).show()
+
                             try {
                                 viewLifecycleOwner.lifecycleScope.launch {
                                     SessionManger.updateSession(
