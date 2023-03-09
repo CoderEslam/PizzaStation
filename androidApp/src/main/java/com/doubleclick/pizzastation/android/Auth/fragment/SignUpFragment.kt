@@ -70,11 +70,6 @@ class SignUpFragment : Fragment() {
                             call: Call<RegistrationResponse>,
                             response: Response<RegistrationResponse>
                         ) {
-                            Toast.makeText(
-                                requireContext(),
-                                response.body().toString(),
-                                Toast.LENGTH_SHORT
-                            ).show()
                             viewLifecycleOwner.lifecycleScope.launch {
                                 SessionManger.updateSession(
                                     activity as AuthActivity,

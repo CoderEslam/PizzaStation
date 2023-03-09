@@ -196,6 +196,7 @@ class PaymentWebViewActivity : AppCompatActivity() {
             val parentJsonObject = JsonObject();
             parentJsonObject.addProperty("total", intent.extras?.getDouble("total"))
             parentJsonObject.addProperty("delivery", menuOptionItemSelectedBranchesModel.delivery)
+//            parentJsonObject.addProperty("g", menuOptionItemSelectedGovernorateModel.id)
             parentJsonObject.addProperty("amount", intent.extras?.getInt("amount"))
             parentJsonObject.addProperty("status", "mobile_app")
             parentJsonObject.addProperty("notes", intent.extras?.getString("notes"))
@@ -203,7 +204,7 @@ class PaymentWebViewActivity : AppCompatActivity() {
             parentJsonObject.addProperty("user_number", intent.extras?.getString("phone"))
             parentJsonObject.addProperty(
                 "area_id",
-                menuOptionItemSelectedGovernorateModel.id.toString()
+                menuOptionItemSelectedBranchesModel.id.toString()
             )
             parentJsonObject.addProperty(
                 "branch_id",
