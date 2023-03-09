@@ -25,13 +25,16 @@ class PaymentChooseActivity : AppCompatActivity() {
                 i.putExtra("carts", intent.extras?.getSerializable("carts"))
                 i.putExtra("total", intent.extras?.getDouble("total"))
                 i.putExtra("amount", intent.extras?.getInt("amount"))
-                i.putExtra("notes", intent.extras?.getInt("notes"))
+                i.putExtra("notes", intent.extras?.getString("notes"))
+                i.putExtra("phone", intent.extras?.getString("phone"))
+                i.putExtra("address", intent.extras?.getString("address"))
                 i.putExtra(
                     "governorateModel",
                     intent.extras?.getSerializable("governorateModel")
                 )
                 i.putExtra("branchesModel", intent.extras?.getSerializable("branchesModel"))
                 startActivity(i)
+                finish()
             } else if (binding.payWallet.isChecked) {
                 Toast.makeText(this, "Not available now", Toast.LENGTH_SHORT).show()
             } else if (binding.paycash.isChecked) {

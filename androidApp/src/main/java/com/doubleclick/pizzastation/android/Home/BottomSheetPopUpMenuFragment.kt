@@ -33,6 +33,7 @@ import retrofit2.Response
 class BottomSheetPopUpMenuFragment(
     val setPizza: setImagePizza,
     val image: ImageView,
+    val pos: Int,
     var menus: ArrayList<MenuModel>
 ) :
     SuperBottomSheetFragment() {
@@ -57,7 +58,7 @@ class BottomSheetPopUpMenuFragment(
         binding.rvPizza.adapter = adapter
         adapter.callBack(object : onPizzaClicked {
             override fun onPizza(menu: MenuModel) {
-                setPizza.setImage(menu, image)
+                setPizza.setImage(menu, image, pos)
                 dismiss()
             }
         });
@@ -66,7 +67,7 @@ class BottomSheetPopUpMenuFragment(
     }
 
     interface setImagePizza {
-        fun setImage(menu: MenuModel, image: ImageView)
+        fun setImage(menu: MenuModel, image: ImageView, pos: Int)
     }
 
     override fun getCornerRadius() =

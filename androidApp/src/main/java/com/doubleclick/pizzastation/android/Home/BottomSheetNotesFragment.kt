@@ -14,8 +14,10 @@ import android.widget.AdapterView
 import android.widget.Spinner
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.doubleclick.pizzastation.android.*
 import com.doubleclick.pizzastation.android.Adapter.SpinnerAdapterBranches
 import com.doubleclick.pizzastation.android.Adapter.SpinnerAdapterGoverorate
@@ -40,6 +42,7 @@ import java.util.stream.Collectors
 import com.doubleclick.pizzastation.android.R
 import com.doubleclick.pizzastation.android.activies.PaymentChooseActivity
 import com.doubleclick.pizzastation.android.activies.PaymentWebViewActivity
+import kotlinx.coroutines.async
 
 
 /**
@@ -48,7 +51,9 @@ import com.doubleclick.pizzastation.android.activies.PaymentWebViewActivity
 class BottomSheetNotesFragment(
     private val carts: ArrayList<CartModel>,
     private val total: Double,
-    private val amount: Int
+    private val amount: Int,
+    private var governorateModelList: List<GovernorateModel> = ArrayList(),
+    private var branchesModelList: List<AreasModel> = ArrayList()
 ) : SuperBottomSheetFragment() {
 
     private lateinit var binding: FragmentNotesBottomSheetBinding
@@ -56,8 +61,6 @@ class BottomSheetNotesFragment(
     private lateinit var viewModel: MainViewModel
     private lateinit var menuOptionItemSelectedGovernorateModel: GovernorateModel
     private lateinit var menuOptionItemSelectedBranchesModel: AreasModel
-    private var governorateModelList: List<GovernorateModel> = ArrayList()
-    private var branchesModelList: List<AreasModel> = ArrayList()
     val ACCEPT_PAYMENT_REQUEST = 10
     val paymentKey: String =
         "ZXlKaGJHY2lPaUpJVXpVeE1pSXNJblI1Y0NJNklrcFhWQ0o5LmV5SmxlSEFpT2pFMk5Ea3dPREUzTkRNc0ltOXlaR1Z5WDJsa0lqbzBNREkxTXpneE5pd2lZM1Z5Y21WdVkza2lPaUpGUjFBaUxDSnNiMk5yWDI5eVpHVnlYM2RvWlc1ZmNHRnBaQ0k2Wm1Gc2MyVXNJbUpwYkd4cGJtZGZaR0YwWVNJNmV5Sm1hWEp6ZEY5dVlXMWxJam9pUTJ4cFptWnZjbVFpTENKc1lYTjBYMjVoYldVaU9pSk9hV052YkdGeklpd2ljM1J5WldWMElqb2lSWFJvWVc0Z1RHRnVaQ0lzSW1KMWFXeGthVzVuSWpvaU9EQXlPQ0lzSW1ac2IyOXlJam9pTkRJaUxDSmhjR0Z5ZEcxbGJuUWlPaUk0TURNaUxDSmphWFI1SWpvaVNtRnphMjlzYzJ0cFluVnlaMmdpTENKemRHRjBaU0k2SWxWMFlXZ2lMQ0pqYjNWdWRISjVJam9pUTFJaUxDSmxiV0ZwYkNJNkltTnNZWFZrWlhSMFpUQTVRR1Y0WVM1amIyMGlMQ0p3YUc5dVpWOXVkVzFpWlhJaU9pSXJPRFlvT0NrNU1UTTFNakV3TkRnM0lpd2ljRzl6ZEdGc1gyTnZaR1VpT2lJd01UZzVPQ0lzSW1WNGRISmhYMlJsYzJOeWFYQjBhVzl1SWpvaVRrRWlmU3dpZFhObGNsOXBaQ0k2TVRJNU16WXNJbUZ0YjNWdWRGOWpaVzUwY3lJNk1UQXdMQ0p3Yld0ZmFYQWlPaUl4T1RZdU1UVXpMak0wTGpFNU5DSXNJbWx1ZEdWbmNtRjBhVzl1WDJsa0lqb3hPRFk0TlgwLkFzazlYa0U0a1c5VnBOa0NuR1BZekpWaGc4NTFfRjg2a3JabzMyU05ael8xSGlNNVZ6RVBBVC1ScjNjOUs1bHlHNXpsczVPQjhTeUxiVWZPWGNtNjRR"
@@ -78,21 +81,43 @@ class BottomSheetNotesFragment(
         val viewModelFactory = MainViewModelFactory(RepositoryRemot())
         viewModel = ViewModelProvider(this, viewModelFactory)[MainViewModel::class.java]
         Log.e(TAG, "onViewCreated: ${total} ${amount}")
-        viewModel.getAreas().observe(viewLifecycleOwner) {
-            it.enqueue(object : Callback<AreasList> {
-                override fun onResponse(
-                    call: Call<AreasList>,
-                    response: Response<AreasList>
-                ) {
-                    branchesModelList = response.body()!!.data
-                }
+        lifecycleScope.launch(Dispatchers.Main) {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                async {
+                    val adapter = SpinnerAdapterGoverorate(
+                        requireActivity(),
+                        governorateModelList
+                    )
+                    binding.spinnerGovernorate.adapter = adapter
+                    binding.spinnerGovernorate.onItemSelectedListener = object :
+                        AdapterView.OnItemSelectedListener {
+                        @RequiresApi(Build.VERSION_CODES.N)
+                        override fun onItemSelected(
+                            adapterView: AdapterView<*>?,
+                            view: View,
+                            i: Int,
+                            l: Long
+                        ) {
+                            try {
+                                menuOptionItemSelectedGovernorateModel =
+                                    governorateModelList[i]
+                                selectArea();
+                            } catch (_: IndexOutOfBoundsException) {
+                            }
+                        }
 
-                override fun onFailure(call: Call<AreasList>, t: Throwable) {
-
-                }
-
-            })
+                        override fun onNothingSelected(adapterView: AdapterView<*>?) {
+                            try {
+                                menuOptionItemSelectedGovernorateModel =
+                                    governorateModelList[0]
+                            } catch (_: IndexOutOfBoundsException) {
+                            }
+                        }
+                    }
+                }.await()
+            }
         }
+
 
         binding.spinnerArea.setSpinnerEventsListener(object :
             OnSpinnerEventsListener {
@@ -120,58 +145,25 @@ class BottomSheetNotesFragment(
 
         })
 
-
-        viewModel.getGovernorate().observe(viewLifecycleOwner) {
-            it.enqueue(object : Callback<GovernorateList> {
-                override fun onResponse(
-                    call: Call<GovernorateList>,
-                    response: Response<GovernorateList>
-                ) {
-                    governorateModelList = response.body()!!.data
-
-                    val adapter = SpinnerAdapterGoverorate(
-                        requireActivity(),
-                        governorateModelList
-                    )
-                    binding.spinnerGovernorate.adapter = adapter
-                    binding.spinnerGovernorate.onItemSelectedListener = object :
-                        AdapterView.OnItemSelectedListener {
-                        @RequiresApi(Build.VERSION_CODES.N)
-                        override fun onItemSelected(
-                            adapterView: AdapterView<*>?,
-                            view: View,
-                            i: Int,
-                            l: Long
-                        ) {
-                            menuOptionItemSelectedGovernorateModel = governorateModelList[i]
-                            selectArea();
-                        }
-
-                        override fun onNothingSelected(adapterView: AdapterView<*>?) {
-                            menuOptionItemSelectedGovernorateModel = governorateModelList[0]
-                        }
-                    }
-
-                }
-
-                override fun onFailure(call: Call<GovernorateList>, t: Throwable) {
-
-                }
-
-            })
-        }
-
-
         binding.completeOrder.setOnClickListener {
 //            startPayActivityNoToken(true)
-            val intent = Intent(requireActivity(), PaymentChooseActivity::class.java)
-            intent.putExtra("carts", carts)
-            intent.putExtra("total", total)
-            intent.putExtra("amount", amount)
-            intent.putExtra("governorateModel", menuOptionItemSelectedGovernorateModel)
-            intent.putExtra("branchesModel", menuOptionItemSelectedBranchesModel)
-            intent.putExtra("notes", binding.notes.text.toString())
-            startActivity(intent)
+            if (binding.notes.text.toString().isNotEmpty() && binding.address.text.toString()
+                    .isNotEmpty() && binding.phone.text.toString().isNotEmpty()
+            ) {
+                val intent = Intent(requireActivity(), PaymentChooseActivity::class.java)
+                intent.putExtra("carts", carts)
+                intent.putExtra("total", total)
+                intent.putExtra("amount", amount)
+                intent.putExtra("governorateModel", menuOptionItemSelectedGovernorateModel)
+                intent.putExtra("branchesModel", menuOptionItemSelectedBranchesModel)
+                intent.putExtra("notes", binding.notes.text.toString())
+                intent.putExtra("address", binding.address.text.toString())
+                intent.putExtra("phone", binding.phone.text.toString())
+                startActivity(intent)
+                requireActivity().finish()
+            } else {
+                Toast.makeText(requireContext(), "All field required", Toast.LENGTH_SHORT).show()
+            }
         }
 
     }
@@ -179,7 +171,6 @@ class BottomSheetNotesFragment(
 
     @RequiresApi(Build.VERSION_CODES.N)
     private fun selectArea() {
-
         val byGovernorate: Predicate<AreasModel> =
             Predicate<AreasModel> { branch -> branch.government_id == menuOptionItemSelectedGovernorateModel.id }
 

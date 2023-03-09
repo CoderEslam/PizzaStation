@@ -1,5 +1,6 @@
 package com.doubleclick.pizzastation.android.activies
 
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -191,106 +192,117 @@ class PaymentWebViewActivity : AppCompatActivity() {
         signature: String,
         mode: String
     ) {
-        val parentJsonObject = JsonObject();
-        parentJsonObject.addProperty("total", intent.extras?.getDouble("total"))
-        parentJsonObject.addProperty("delivery", menuOptionItemSelectedBranchesModel.delivery)
-        parentJsonObject.addProperty("amount", intent.extras?.getInt("amount"))
-        parentJsonObject.addProperty("status", "mobile_app")
-        parentJsonObject.addProperty("notes", intent.extras?.getInt("notes"))
-        parentJsonObject.addProperty(
-            "area_id",
-            menuOptionItemSelectedGovernorateModel.id.toString()
-        )
-        parentJsonObject.addProperty(
-            "branch_id",
-            menuOptionItemSelectedBranchesModel.id.toString()
-        )
-        val jsonArrayChildItems = JsonArray();
-        for (cart in carts) {
-            val jsonObjectItemsChild = JsonObject();
-            jsonObjectItemsChild.addProperty("name", cart.name)
-            jsonObjectItemsChild.addProperty("price", cart.price)
-            jsonObjectItemsChild.addProperty("size", cart.size)
-            jsonObjectItemsChild.addProperty("quantity", cart.quantity)
-            jsonObjectItemsChild.addProperty("category", cart.menuModel?.get(0)?.category)
-            val jsonArrayChildExtras = JsonArray();
-            try {
-                if (cart.extra?.isNotEmpty() == true && cart.type == NORMAL_ORDER && cart.menuModel?.isNotEmpty() == true) {
-                    for (extra in cart.extra) {
-                        val jsonObjectChildExtra = JsonObject();
-                        jsonObjectChildExtra.addProperty("name", extra.name)
-                        jsonObjectChildExtra.addProperty("price", extra.price)
-                        jsonObjectChildExtra.addProperty("size", extra.size)
-                        jsonObjectChildExtra.addProperty("quantity", extra.quantity)
-                        Log.e("JSONResponse", "sendOrder: ${jsonObjectChildExtra}")
-                        jsonArrayChildExtras.add(jsonObjectChildExtra)
-                        jsonObjectItemsChild.add("extra", jsonArrayChildExtras)
+        if (paymentStatus == "SUCCESS") {
+            val parentJsonObject = JsonObject();
+            parentJsonObject.addProperty("total", intent.extras?.getDouble("total"))
+            parentJsonObject.addProperty("delivery", menuOptionItemSelectedBranchesModel.delivery)
+            parentJsonObject.addProperty("amount", intent.extras?.getInt("amount"))
+            parentJsonObject.addProperty("status", "mobile_app")
+            parentJsonObject.addProperty("notes", intent.extras?.getString("notes"))
+            parentJsonObject.addProperty("address", intent.extras?.getString("address"))
+            parentJsonObject.addProperty("user_number", intent.extras?.getString("phone"))
+            parentJsonObject.addProperty(
+                "area_id",
+                menuOptionItemSelectedGovernorateModel.id.toString()
+            )
+            parentJsonObject.addProperty(
+                "branch_id",
+                menuOptionItemSelectedBranchesModel.branch_id.toString()
+            )
+            val jsonArrayChildItems = JsonArray();
+            for (cart in carts) {
+                val jsonObjectItemsChild = JsonObject();
+                jsonObjectItemsChild.addProperty("name", cart.name)
+                jsonObjectItemsChild.addProperty("price", cart.price)
+                jsonObjectItemsChild.addProperty("size", cart.size)
+                jsonObjectItemsChild.addProperty("quantity", cart.quantity)
+                jsonObjectItemsChild.addProperty("category", cart.menuModel?.get(0)?.category)
+                val jsonArrayChildExtras = JsonArray();
+                try {
+                    if (cart.extra?.isNotEmpty() == true && cart.type == NORMAL_ORDER && cart.menuModel?.isNotEmpty() == true) {
+                        for (extra in cart.extra) {
+                            val jsonObjectChildExtra = JsonObject();
+                            jsonObjectChildExtra.addProperty("name", extra.name)
+                            jsonObjectChildExtra.addProperty("price", extra.price)
+                            jsonObjectChildExtra.addProperty("size", extra.size)
+                            jsonObjectChildExtra.addProperty("quantity", extra.quantity)
+                            Log.e("JSONResponse", "sendOrder: ${jsonObjectChildExtra}")
+                            jsonArrayChildExtras.add(jsonObjectChildExtra)
+                            jsonObjectItemsChild.add("extra", jsonArrayChildExtras)
+                        }
                     }
-                }
-                Log.e(
-                    TAG,
-                    "sendOrder:   ${cart.menuModel?.isNotEmpty()}  ${cart.type == OFFER}",
-                )
-                if (cart.type == OFFER && cart.menuModel?.isNotEmpty() == true) {
-                    for (pizza in cart.menuModel) {
-                        val jsonObjectChildExtra = JsonObject();
-                        jsonObjectChildExtra.addProperty("name", pizza?.name)
-                        jsonObjectChildExtra.addProperty("price", "0")
-                        jsonObjectChildExtra.addProperty("size", "0")
-                        jsonObjectChildExtra.addProperty("quantity", "1")
-                        jsonArrayChildExtras.add(jsonObjectChildExtra)
-                        Log.e("JSONResponse", "sendOrder: ${jsonObjectChildExtra}")
-                        jsonObjectItemsChild.add("extra", jsonArrayChildExtras)
+                    Log.e(
+                        TAG,
+                        "sendOrder:   ${cart.menuModel?.isNotEmpty()}  ${cart.type == OFFER}",
+                    )
+                    if (cart.type == OFFER && cart.menuModel?.isNotEmpty() == true) {
+                        for (pizza in cart.menuModel) {
+                            val jsonObjectChildExtra = JsonObject();
+                            jsonObjectChildExtra.addProperty("name", pizza?.name)
+                            jsonObjectChildExtra.addProperty("price", "0")
+                            jsonObjectChildExtra.addProperty("size", "0")
+                            jsonObjectChildExtra.addProperty("quantity", "1")
+                            jsonArrayChildExtras.add(jsonObjectChildExtra)
+                            Log.e("JSONResponse", "sendOrder: ${jsonObjectChildExtra}")
+                            jsonObjectItemsChild.add("extra", jsonArrayChildExtras)
+                        }
                     }
+                    jsonArrayChildItems.add(jsonObjectItemsChild);
+                } catch (e: NullPointerException) {
+                    Log.e(TAG, "Error : ${e.message}")
                 }
-                jsonArrayChildItems.add(jsonObjectItemsChild);
-            } catch (e: NullPointerException) {
-                Log.e(TAG, "Error : ${e.message}")
+            }
+            parentJsonObject.add("items", jsonArrayChildItems);
+            parentJsonObject.addProperty("paymentStatus", paymentStatus)
+            parentJsonObject.addProperty("cardDataToken", cardDataToken)
+            parentJsonObject.addProperty("maskedCard", maskedCard)
+            parentJsonObject.addProperty("merchantOrderId", merchantOrderId)
+            parentJsonObject.addProperty("orderId", orderId)
+            parentJsonObject.addProperty("cardBrand", cardBrand)
+            parentJsonObject.addProperty("orderReference", orderReference)
+            parentJsonObject.addProperty("transactionId", transactionId)
+            parentJsonObject.addProperty("amount_payment", amount_payment)
+            parentJsonObject.addProperty("currency", currency)
+            parentJsonObject.addProperty("signature", signature)
+            parentJsonObject.addProperty("mode", mode)
+            parentJsonObject.addProperty("delivery", menuOptionItemSelectedBranchesModel.delivery)
+            parentJsonObject.addProperty("payment_type", "pay online")
+            Log.d(TAG, "onViewCreated: $parentJsonObject")
+            GlobalScope.launch(Dispatchers.Main) {
+                viewModel.setOrderComplete(
+                    "Bearer " + getToken(this@PaymentWebViewActivity).toString(),
+                    parentJsonObject
+                ).observe(this@PaymentWebViewActivity) {
+                    it.enqueue(object : Callback<OrderModelList> {
+                        override fun onResponse(
+                            call: Call<OrderModelList>,
+                            response: Response<OrderModelList>
+                        ) {
+                            Toast.makeText(
+                                this@PaymentWebViewActivity,
+                                response.body()?.message.toString(),
+                                Toast.LENGTH_LONG
+                            ).show()
+                            startActivity(
+                                Intent(
+                                    this@PaymentWebViewActivity,
+                                    HomeActivity::class.java
+                                )
+                            )
+                            finish()
+
+                        }
+
+                        override fun onFailure(call: Call<OrderModelList>, t: Throwable) {
+                            Toast.makeText(
+                                this@PaymentWebViewActivity,
+                                t.message,
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                    })
+                }
             }
         }
-        parentJsonObject.add("items", jsonArrayChildItems);
-        parentJsonObject.addProperty("paymentStatus", paymentStatus)
-        parentJsonObject.addProperty("cardDataToken", cardDataToken)
-        parentJsonObject.addProperty("maskedCard", maskedCard)
-        parentJsonObject.addProperty("merchantOrderId", merchantOrderId)
-        parentJsonObject.addProperty("orderId", orderId)
-        parentJsonObject.addProperty("cardBrand", cardBrand)
-        parentJsonObject.addProperty("orderReference", orderReference)
-        parentJsonObject.addProperty("transactionId", transactionId)
-        parentJsonObject.addProperty("amount_payment", amount_payment)
-        parentJsonObject.addProperty("currency", currency)
-        parentJsonObject.addProperty("signature", signature)
-        parentJsonObject.addProperty("mode", mode)
-        parentJsonObject.addProperty("delivery", menuOptionItemSelectedBranchesModel.delivery)
-        parentJsonObject.addProperty("payment_type", "pay online")
-        Log.d(TAG, "onViewCreated: $parentJsonObject")
-        GlobalScope.launch(Dispatchers.Main) {
-            viewModel.setOrderComplete(
-                "Bearer " + getToken(this@PaymentWebViewActivity).toString(),
-                parentJsonObject
-            ).observe(this@PaymentWebViewActivity) {
-                it.enqueue(object : Callback<OrderModelList> {
-                    override fun onResponse(
-                        call: Call<OrderModelList>,
-                        response: Response<OrderModelList>
-                    ) {
-                        Toast.makeText(
-                            this@PaymentWebViewActivity,
-                            response.body()?.message.toString(),
-                            Toast.LENGTH_LONG
-                        ).show()
-                    }
-
-                    override fun onFailure(call: Call<OrderModelList>, t: Throwable) {
-                        Toast.makeText(
-                            this@PaymentWebViewActivity,
-                            t.message,
-                            Toast.LENGTH_LONG
-                        ).show()
-                    }
-                })
-            }
-        }
-
     }
 }

@@ -316,6 +316,9 @@ class FoodItemActivity : AppCompatActivity(), ItemSizeListener, ItemExtraListene
                 Toast.makeText(this@FoodItemActivity, "select size first", Toast.LENGTH_LONG).show()
                 return@setOnClickListener
             } else {
+                binding.animationView.visibility = View.VISIBLE
+                binding.addToCard.isEnabled = false
+                binding.tvAddToCard.setTextColor(resources.getColor(R.color.grey_600))
                 GlobalScope.launch(Dispatchers.Main) {
                     val jsonObjectParent = JsonObject();
                     val jsonObjectMenuModel = JsonObject();
@@ -388,9 +391,6 @@ class FoodItemActivity : AppCompatActivity(), ItemSizeListener, ItemExtraListene
                                         Toast.LENGTH_LONG
                                     ).show()
                                     GlobalScope.launch(Dispatchers.Main) {
-                                        binding.animationView.visibility = View.VISIBLE
-                                        binding.addToCard.isEnabled = false
-                                        binding.tvAddToCard.setTextColor(resources.getColor(R.color.grey_600))
                                         delay(1000)
                                         startActivity(
                                             Intent(

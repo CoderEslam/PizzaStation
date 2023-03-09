@@ -107,6 +107,7 @@ dependencies {
 //    implementation(files("C:\\pizzastation\\androidApp\\libs\\editcard-release"))
     implementation(files("libs\\editcard-release.aar"))
     implementation(files("libs\\viewpagerlayoutmanager-release.aar"))
+    implementation(files("libs\\hivelayoutmanager-release.aar"))
 //    implementation("morxander.editcard:EditCard:1.0.1")
     implementation("com.android.volley:volley:1.2.0")
     implementation("org.apache.httpcomponents:httpclient:4.5")

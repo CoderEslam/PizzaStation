@@ -58,6 +58,7 @@ class CustomizePizzaActivity : AppCompatActivity(), BottomSheetPopUpMenuFragment
         setContentView(binding.root)
         offersModel = intent.getSerializableExtra("offersModel") as OffersModel
         limit = offersModel.items_limit.toInt()
+        Log.e(TAG, "onCreate: $limit")
         binding.name.text = offersModel.offer_name
         val viewModelFactory = MainViewModelFactory(RepositoryRemot())
         viewModel = ViewModelProvider(this, viewModelFactory)[MainViewModel::class.java]
@@ -84,19 +85,19 @@ class CustomizePizzaActivity : AppCompatActivity(), BottomSheetPopUpMenuFragment
         }
         binding.quarter1.setOnClickListener {
             binding.addPlus1.visibility = View.GONE
-            openPopUpMenu(binding.quarter1)
+            openPopUpMenu(binding.quarter1, 0)
         }
         binding.quarter2.setOnClickListener {
             binding.addPlus2.visibility = View.GONE
-            openPopUpMenu(binding.quarter2)
+            openPopUpMenu(binding.quarter2, 1)
         }
         binding.quarter3.setOnClickListener {
             binding.addPlus3.visibility = View.GONE
-            openPopUpMenu(binding.quarter3)
+            openPopUpMenu(binding.quarter3, 2)
         }
         binding.quarter4.setOnClickListener {
             binding.addPlus4.visibility = View.GONE
-            openPopUpMenu(binding.quarter4)
+            openPopUpMenu(binding.quarter4, 3)
         }
         binding.add.setOnClickListener {
             try {
@@ -121,16 +122,22 @@ class CustomizePizzaActivity : AppCompatActivity(), BottomSheetPopUpMenuFragment
             }
         }
         binding.addToCard.setOnClickListener {
+            binding.addToCard.isEnabled = false
+            binding.tvAddToCard.setTextColor(resources.getColor(R.color.grey_600))
+            binding.animationViewLoading.visibility = View.VISIBLE
+            binding.animationView.visibility = View.GONE
+            for (i in menusAdded) {
+                Log.e(TAG, "onCreate: $i")
+            }
             GlobalScope.launch(Dispatchers.Main) {
                 val jsonObjectParent = JsonObject();
-                val jsonObjectMenuModel = JsonObject();
+                val jsonArrayMenuModel = JsonArray();
                 jsonObjectParent.addProperty("price", priceTotal.toString())
                 jsonObjectParent.addProperty("name", offersModel.offer_name)
                 jsonObjectParent.addProperty("quantity", amount.toString())
                 jsonObjectParent.addProperty("size", offersModel.offer_name)
                 jsonObjectParent.addProperty("image", offersModel.offer_image)
                 jsonObjectParent.addProperty("id", offersModel.id.toString())
-                val jsonArrayMenuModel = JsonArray();
                 for (menuModel in menusAdded) {
                     val jsonObjectMenuModel = JsonObject();
                     jsonObjectMenuModel.addProperty("FB", menuModel?.FB.toString());
@@ -184,9 +191,8 @@ class CustomizePizzaActivity : AppCompatActivity(), BottomSheetPopUpMenuFragment
                                     Toast.LENGTH_LONG
                                 ).show()
                                 GlobalScope.launch(Dispatchers.Main) {
+                                    binding.animationViewLoading.visibility = View.GONE
                                     binding.animationView.visibility = View.VISIBLE
-                                    binding.addToCard.isEnabled = false
-                                    binding.tvAddToCard.setTextColor(resources.getColor(R.color.grey_600))
                                     delay(1000)
                                     startActivity(
                                         Intent(
@@ -213,22 +219,22 @@ class CustomizePizzaActivity : AppCompatActivity(), BottomSheetPopUpMenuFragment
         }
     }
 
-    override fun setImage(menu: MenuModel, image: ImageView) {
-        if (menusAdded.size <= limit - 1) {
+    override fun setImage(menu: MenuModel, image: ImageView, pos: Int) {
+        if (menusAdded.size <= 4) {
             menusAdded.add(menu)
-            Glide.with(this).load(IMAGE_URL + menu.image)
-                .into(image)
+            Glide.with(this).load(IMAGE_URL + menu.image).into(image)
         } else {
-            menusAdded[limit - 1] = menu
-            Glide.with(this).load(IMAGE_URL + menu.image)
-                .into(image)
+            menusAdded[pos] = menu
+            Glide.with(this).load(IMAGE_URL + menu.image).into(image)
         }
+        Log.e(TAG, "setImage: ${menusAdded.size}")
     }
 
-    private fun openPopUpMenu(image: ImageView) {
+    private fun openPopUpMenu(image: ImageView, pos: Int) {
         BottomSheetPopUpMenuFragment(
             this@CustomizePizzaActivity,
             image,
+            pos,
             menus
         ).show(
             supportFragmentManager,

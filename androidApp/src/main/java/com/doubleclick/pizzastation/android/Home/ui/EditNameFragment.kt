@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.doubleclick.pizzastation.android.R
 import com.doubleclick.pizzastation.android.Repository.remot.RepositoryRemot
 import com.doubleclick.pizzastation.android.ViewModel.MainViewModel
 import com.doubleclick.pizzastation.android.ViewModel.MainViewModelFactory
@@ -47,6 +48,8 @@ class EditNameFragment : BottomSheetDialogFragment() {
         viewModel = ViewModelProvider(this, viewModelFactory)[MainViewModel::class.java]
 
         binding.editBtn.setOnClickListener {
+            binding.editBtn.isEnabled = false
+            binding.editBtn.setTextColor(resources.getColor(R.color.grey_600))
             viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
                 viewModel.getImageResponseModel(
                     "Bearer " + SessionManger.getToken(
@@ -67,6 +70,7 @@ class EditNameFragment : BottomSheetDialogFragment() {
                                                 requireActivity(),
                                                 phone
                                             )
+                                            dismiss()
                                         }
                                     }
                                 }

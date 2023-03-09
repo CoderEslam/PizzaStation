@@ -172,6 +172,7 @@
 
 
             <androidx.cardview.widget.CardView
+                android:visibility="gone"
                 android:id="@+id/orders_card"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
@@ -211,6 +212,7 @@
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
+                android:visibility="gone"
                 android:id="@+id/history_card"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"

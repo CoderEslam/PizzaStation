@@ -1,16 +1,22 @@
 package com.doubleclick.pizzastation.android.Home.ui
 
 import android.annotation.SuppressLint
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.doubleclick.pizzastation.android.Adapter.CartAdapter
+import com.doubleclick.pizzastation.android.Adapter.SpinnerAdapterGoverorate
 import com.doubleclick.pizzastation.android.Home.BottomSheetNotesFragment
 import com.doubleclick.pizzastation.android.R
 import com.doubleclick.pizzastation.android.Repository.remot.RepositoryRemot
@@ -21,10 +27,7 @@ import com.doubleclick.pizzastation.android.databinding.FragmentCartBinding
 import com.doubleclick.pizzastation.android.model.*
 import com.doubleclick.pizzastation.android.utils.SessionManger.getToken
 import com.doubleclick.pizzastation.android.views.swipetoactionlayout.SwipeAction
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -35,6 +38,8 @@ class CartFragment : Fragment(), ExtraDeleteListener {
     private var carts: ArrayList<CartModel> = ArrayList();
     lateinit var cartAdapter: CartAdapter
     private lateinit var viewModel: MainViewModel
+    private var governorateModelList: List<GovernorateModel> = ArrayList()
+    private var branchesModelList: List<AreasModel> = ArrayList()
 
     private val TAG = "CartFragment"
     override fun onCreateView(
@@ -51,40 +56,78 @@ class CartFragment : Fragment(), ExtraDeleteListener {
         super.onViewCreated(view, savedInstanceState)
         val viewModelFactory = MainViewModelFactory(RepositoryRemot())
         viewModel = ViewModelProvider(this, viewModelFactory)[MainViewModel::class.java]
-        GlobalScope.launch(Dispatchers.Main) {
-            viewModel.getCart("Bearer " + getToken(requireActivity()))
-                .observe(requireActivity()) {
-                    it.clone().enqueue(object : Callback<CartModelList> {
-                        @SuppressLint("NotifyDataSetChanged")
-                        override fun onResponse(
-                            call: Call<CartModelList>,
-                            response: Response<CartModelList>
-                        ) {
-                            try {
-                                carts = response.body()!!.data as ArrayList<CartModel>
-                                cartAdapter = CartAdapter(
-                                    carts,
-                                    ::Counter,
-                                    ::OnActionClicked,
-                                    this@CartFragment
-                                )
-                                binding.rvCart.adapter = cartAdapter
-                                binding.animationViewLoading.visibility = View.GONE
-                                cartAdapter.notifyItemRangeChanged(0, carts.size)
-                                cartAdapter.notifyDataSetChanged()
-                            } catch (e: NullPointerException) {
-                                Log.e(TAG, "onResponse getCart: ${e.message}")
+        lifecycleScope.launch(Dispatchers.Main) {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                async {
+                    viewModel.getAreas().observe(viewLifecycleOwner) {
+                        it.clone().enqueue(object : Callback<AreasList> {
+                            override fun onResponse(
+                                call: Call<AreasList>,
+                                response: Response<AreasList>
+                            ) {
+                                branchesModelList = response.body()!!.data
                             }
 
-                        }
+                            override fun onFailure(call: Call<AreasList>, t: Throwable) {
 
-                        override fun onFailure(call: Call<CartModelList>, t: Throwable) {
-                            Log.e(TAG, "onFailure: " + t.message)
-                        }
+                            }
 
-                    })
-                }
+                        })
+                    }
+                }.await()
+                async {
+                    viewModel.getGovernorate().observe(viewLifecycleOwner) {
+                        it.clone().enqueue(object : Callback<GovernorateList> {
+                            override fun onResponse(
+                                call: Call<GovernorateList>,
+                                response: Response<GovernorateList>
+                            ) {
+                                governorateModelList = response.body()!!.data
+                            }
+
+                            override fun onFailure(call: Call<GovernorateList>, t: Throwable) {
+
+                            }
+
+                        })
+                    }
+                }.await()
+
+                viewModel.getCart("Bearer " + getToken(requireActivity()))
+                    .observe(requireActivity()) {
+                        it.clone().enqueue(object : Callback<CartModelList> {
+                            @SuppressLint("NotifyDataSetChanged")
+                            override fun onResponse(
+                                call: Call<CartModelList>,
+                                response: Response<CartModelList>
+                            ) {
+                                try {
+                                    carts = response.body()!!.data as ArrayList<CartModel>
+                                    cartAdapter = CartAdapter(
+                                        carts,
+                                        ::Counter,
+                                        ::OnActionClicked,
+                                        this@CartFragment
+                                    )
+                                    binding.rvCart.adapter = cartAdapter
+                                    binding.animationViewLoading.visibility = View.GONE
+                                    cartAdapter.notifyItemRangeChanged(0, carts.size)
+                                    cartAdapter.notifyDataSetChanged()
+                                } catch (e: NullPointerException) {
+                                    Log.e(TAG, "onResponse getCart: ${e.message}")
+                                }
+
+                            }
+
+                            override fun onFailure(call: Call<CartModelList>, t: Throwable) {
+                                Log.e(TAG, "onFailure: " + t.message)
+                            }
+
+                        })
+                    }
+            }
         }
+
 
 
         binding.selectLocation.setOnClickListener {
@@ -99,7 +142,13 @@ class CartFragment : Fragment(), ExtraDeleteListener {
                     total += cart.price.toDouble()
                     amount++
                 }
-                val sheet = BottomSheetNotesFragment(carts, total, amount)
+                val sheet = BottomSheetNotesFragment(
+                    carts,
+                    total,
+                    amount,
+                    governorateModelList,
+                    branchesModelList
+                )
                 sheet.show(
                     requireActivity().supportFragmentManager,
                     "BottomSheetNotesFragment"

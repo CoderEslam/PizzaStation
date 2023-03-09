@@ -128,12 +128,17 @@ class OurBranchsFragment : Fragment() {
                 i: Int,
                 l: Long
             ) {
-                menuOptionItemSelectedGovernorateModel = governorateModelList[i]
-                selectArea()
+                try {
+                    menuOptionItemSelectedGovernorateModel = governorateModelList[i]
+                    selectArea()
+                }catch (_:IndexOutOfBoundsException){}
+
             }
 
             override fun onNothingSelected(adapterView: AdapterView<*>?) {
-                menuOptionItemSelectedGovernorateModel = governorateModelList[0]
+                try {
+                    menuOptionItemSelectedGovernorateModel = governorateModelList[0]
+                }catch (_:IndexOutOfBoundsException){}
             }
         }
 
